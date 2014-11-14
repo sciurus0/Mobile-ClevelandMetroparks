@@ -136,52 +136,6 @@ div.lng_driving {
 
 
 
-/* the Twitter panel */
-
-
-
-#tweets td {
-
-}
-
-
-
-.twitter_lhs {
-
-    text-align:center;
-
-    vertical-align:top;
-
-    font-size:8pt;
-
-}
-
-
-
-.twitter_lhs img {
-
-    width:32px; height:32px;
-
-}
-
-
-
-.twitter_rhs {
-
-    text-align:left;
-
-    vertical-align:top;
-
-    font-size:9pt;
-
-}
-
-
-
-
-
-
-
 /* Leaflet Zoom panel, allow buttons to be disabled */
 
 
@@ -812,34 +766,6 @@ div.elevationprofileimage img {
 }
 
 
-
-
-
-
-
-/* Share on Facebook and Twitter */
-
-div.share_button {
-
-    line-height:24px;
-
-    margin-bottom:1em;
-
-}
-
-div.share_button a {
-
-    text-decoration:none;
-
-}
-
-div.share_button img {
-
-    vertical-align:middle;
-
-    margin-right:10px;
-
-}
 
 
 

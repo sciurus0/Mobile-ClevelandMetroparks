@@ -104,8 +104,8 @@ OVERLAYS[OVERLAYS.length] = L.tileLayer.wms("http://maps{s}.clemetparks.com/gwc"
 
 
 
-
-var MOBILE; // set in desktop.js and mobile.js, so we can work around some things in shared code
+//GDA this patch needs to go away as we optimize the code for mobile use
+var MOBILE;
 
 
 
@@ -184,10 +184,6 @@ var DIRECTIONS_LINE_STYLE = { color:"#0000FF", weight:5, opacity:1.00, clickable
 var HIGHLIGHT_LINE       = null;
 
 var HIGHLIGHT_LINE_STYLE = { color:"#FF00FF", weight:3, opacity:0.75, clickable:false, smoothFactor:0.25 };
-
-
-
-var SHARE_URL_STRING = null; // a query string for sharing the map in the current state, updated by updateShareUrl() and later minified by populateShareBox()
 
 
 
@@ -387,49 +383,6 @@ function initMap () {
 
     }
 
-    function debugScaleZoomOutput() {
-
-        var DOTS_PER_INCH    = 72;
-
-        var INCHES_PER_METER = 1.0 / 0.02540005080010160020;
-
-        var INCHES_PER_KM    = INCHES_PER_METER * 1000.0;
-
-        var sw       = MAP.getBounds().getSouthWest();
-
-        var ne       = MAP.getBounds().getNorthEast();
-
-        var halflng   = ( sw.lng + ne.lng ) / 2.0;
-
-        var midBottom = L.latLng(sw.lat,halflng);
-
-        var midTop    = L.latLng(ne.lat,halflng);
-
-        var mheight   = midTop.distanceTo(midBottom);
-
-        var pxheight  = MAP.getSize().x;
-
-        var kmperpx   = mheight / pxheight / 1000.0;
-
-        var scale    = Math.round( (kmperpx || 0.000001) * INCHES_PER_KM * DOTS_PER_INCH );
-
-        scale *= 2.0; // no idea why but it's doubled
-
-        scale = 1000 * Math.round(scale / 1000.0); // round to the nearest 100 so we can fit MapFish print's finite set of scales
-
-        console.log([ 'zoom & scale' , MAP.getZoom(), scale ]);
-
-    }
-
-    //MAP.on('moveend', debugBoundsOutput);
-
-    //MAP.on('zoomend', debugBoundsOutput);
-
-    //MAP.on('moveend', debugScaleZoomOutput);
-
-    //MAP.on('zoomend', debugScaleZoomOutput);
-
-
 
     // our version of a WMS GetFeatureInfo control: a map click calls query.php to get JSON info, and we construct a bubble
 
@@ -460,29 +413,6 @@ function initMap () {
         wmsGetFeatureInfoByPoint(event.layerPoint);
 
     });
-
-
-
-    // on map activity, update the Share box
-
-    // have the Share box highlight when it is selected, and update the Share box right off
-
-    $('#share_url').click(function () {
-
-        $(this).select();
-
-    });
-
-    MAP.on('moveend', updateShareUrl);
-
-    MAP.on('zoomend', updateShareUrl);
-
-    MAP.on('layerremove', updateShareUrl);
-
-    MAP.on('layeradd', updateShareUrl);
-
-    updateShareUrl();
-
 }
 
 
@@ -1366,19 +1296,8 @@ function processGetDirectionsForm() {
         params.via  = via;
 
         $.get('../ajax/geocode_for_directions', params, function (reply) {
-
             sourcelat = reply.lat;
-
             sourcelng = reply.lng;
-
-
-
-            // save them into the input fields too, so they'd get shared
-
-            $('#directions_source_lat').val(reply.lat);
-
-            $('#directions_source_lng').val(reply.lng);
-
         }, 'json');
 
     }
@@ -1404,19 +1323,8 @@ function processGetDirectionsForm() {
         params.via  = via;
 
         $.get('../ajax/geocode_for_directions', params, function (reply) {
-
             targetlat = reply.lat;
-
             targetlng = reply.lng;
-
-
-
-            // save them into the input fields too, so they'd get shared
-
-            $('#directions_target_lat').val(reply.lat);
-
-            $('#directions_target_lng').val(reply.lng);
-
         }, 'json');
 
     }
@@ -1762,34 +1670,6 @@ function renderDirectionsStructure(directions,target,options) {
         });
 
         funcs.append(clearmap);
-
-    }
-
-    if (! options.noshare) {
-
-        // if there are options given, check for noshare:true and skip on the Share link
-
-        var shareroute = $('<img></img>').prop('title','Share').addClass('fakelink').prop('id','share_route_button').prop('src','/static/common/share.png');
-
-        shareroute.click(function () {
-
-            updateShareUrlByDirections();
-
-            if (MOBILE) {
-
-                $.mobile.changePage('#page-share');
-
-            } else {
-
-                $('.dialog').dialog('close');
-
-                $('#share').dialog('open');
-
-            }
-
-        });
-
-        funcs.append(shareroute);
 
     }
 
@@ -2733,82 +2613,6 @@ function wgsToLocalSRS(dot) {
 
 /////
 
-///// functions pertaining to the Twitter panel
-
-/////
-
-function loadTwitter() {
-
-    // empty the tweets target, and print a Loading statement
-
-    var target = $('#tweets');
-
-    target.empty();
-
-    target.append( $('<tr></tr>').append( $('<td></td>').text('Loading...') ) );
-
-
-
-    // fetch the tweets via AJAX
-
-    var params = {};
-
-    $.get('../ajax/fetch_tweets', params, function (tweets) {
-
-        target.empty();
-
-        for (var i=0, l=tweets.length; i<l; i++) {
-
-            var tweet = tweets[i];
-
-            var row = $('<tr></tr>');
-
-
-
-            var cell1 = $('<td></td>').addClass('twitter_lhs');
-
-            var userpic = $('<img></img>').prop('src', tweet.picture);
-
-            var userlink = $('<a></a>').prop('target','_blank').text(tweet.username).prop('href','http://twitter.com/' + tweet.username);
-
-            cell1.append(userpic);
-
-            cell1.append( $('<br></br>') );
-
-            cell1.append(userlink);
-
-
-
-            var cell2 = $('<td></td>').addClass('twitter_rhs');
-
-            var content = $('<span></span>').html(tweet.prettydate + ': ' + tweet.content);
-
-            cell2.append(content);
-
-
-
-            // append to the output
-
-            row.append(cell1);
-
-            row.append(cell2);
-
-            target.append(row);
-
-        }
-
-    }, 'json');
-
-}
-
-
-
-
-
-
-
-/////
-
 ///// on page load: event handlers for Trail Finder
 
 ///// these used to be identical but then they diverged so desktop has these clicky icons, while mobile is still a selector (for now)
@@ -3153,36 +2957,6 @@ function toggleWelcome(show_welcome) {
 
 
 
-///// on page load
-
-///// event handler for the Share Map button, which reads from the Show On Map button to populate the Share Your Map box
-
-$(window).load(function () {
-
-    $('#share_feature').click(function () {
-
-        var element = $('#show_on_map').data('zoomelement');
-
-        if (! element) return;
-
-        updateShareUrlByFeature(element);
-
-        if (! MOBILE) $('#share').dialog('open');
-
-    });
-
-});
-
-
-
-
-
-
-
-
-
-
-
 // mobile specific: when we change pages or rotate the screen, resize the map accordingly
 
 $(window).bind('orientationchange pageshow resize', function() {
@@ -3386,96 +3160,6 @@ $(document).bind('pagebeforechange', function(e,data) {
     }, 'json');
 
 });
-
-
-
-
-
-
-
-// mobile-specific: listen for page changes to #page-twitter and reload tweets
-
-/*
-
-$(document).bind('pagebeforechange', function(e,data) {
-
-    if ( typeof data.toPage != "string" ) return; // no hash given
-
-    var url = $.mobile.path.parseUrl(data.toPage);
-
-    if ( url.hash != '#page-twitter') return; // not the URL that we want to handle
-
-
-
-    loadTwitter();
-
-});
-
-*/
-
-
-
-
-
-// mobile-specific: listen for page changes to #page-share and request a new short URL for the current map state
-
-// also, enable the Share Facebook and Share Twitter links
-
-$(document).bind('pagebeforechange', function(e,data) {
-
-    if ( typeof data.toPage != "string" ) return; // no hash given
-
-    var url = $.mobile.path.parseUrl(data.toPage);
-
-    if ( url.hash != '#page-share') return; // not the URL that we want to handle
-
-
-
-    populateShareBox();
-
-});
-
-$(document).ready(function () {
-
-    // Twitter and Facebook are plain ol' hyperlinks,
-
-    // but when we click them we update their URL before we allow them to trigger
-
-
-
-    // mobile warning: on mobile #share_url is not a text input and val() won't work
-
-    // at this time the FB and T icons don't exist on Mobile, but FYI
-
-
-
-    $('#share_facebook').tap(function () {
-
-        var url = $('#share_url').val();
-
-            url = 'http://www.facebook.com/share.php?u=' + encodeURIComponent(url);
-
-        $('#share_facebook').prop('href',url);
-
-        return true;
-
-    });
-
-    $('#share_twitter').tap(function () {
-
-        var url = $('#share_url').val();
-
-            url = 'http://twitter.com/home?status=' + encodeURIComponent(url);
-
-        $('#share_twitter').prop('href',url);
-
-        return true;
-
-    });
-
-});
-
-
 
 
 
