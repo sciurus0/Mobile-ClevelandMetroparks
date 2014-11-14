@@ -111,7 +111,7 @@ var MOBILE;
 
 var ICON_TARGET = L.icon({
 
-    iconUrl: 'http://maps.clemetparks.com/static/common/marker-target.png',
+    iconUrl: 'http://maps.clemetparks.comimages/marker-target.png',
 
     iconSize: [ 25, 41 ],
 
@@ -125,7 +125,7 @@ var MARKER_TARGET = L.marker(L.latLng(0,0), { clickable:false, draggable:false, 
 
 var ICON_GPS = L.icon({
 
-    iconUrl: 'http://maps.clemetparks.com/static/common/marker-gps.png',
+    iconUrl: 'images/marker-gps.png',
 
     iconSize: [ 25, 41 ],
 
@@ -139,7 +139,7 @@ var MARKER_GPS     = L.marker(L.latLng(0,0), { clickable:false, draggable:false,
 
 var ICON_FROM = L.icon({
 
-    iconUrl: 'http://maps.clemetparks.com/static/desktop/measure1.png',
+    iconUrl: 'images/measure1.png',
 
     iconSize: [ 20, 34 ],
 
@@ -149,7 +149,7 @@ var ICON_FROM = L.icon({
 
 var ICON_TO = L.icon({
 
-    iconUrl: 'http://maps.clemetparks.com/static/desktop/measure2.png',
+    iconUrl: 'images/measure2.png',
 
     iconSize: [ 20, 34 ],
 
@@ -304,13 +304,11 @@ function initMap () {
 
     // in mobile mode, render the Settings panel because we may need to check checkboxes in it
 
-    if (MOBILE) $('#page-settings').page();
+        $('#page-settings').page();
 
+        $('#page-welcome').page();
 
-
-            var checkbox = $('input[name="basemap"][value="map"]').prop('checked',true);
-            checkbox.checkboxradio('refresh');
-            basemap = MAPBASE;
+$('#page-settings').page();
 
 
 
@@ -330,28 +328,18 @@ function initMap () {
 
         minZoom: MIN_ZOOM, maxZoom: MAX_ZOOM,
 
-        layers : [ basemap ]
+        layers : [ MAPBASE ]
 
     };
 
-    var android4 = navigator.userAgent.match(/Android (4|5)/);
-
-    if (android4) {
-
-        options.fadeAnimation       = true;
-
-        options.zoomAnimation       = true;
-
-        options.markerZoomAnimation = true;
-
-    }
 
     MAP = new L.Map('map_canvas', options);
 
 
 
     // zoom to the whole area
-        MAP.fitBounds(MAX_BOUNDS);
+    // there's a one-time location detection event later on which may override this
+    MAP.fitBounds(MAX_BOUNDS);
 
 
 
@@ -1627,7 +1615,7 @@ function renderDirectionsStructure(directions,target,options) {
 
     if (directions.elevationprofile) {
 
-        var profile = $('<img></img>').prop('title','Elevation Profile').prop('id','elevationprofile_button').addClass('fakelink').prop('src','/static/common/elevprofile.png');
+        var profile = $('<img></img>').prop('title','Elevation Profile').prop('id','elevationprofile_button').addClass('fakelink').prop('src','images/elevprofile.png');
 
         profile.attr('value1', 'Elevation Profile').attr('value0', 'Loading');
 
@@ -1645,7 +1633,7 @@ function renderDirectionsStructure(directions,target,options) {
 
         funcs.append('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
 
-        var showonmap = $('<img></img>').prop('title','Map').addClass('fakelink').prop('src','/static/common/map.png');
+        var showonmap = $('<img></img>').prop('title','Map').addClass('fakelink').prop('src','images/map.png');
 
         showonmap.tap(function () {
 
@@ -1659,7 +1647,7 @@ function renderDirectionsStructure(directions,target,options) {
 
         funcs.append(showonmap);
 
-        var clearmap = $('<img></img>').prop('title','Clear').addClass('fakelink').prop('src','/static/common/smallclear.png');
+        var clearmap = $('<img></img>').prop('title','Clear').addClass('fakelink').prop('src','images/smallclear.png');
 
         clearmap.tap(function () {
 
@@ -1675,7 +1663,7 @@ function renderDirectionsStructure(directions,target,options) {
 
     if (! MOBILE) {
 
-        var printme = $('<img></img>').attr('title','Print').addClass('fakelink').prop('src','/static/common/print.png');
+        var printme = $('<img></img>').attr('title','Print').addClass('fakelink').prop('src','images/print.png');
 
         printme.click(function () {
 
@@ -2860,96 +2848,6 @@ function searchTrails(params) {
 
 
 
-
-
-
-
-
-/////
-
-///// pertaining to the Welcome panel and whether it should be shown, as determined by a cookie
-
-/////
-
-
-
-$(window).load(function () {
-
-    if (MOBILE) {
-
-        $('#page-settings').page();
-
-        $('#page-welcome').page();
-
-    }
-
-
-
-    // in the Settings panel, check or uncheck the Show Welcome box to match the cookie
-
-    var show_welcome = cookieGet('show_welcome');
-
-    if (show_welcome) {
-
-        $('#settings_show_welcome').prop('checked','checked');
-
-        if (MOBILE) $('#settings_show_welcome').checkboxradio('refresh');
-
-        $('#show_welcome').prop('checked','checked');
-
-        if (MOBILE) $('#show_welcome').checkboxradio('refresh');
-
-    } else {
-
-        $('#settings_show_welcome').removeAttr('checked');
-
-        if (MOBILE) $('#settings_show_welcome').checkboxradio('refresh');
-
-        $('#show_welcome').prop('checked','checked');
-
-        if (MOBILE) $('#show_welcome').checkboxradio('refresh');
-
-    }
-
-
-
-    // enable the checkbox in the Welcome panel, to toggle the cookie that suppresses the Welcome panel
-
-    $('#show_welcome').change(function () {
-
-        toggleWelcome( $(this).is(':checked') );
-
-    });
-
-    $('#settings_show_welcome').change(function () {
-
-        toggleWelcome( $(this).is(':checked') );
-
-    });
-
-});
-
-
-
-
-
-// a wrapper to toggle the Welcome panel, and to adjust the numerous (okay, two) checkboxes that set it
-
-// and which should update to reflect it
-
-function toggleWelcome(show_welcome) {
-
-    if (show_welcome) {
-
-        cookieSet('show_welcome',1);
-
-    } else {
-
-        cookieDelete('show_welcome');
-
-    }
-
-}
 
 
 

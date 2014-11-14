@@ -3,6 +3,7 @@
 <head>
     <title>Cleveland Metroparks Mobile App</title>
     <meta charset="utf-8" />
+    <script type="text/javascript" src="cordova.js"></script>
 
     <!-- the Montserrat font, matches the master website -->
     <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css" />
@@ -26,12 +27,9 @@
     <script type="text/javascript" src="libs/wicket/wicket.js"></script>
     <script type="text/javascript" src="libs/wicket/wicket-leaflet.js"></script>
 
-    <!-- our own local javaScript and CSS: the common stuff then our own overrides -->
-    <script type="text/javascript" src="common/constants.js"></script>
-    <script type="text/javascript" src="common/common.js"></script>
-    <script type="text/javascript" src="images/mobile.js"></script>
-    <link rel="stylesheet" type="text/css" href="common/common.css" />
-    <link rel="stylesheet" type="text/css" href="mobile/mobile.css" />
+    <!-- our own awesomesauce -->
+    <script type="text/javascript" src="index.js"></script>
+    <link rel="stylesheet" type="text/css" href="index.css" />
 </head>
 <body>
 
@@ -70,16 +68,16 @@
     <div data-role="content">
 
         <div id="map_canvas">
-                <a id="mapbutton_settings" href="javascript:void(0);" onClick="$.mobile.changePage('#page-settings'); return false;"><img src="images/mapbutton_settings.png') ?>" /></a>
-                <a id="mapbutton_gps" href="javascript:void(0);" onClick="toggleGPS(); return false;"><img src="images/mapbutton_gps_off.png') ?>" /></a>
+                <a id="mapbutton_settings" href="javascript:void(0);" onClick="$.mobile.changePage('#page-settings'); return false;"><img src="images/mapbutton_settings.png" /></a>
+                <a id="mapbutton_gps" href="javascript:void(0);" onClick="toggleGPS(); return false;"><img src="images/mapbutton_gps_off.png" /></a>
         </div>
 
         <div id="toolbar" class="above_map">
             <table>
             <tr>
-                <td><a class="button" id="button_find" href="#page-browse"><img src="images/button_find.png') ?>" /></a></td>
-                <td><a class="button" id="button_radar" href="#page-radar"><img src="images/button_radar.png') ?>" /></a></td>
-                <td><a class="button" id="button_directions" href="#page-getdirections"><img src="images/button_directions.png') ?>" /></a></td>
+                <td><a class="button" id="button_find" href="#page-browse"><img src="images/button_find.png" /></a></td>
+                <td><a class="button" id="button_radar" href="#page-radar"><img src="images/button_radar.png" /></a></td>
+                <td><a class="button" id="button_directions" href="#page-getdirections"><img src="images/button_directions.png" /></a></td>
             </tr>
             </table>
         </div>
@@ -147,9 +145,9 @@
         </fieldset>
 
         <ul data-role="listview" data-inset="true">
-            <li><a href="#page-browse-pois-activity"><img class="ui-li-icon" src="desktop/menu_pois.png') ?>" /> Points of Interest</a></li>
-            <li><a href="#page-trailfinder"><img class="ui-li-icon" src="desktop/menu_trailfinder.png') ?>" /> Trail Finder</a></li>
-            <li><a href="#page-loops-search"><img class="ui-li-icon" src="desktop/menu_loops.png') ?>" /> Featured Routes</a></li>
+            <li><a href="#page-browse-pois-activity"><img class="ui-li-icon" src="images/menu_pois.png" /> Points of Interest</a></li>
+            <li><a href="#page-trailfinder"><img class="ui-li-icon" src="images/menu_trailfinder.png" /> Trail Finder</a></li>
+            <li><a href="#page-loops-search"><img class="ui-li-icon" src="images/menu_loops.png" /> Featured Routes</a></li>
         </ul>
 
     </div>
@@ -178,11 +176,11 @@
             </fieldset>
 </div>
     <div id="trailfinder_typeicons">
-        <img data-value="Hiking & Walking" src="desktop/trailfinder_hike_off.png') ?>" />
-        <img data-value="Biking" src="desktop/trailfinder_bike_off.png') ?>" />
-        <img data-value="Horseback Riding" src="desktop/trailfinder_horse_off.png') ?>" />
-        <img data-value="Exercising" src="desktop/trailfinder_exercise_off.png') ?>" />
-        <img data-value="Mountain Biking" src="desktop/trailfinder_mtnbike_off.png') ?>" />
+        <img data-value="Hiking & Walking" src="images/trailfinder_hike_off.png" />
+        <img data-value="Biking" src="images/trailfinder_bike_off.png" />
+        <img data-value="Horseback Riding" src="images/trailfinder_horse_off.png" />
+        <img data-value="Exercising" src="images/trailfinder_exercise_off.png" />
+        <img data-value="Mountain Biking" src="images/trailfinder_mtnbike_off.png" />
     </div>
 
     <div style="display:none;">
@@ -340,11 +338,11 @@
 
         <div style="float:right; clear:both; text-align:center;">
             <b>Directions:</b><br/>
-            <img src="images/directions_hike.svg') ?>"   class="moreinfo_directions_button" id="directions_hike" title="Get directions via hiking trails" />
-            <img src="images/directions_bike.svg') ?>"   class="moreinfo_directions_button" id="directions_bike" title="Get directions via bicycle trails" />
-            <!--<img src="images/directions_bridle.svg') ?>" class="moreinfo_directions_button" id="directions_bridle" title="Get directions via equestrian trails" />-->
-            <img src="images/directions_car.svg') ?>"    class="moreinfo_directions_button" id="directions_car" title="Get driving directions" />
-            <img src="images/directions_bus.svg') ?>"    class="moreinfo_directions_button" id="directions_bus" title="Get directions via public transit" />
+            <img src="images/directions_hike.svg"   class="moreinfo_directions_button" id="directions_hike" title="Get directions via hiking trails" />
+            <img src="images/directions_bike.svg"   class="moreinfo_directions_button" id="directions_bike" title="Get directions via bicycle trails" />
+            <!--<img src="images/directions_bridle.svg" class="moreinfo_directions_button" id="directions_bridle" title="Get directions via equestrian trails" />-->
+            <img src="images/directions_car.svg"    class="moreinfo_directions_button" id="directions_car" title="Get driving directions" />
+            <img src="images/directions_bus.svg"    class="moreinfo_directions_button" id="directions_bus" title="Get directions via public transit" />
         </div>
 
         <div id="info-content"></div>
@@ -370,20 +368,19 @@
         <label><input type="radio" name="basemap" value="photo" /> Satellite </label>
         </fieldset>
 
-<!--        <h3>Legend</h3>
+        <h3>Legend</h3>
         <fieldset data-role="controlgroup" style="margin-left:25px;">
 
             <b>POIs / Use Areas</b><br/>
-            <img class="legend" value="useareapois" style="display:block;" src="common/legend_useareapois.png') ?>" />
+            <img class="legend" value="useareapois" style="display:block;" src="images/legend_useareapois.png" />
 
             <b>Reservations</b><br/>
-            <img class="legend" value="reservations" style="display:block;" src="common/legend_parks.png') ?>" />
+            <img class="legend" value="reservations" style="display:block;" src="images/legend_parks.png" />
 
             <b>Trail Tips</b><br/>
-            <img class="legend" value="markers_swgh" style="display:block;" src="common/legend_markers.png') ?>" />
+            <img class="legend" value="markers_swgh" style="display:block;" src="images/legend_markers.png" />
 
         </fieldset>
--->
 
         <h3>GPS Location</h3>
         <div class="fakeinput" id="gps_location" style="text-align:center;">N 00 00.000 W 000 00.000</div>
@@ -508,11 +505,11 @@
         </select>
     </div>
     <div id="loops_typeicons">
-        <img data-value="hike" src="desktop/trailfinder_hike_off.png') ?>" />
-        <img data-value="bike_Advanced" src="desktop/trailfinder_bike_off.png') ?>" />
-        <img data-value="bridle" src="desktop/trailfinder_horse_off.png') ?>" />
-        <!--<img data-value="exercise" src="desktop/trailfinder_exercise_off.png') ?>" />-->
-        <img data-value="mountainbike" src="desktop/trailfinder_mtnbike_off.png') ?>" />
+        <img data-value="hike" src="images/trailfinder_hike_off.png" />
+        <img data-value="bike_Advanced" src="images/trailfinder_bike_off.png" />
+        <img data-value="bridle" src="images/trailfinder_horse_off.png" />
+        <!--<img data-value="exercise" src="images/trailfinder_exercise_off.png" />-->
+        <img data-value="mountainbike" src="images/trailfinder_mtnbike_off.png" />
     </div>
 
     <div style="display:none;">
@@ -543,10 +540,10 @@
             Max: <input type="range" id="loops_filter_distance_max" min="0" max="50" value="50" />
         </div>
         <div id="loops_filter_distancepicker">
-            <img data-min="0" data-max="2" src="desktop/trailfinder_distance1_off.png') ?>" />
-            <img data-min="2" data-max="5" src="desktop/trailfinder_distance2_off.png') ?>" />
-            <img data-min="5" data-max="10" src="desktop/trailfinder_distance3_off.png') ?>" />
-            <img data-min="10" data-max="100" src="desktop/trailfinder_distance4_off.png') ?>" />
+            <img data-min="0" data-max="2" src="images/trailfinder_distance1_off.png" />
+            <img data-min="2" data-max="5" src="images/trailfinder_distance2_off.png" />
+            <img data-min="5" data-max="10" src="images/trailfinder_distance3_off.png" />
+            <img data-min="10" data-max="100" src="images/trailfinder_distance4_off.png" />
         </div>
 
         <div data-role="fieldcontain" id="loops_filter_duration" style="display:none;">
