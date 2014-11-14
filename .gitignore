@@ -1,0 +1,7 @@
+.DS_Store
+platforms/android/CordovaLib/ant-build/*
+platforms/android/CordovaLib/ant-gen/*
+platforms/android/ant-build/*
+platforms/android/ant-gen/*
+platforms/android/assets/www/*
+platforms/ios/www/*
