@@ -5,7 +5,3 @@ platforms/android/ant-build/*
 platforms/android/ant-gen/*
 platforms/android/assets/www/*
 platforms/ios/www/*
-platforms/android/res/*/screen.png
-platforms/android/res/*/icon.png
-platforms/ios/Cleveland Metroparks/Resources/splash/*.png
-platforms/ios/Cleveland Metroparks/Resources/icons/*.png
