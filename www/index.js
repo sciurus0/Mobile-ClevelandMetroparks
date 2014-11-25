@@ -200,7 +200,39 @@ function initMap() {
  ***** OTHER FUNCTIONS
  ******************************************************************************/
 
+/*
+ * Return true/false indicating whether we're running under Cordova/Phonegap
+ * as well as specifically which platform
+ * and other device-specific querying
+ */
+function is_cordova() {
+    return (typeof(cordova) !== 'undefined' || typeof(phonegap) !== 'undefined');
+};
+function is_android() {
+    if (! is_cordova() ) return false;
+    return device.platform == 'Android';
+}
+function is_ios() {
+    if (! is_cordova() ) return false;
+    return device.platform == 'iOS';
+}
+function has_internet() {
+    // NOTE: this requires permissions, see the Cordova docs for "connection"
+    if ( is_cordova() ) {
+        return navigator.connection.type != Connection.NONE;
+    } else {
+        return true;
+    }
+}
 
+
+
+/*
+ * The wmsGetFeatureInfoByLatLngBBOX() family of functions
+ * wmsGetFeatureInfoByLatLngBBOX() is the actual target function, and performs the server-side query for a given bounding box
+ * The other wrappers do things like take a latlng point and add a little padding to it, since a lot of the target content is points
+ */
 function wmsGetFeatureInfoByPoint(latlng) {
+//gda
     alert(point);
 }
