@@ -3,41 +3,10 @@
 <head>
     <title>Cleveland Metroparks Mobile App</title>
     <meta charset="utf-8" />
+    <!-- scripts and stuff at the bottom, seems top solve some timing issue on iPad -->
 
-    <!-- Cordova's stub and then load handler -->
+    <!-- Cordova's stub -->
     <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript">
-    document.addEventListener("deviceready", init, false);
-    </script>
-
-    <!-- the Montserrat font, matches the master website -->
-    <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css" />
-
-    <!-- weinre debugging for development; replace with your own IP address and your own weinre server -->
-    <!--
-    <script src="http://weinre.greeninfo.org:8080/target/target-script-min.js#clemet"></script>
-    -->
-
-    <!-- jQuery et al -->
-    <script type="text/javascript" src="libs/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="libs/jquery.mobile-1.1.0/jquery.mobile-1.1.0.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="libs/jquery.mobile-1.1.0/jquery.mobile-1.1.0.css" />
-    <script type="text/javascript" src="libs/jquery.sort.js"></script>
-    <script type="text/javascript" src="libs/jquery.purl.js"></script>
-    <script type="text/javascript" src="libs/jqm.autoComplete-1.5.1.js"></script>
-
-    <!-- Leaflet map API and Wicket plugin for parsing WKT -->
-    <link rel="stylesheet" type="text/css" href="libs/leaflet-0.7.1/leaflet.css" />
-    <script type="text/javascript" src="libs/leaflet-0.7.1/leaflet.js"></script>
-    <script type="text/javascript" src="libs/wicket/wicket.js"></script>
-    <script type="text/javascript" src="libs/wicket/wicket-leaflet.js"></script>
-
-    <!-- a caching system for Leaflet L.TileLayer -->
-    <script type="text/javascript" src="libs/cache.js"></script>
-
-    <!-- our own awesomesauce -->
-    <script type="text/javascript" src="index.js"></script>
-    <link rel="stylesheet" type="text/css" href="index.css" />
 </head>
 <body>
 
@@ -45,8 +14,8 @@
 
 <div data-role="page" id="page-welcome">
     <div data-role="header">
-        <a href="#page-map">Close</a>
         <h1>Welcome</h1>
+        <a href="#page-map">Continue</a>
     </div>
     <div data-role="content">
 
@@ -619,5 +588,37 @@
 
 
 
+<!-- scripts and stuff at the bottom, seems top solve some timing issue on iPad -->
+    <!-- the Montserrat font, matches the master website -->
+    <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css" />
+
+    <!-- weinre debugging for development; replace with your own IP address and your own weinre server -->
+    <!--
+    <script src="http://weinre.greeninfo.org:8080/target/target-script-min.js#clemet"></script>
+    -->
+
+    <!-- jQuery et al -->
+    <script type="text/javascript" src="libs/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="libs/jquery.mobile-1.1.0/jquery.mobile-1.1.0.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="libs/jquery.mobile-1.1.0/jquery.mobile-1.1.0.css" />
+    <script type="text/javascript" src="libs/jquery.sort.js"></script>
+    <script type="text/javascript" src="libs/jquery.purl.js"></script>
+    <script type="text/javascript" src="libs/jqm.autoComplete-1.5.1.js"></script>
+
+    <!-- Leaflet map API and Wicket plugin for parsing WKT -->
+    <link rel="stylesheet" type="text/css" href="libs/leaflet-0.7.1/leaflet.css" />
+    <script type="text/javascript" src="libs/leaflet-0.7.1/leaflet.js"></script>
+    <script type="text/javascript" src="libs/wicket/wicket.js"></script>
+    <script type="text/javascript" src="libs/wicket/wicket-leaflet.js"></script>
+
+    <!-- a caching system for Leaflet L.TileLayer -->
+    <script type="text/javascript" src="libs/cache.js"></script>
+
+    <!-- our own awesomesauce -->
+    <script type="text/javascript" src="index.js"></script>
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <script type="text/javascript">
+    document.addEventListener("deviceready", init, false);
+    </script>
 </body>
 </html>

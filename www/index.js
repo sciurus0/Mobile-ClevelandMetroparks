@@ -201,6 +201,6 @@ function initMap() {
  ******************************************************************************/
 
 
-function (latlng) {
+function wmsGetFeatureInfoByPoint(latlng) {
     alert(point);
 }
