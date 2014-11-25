@@ -21,8 +21,8 @@ var BING_API_KEY = "AjBuYw8goYn_CWiqk65Rbf_Cm-j1QFPH-gGfOxjBipxuEB2N3n9yACKu5s8D
 // basemap choices
 // the terrain map is the Cleveland awesomeness: ParkInfo styling, parks and trail rendering baked in, ...
 var BASEMAPS = {};
-BASEMAPS['terrain'] = new L.TileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/basemap/{z}/{x}/{y}.jpg", {subdomains:'123' });
-BASEMAPS['photo']   = new L.TileLayer("http://{s}.tiles.mapbox.com/v3/greeninfo.map-zudfckcw/{z}/{x}/{y}.jpg");
+BASEMAPS['terrain'] = new L.TileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/basemap/{z}/{x}/{y}.jpg", { name:'terrain', subdomains:'123' });
+BASEMAPS['photo']   = new L.TileLayer("http://{s}.tiles.mapbox.com/v3/greeninfo.map-zudfckcw/{z}/{x}/{y}.jpg", { name:'photo' });
 
 // overlays: closures and labels are separate from the basemap
 // these are simply added to the list in sequence
