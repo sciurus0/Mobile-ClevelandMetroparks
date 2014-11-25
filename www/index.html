@@ -3,7 +3,12 @@
 <head>
     <title>Cleveland Metroparks Mobile App</title>
     <meta charset="utf-8" />
+
+    <!-- Cordova's stub and then load handler -->
     <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript">
+    document.addEventListener("deviceready", init, false);
+    </script>
 
     <!-- the Montserrat font, matches the master website -->
     <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css" />
@@ -26,6 +31,9 @@
     <script type="text/javascript" src="libs/leaflet-0.7.1/leaflet.js"></script>
     <script type="text/javascript" src="libs/wicket/wicket.js"></script>
     <script type="text/javascript" src="libs/wicket/wicket-leaflet.js"></script>
+
+    <!-- a caching system for Leaflet L.TileLayer -->
+    <script type="text/javascript" src="libs/cache.js"></script>
 
     <!-- our own awesomesauce -->
     <script type="text/javascript" src="index.js"></script>
@@ -364,7 +372,7 @@
 
         <h3>Map Type</h3>
         <fieldset data-role="controlgroup">
-        <label><input type="radio" name="basemap" value="map" checked="true" /> Map </label>
+        <label><input type="radio" name="basemap" value="terrain" checked="true" /> Map </label>
         <label><input type="radio" name="basemap" value="photo" /> Satellite </label>
         </fieldset>
 
@@ -530,7 +538,8 @@
 
         </fieldset>
 
-        <div data-role="fieldcontain" style="display:none;"><!-- May 2014, they want this hidden in favor of icons below, but still need the form controls internally -->
+        <!-- May 2014, they want this hidden in favor of icons below, but still need the form controls internally -->
+        <div data-role="fieldcontain" style="display:none;">
             <b>Length</b>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <span id="loops_filter_distance_min_text"></span> - <span id="loops_filter_distance_max_text"></span>
