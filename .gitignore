@@ -5,3 +5,4 @@ platforms/android/ant-build/*
 platforms/android/ant-gen/*
 platforms/android/assets/www/*
 platforms/ios/www/*
+platforms/.DS_Store
