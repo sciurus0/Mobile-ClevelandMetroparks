@@ -29,7 +29,7 @@ BASEMAPS['photo']   = new L.TileLayer("http://{s}.tiles.mapbox.com/v3/greeninfo.
 // tip: the name attribute is used by the OfflineTileCacher
 var OVERLAYS  = {};
 OVERLAYS['markers'] = L.tileLayer.wms("http://maps{s}.clemetparks.com/gwms", { name:'markers', layers:'cm:closures,cm:markers_other,cm:markers_swgh', format:'image/png', transparent:'TRUE', subdomains:'123' });
-OVERLAYS['labels'] = L.tileLayer.wms("http://maps{s}.clemetparks.com/gwc", { name:'labels', layers:'group_overlays', format:'image/png', transparent:'TRUE', subdomains:'123' });
+OVERLAYS['labels']  = L.tileLayer.wms("http://maps{s}.clemetparks.com/gwc", { name:'labels', layers:'group_overlays', format:'image/png', transparent:'TRUE', subdomains:'123' });
 
 // a whole bunch of markers
 var MARKER_TARGET = L.marker(L.latLng(0,0), {
@@ -51,7 +51,7 @@ var MARKER_TO = L.marker(L.latLng(0,0), {
 
 // this Circle is used to show your radar on the screen
 // when radar is enabled, this updates to move with you and keep the selected radius
-var RADAR_CIRCLE = new L.RADAR_CIRCLE(L.latLng(0,0), 1);
+var RADAR_CIRCLE = new L.Circle(L.latLng(0,0), 1);
 
 // bad hack
 // the More Info buttons call zoomElementClick() to show the panel with place info
