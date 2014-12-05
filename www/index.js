@@ -149,6 +149,12 @@ $(window).bind('orientationchange pageshow resize', function() {
 });
 
 function init() {
+    // enable FastClick
+    FastClick.attach(document.body);
+
+    // disable page transitions for faster... transitions
+    $.mobile.defaultPageTransition="none";
+
     // pre-render the pages so we don't have that damnable lazy rendering thing messing with it
     $('div[data-role="page"]').page();
 
