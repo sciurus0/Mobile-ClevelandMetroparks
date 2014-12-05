@@ -212,14 +212,14 @@ function initSettingsPanel() {
 
     // enable the Clear Cache and Seed Cache buttons in Settings, and set up the progress bar
     $('#page-clearcache a[name="clearcache"]').click(function () {
-        $.mobile.loading('show', {theme:"a", text:"Clearing cache", textonly:false, textVisible: true});
+        $.mobile.showPageLoadingMsg("a", "Clearing cache", false);
         CACHE.clearCache(function () {
             // on successful deletion, repopulate the disk usage boxes with what we know is 0
             $('#cachestatus_files').val('0 map tiles');
             $('#cachestatus_storage').val('0 MB');
 
             $.mobile.changePage("#page-cachestatus");
-            $.mobile.loading('hide');
+            $.mobile.hidePageLoadingMsg();
         });
         return false;
     });
@@ -329,15 +329,15 @@ function beginSeedingCache() {
 
         var layer_complete = function(done,total) {
             // hide the spinner
-            $.mobile.loading('hide');
+            $.mobile.hidePageLoadingMsg();
             // go on to the next layer
             seedLayerByIndex(index+1);
         }
         var progress = function(done,total) {
             // show or update the spinner
             var percent = Math.round( 100 * parseFloat(done) / parseFloat(total) );
-            var text = layername + ': ' + done + '/' + total + ' ' + percent + '%';
-            $.mobile.loading('show', {theme:"a", text:text, textonly:false, textVisible: true});
+            var text    = layername + ': ' + done + '/' + total + ' ' + percent + '%';
+            $.mobile.showPageLoadingMsg("a", text, false);
             // if we're now done, call the completion function to close the spinner
             if (done>=total) layer_complete();
         };
