@@ -154,6 +154,7 @@ function init() {
 
     // now the rest of event handlers, map setup, etc. in stages
     initCacheThenMap();
+    initSettingsPanel();
 }
 
 function initCacheThenMap() {
@@ -196,6 +197,102 @@ function initMap() {
 }
 
 
+function initSettingsPanel() {
+    // basemap picker
+    $('input[type="radio"][name="basemap"]').change(function () {
+        var which = $(this).val();
+        selectBasemap(which);
+    });
+
+    // enable the Clear Cache and Seed Cache buttons in Settings, and set up the progress bar
+    $('#page-clearcache a[name="clearcache"]').click(function () {
+        $.mobile.loading('show', {theme:"a", text:"Clearing cache", textonly:false, textVisible: true});
+        CACHE.clearCache(function () {
+            // on successful deletion, repopulate the disk usage boxes with what we know is 0
+            $('#cachestatus_files').val('0 map tiles');
+            $('#cachestatus_storage').val('0 MB');
+
+            $.mobile.changePage("#page-cachestatus");
+            $.mobile.loading('hide');
+        });
+        return false;
+    });
+    $('#page-seedcache a[name="seedcache"]').click(function () {
+        // the lon, lat, and zooms for seeding
+        var lon   = MAP.getCenter().lng;
+        var lat   = MAP.getCenter().lat;
+        var zmin  = MAP.getZoom();
+        var zmax  = MAX_ZOOM;
+
+        // fetch the assocarray of layername->layerobj from the Cache provider,
+        // then figure out a list of the layernames too so we can seed them sequentially
+        var layers_to_seed = CACHE.registeredLayers();
+        var layernames = [];
+        for (var l in layers_to_seed) layernames[layernames.length] = layers_to_seed[l].options.name;
+        var last_layer_name = layernames[layernames.length-1];
+
+        function seedLayerByIndex(index) {
+            if (index >= layernames.length) {
+                // past the end, we're done
+                $.mobile.changePage("#page-settings");
+                return;
+            }
+            var layername = layernames[index];
+
+            var layer_complete = function(done,total) {
+                // hide the spinner
+                $.mobile.loading('hide');
+                // go on to the next layer
+                seedLayerByIndex(index+1);
+            }
+            var progress = function(done,total) {
+                // show or update the spinner
+                var percent = Math.round( 100 * parseFloat(done) / parseFloat(total) );
+                var text = layername + ': ' + done + '/' + total + ' ' + percent + '%';
+                $.mobile.loading('show', {theme:"a", text:text, textonly:false, textVisible: true});
+                // if we're now done, call the completion function to close the spinner
+                if (done>=total) layer_complete();
+            };
+            var error = function() {
+                alert('Download error!');
+            }
+
+            CACHE.seedCache(layername,lat,lon,zmin,zmax,progress,error);
+        }
+
+        // start it off!
+        seedLayerByIndex(0);
+
+        // cancel the button taking us back to the same page; that will happen in the progress() and error() handlers
+        return false;
+    });
+
+    // enable the "Offline" checkbox to toggle all registered layers between offline & online mode
+    $('#basemap_offline_checkbox').change(function () {
+        var offline = $(this).is(':checked');
+        var layers  = CACHE.registeredLayers();
+        if (offline) {
+            for (var layername in layers) CACHE.useLayerOffline(layername);
+        } else {
+            for (var layername in layers) CACHE.useLayerOnline(layername);
+        }
+    });
+
+    // enable the "Cache Status" checkbox to calculate the disk usage and write to to the dialog
+    // allow the change to the dialog, and start the asynchronous disk usage calculation
+    $('#page-settings a[href="#page-cachestatus"]').click(function () {
+        $('#cachestatus_files').val('Calculating');
+        $('#cachestatus_storage').val('Calculating');
+
+        CACHE.getDiskUsage(function (filecount,totalbytes) {
+            var megabytes = (totalbytes / 1048576).toFixed(1);
+            $('#cachestatus_files').val(filecount + ' ' + 'map tiles');
+            $('#cachestatus_storage').val(megabytes + ' ' + 'MB');
+        });
+    });
+}
+
+
 /******************************************************************************
  ***** OTHER FUNCTIONS
  ******************************************************************************/
@@ -222,6 +319,19 @@ function has_internet() {
         return navigator.connection.type != Connection.NONE;
     } else {
         return true;
+    }
+}
+
+
+
+/*
+ * Switch over to the given basemap
+ * refactored from the original CMP website code, to use a proper structure
+ */
+function selectBasemap(which) {
+    for (var i in BASEMAPS) {
+        if (which != i) MAP.removeLayer(BASEMAPS[i]);
+        else MAP.addLayer(BASEMAPS[i]);
     }
 }
 

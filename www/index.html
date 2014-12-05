@@ -3,7 +3,7 @@
 <head>
     <title>Cleveland Metroparks Mobile App</title>
     <meta charset="utf-8" />
-    <!-- scripts and stuff at the bottom, seems top solve some timing issue on iPad -->
+    <!-- scripts and stuff at the bottom, seems to solve some timing issue on iPad -->
 
     <!-- Cordova's stub -->
     <script type="text/javascript" src="cordova.js"></script>
@@ -343,6 +343,7 @@
         <fieldset data-role="controlgroup">
         <label><input type="radio" name="basemap" value="terrain" checked="true" /> Map </label>
         <label><input type="radio" name="basemap" value="photo" /> Satellite </label>
+        <label><input type="checkbox" id="basemap_offline_checkbox" value="1" /> Offline, use cached map data</label>
         </fieldset>
 
         <h3>Legend</h3>
@@ -362,14 +363,65 @@
         <h3>GPS Location</h3>
         <div class="fakeinput" id="gps_location" style="text-align:center;">N 00 00.000 W 000 00.000</div>
 
-        <h3>Other Settings</h3>
-        <label><input type="checkbox" id="settings_show_welcome" /> Show the Welcome panel</label><br/>
+        <h1>Offline Map</h1>
+        <div data-role="controlgroup">
+            <a href="#page-seedcache" data-role="button" data-rel="dialog">Download map tiles</a>
+            <a href="#page-cachestatus" data-role="button" data-rel="dialog">Storage Usage</a>
+        </div>
 
         <div style="text-align:center;">
             <br/>
             <a href="#page-credits">About this app</a>
         </div>
 
+    </div>
+</div>
+
+
+
+
+<div data-role="page" id="page-seedcache">
+    <div data-role="header" data-position="inline">
+    <h1>Download Tiles?</h1>
+    </div>
+
+    <div data-role="content">
+        <p>This will download map tiles within the current map view, so you can use the map without Internet access. This will take a while.</p>
+        <a href="javascript:void(0);" name="seedcache" data-role="button" data-rel="back" data-theme="b">Download</a>
+        <a href="#page-settings" data-role="button" data-rel="back">Cancel</a>
+    </div>
+</div>
+
+
+
+
+<div data-role="page" id="page-cachestatus">
+    <div data-role="header" data-position="inline">
+    <h1>Cache Storage</h1>
+    </div>
+
+
+    <div data-role="content">
+        <input type="text" id="cachestatus_storage" value="Calculating" readonly="readonly" style="text-align:center;" />
+        <input type="text" id="cachestatus_files" value="Calculating" readonly="readonly" style="text-align:center;" />
+        <a href="#page-clearcache" data-role="button" data-rel="dialog">Clear map tiles</a>
+        <a href="#page-settings" data-role="button" data-rel="back">Back</a>
+    </div>
+</div>
+
+
+
+
+<div data-role="page" id="page-clearcache">
+    <div data-role="header" data-position="inline">
+    <h1>Clear Tiles?</h1>
+    </div>
+
+    <div data-role="content">
+        <p>This will delete the downloaded map tiles. You will not be able to use the map when offline, until you go online and browse to re-cache the map.</p>
+        <a href="javascript:void(0);" name="clearcache" data-role="button" data-rel="back" data-theme="b">Clear cache</a>
+        <a href="#page-cachestatus" data-role="button" data-rel="back">Cancel</a>
+    </div>
     </div>
 </div>
 
@@ -456,6 +508,7 @@
 
     </div>
 </div>
+
 
 
 
