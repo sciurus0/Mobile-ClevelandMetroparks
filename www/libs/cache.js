@@ -103,7 +103,7 @@ var OfflineTileCacher = function(directoryname) {
             );
         } else {
             // something else, and not something we support: make a message then call the failure callback
-            mobilealert('Your device does not support the HTML5 File API.');
+            mobilealert('Your device does not support the HTML5 File API.','Error');
             if (failure) failure();
             return;
         }
@@ -290,7 +290,7 @@ var OfflineTileCacher = function(directoryname) {
         // if we don't have Internet, this download can't possibly work
         // make an alert and then call the error handler
         if (! has_internet() ) {
-            mobilealert('Cannot download map data. No internet connection.');
+            mobilealert('Cannot download map data. No internet connection.','No connection');
             if (error_handler) error_handler();
         }
 
@@ -390,7 +390,7 @@ var OfflineTileCacher = function(directoryname) {
 
         // make sure we're not asking for too much
         if (downloads.length > myself.MAX_TILES) {
-            mobilealert("The selected area is too large. Please zoom in to a smaller area.", null, "Area too large", "OK");
+            mobilealert("The selected area is too large. Please zoom in to a smaller area.", "Area too large");
             return;
         }
 
