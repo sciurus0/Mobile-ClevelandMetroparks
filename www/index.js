@@ -212,7 +212,7 @@ function initSettingsPanel() {
 
     // enable the Clear Cache and Seed Cache buttons in Settings, and set up the progress bar
     $('#page-clearcache a[name="clearcache"]').click(function () {
-        $.mobile.showPageLoadingMsg("a", "Clearing cache", false);
+        $.mobile.showPageLoadingMsg("a", "Clearing cache", true);
         CACHE.clearCache(function () {
             // on successful deletion, repopulate the disk usage boxes with what we know is 0
             $('#cachestatus_files').val('0 map tiles');
@@ -365,7 +365,7 @@ function beginSeedingCache() {
             // show or update the spinner
             var percent = Math.round( 100 * parseFloat(done) / parseFloat(total) );
             var text    = layername + ': ' + done + '/' + total + ' ' + percent + '%';
-            $.mobile.showPageLoadingMsg("a", text, false);
+            $.mobile.showPageLoadingMsg("a", text, true);
             // if we're now done, call the completion function to close the spinner
             if (done>=total) layer_complete();
         };
