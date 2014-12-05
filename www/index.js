@@ -224,51 +224,7 @@ function initSettingsPanel() {
         return false;
     });
     $('#page-seedcache a[name="seedcache"]').click(function () {
-        // the lon, lat, and zooms for seeding
-        var lon   = MAP.getCenter().lng;
-        var lat   = MAP.getCenter().lat;
-        var zmin  = MAP.getZoom();
-        var zmax  = MAX_ZOOM;
-
-        // fetch the assocarray of layername->layerobj from the Cache provider,
-        // then figure out a list of the layernames too so we can seed them sequentially
-        var layers_to_seed = CACHE.registeredLayers();
-        var layernames = [];
-        for (var l in layers_to_seed) layernames[layernames.length] = layers_to_seed[l].options.name;
-        var last_layer_name = layernames[layernames.length-1];
-
-        function seedLayerByIndex(index) {
-            if (index >= layernames.length) {
-                // past the end, we're done
-                $.mobile.changePage("#page-settings");
-                return;
-            }
-            var layername = layernames[index];
-
-            var layer_complete = function(done,total) {
-                // hide the spinner
-                $.mobile.loading('hide');
-                // go on to the next layer
-                seedLayerByIndex(index+1);
-            }
-            var progress = function(done,total) {
-                // show or update the spinner
-                var percent = Math.round( 100 * parseFloat(done) / parseFloat(total) );
-                var text = layername + ': ' + done + '/' + total + ' ' + percent + '%';
-                $.mobile.loading('show', {theme:"a", text:text, textonly:false, textVisible: true});
-                // if we're now done, call the completion function to close the spinner
-                if (done>=total) layer_complete();
-            };
-            var error = function() {
-                alert('Download error!');
-            }
-
-            CACHE.seedCache(layername,lat,lon,zmin,zmax,progress,error);
-        }
-
-        // start it off!
-        seedLayerByIndex(0);
-
+        beginSeedingCache();
         // cancel the button taking us back to the same page; that will happen in the progress() and error() handlers
         return false;
     });
@@ -341,6 +297,60 @@ function selectBasemap(which) {
     }
 }
 
+
+
+/*
+ * Mostly for point debugging, the "start seeding" function in a separate, named function
+ * figure out the zoom and center and list of layers, hand off to the cache seeder,
+ * and keep a callback to show a progress dialog
+ */
+
+function beginSeedingCache() {
+    // the lon, lat, and zooms for seeding
+    var lon   = MAP.getCenter().lng;
+    var lat   = MAP.getCenter().lat;
+    var zmin  = MAP.getZoom();
+    var zmax  = MAX_ZOOM;
+
+    // fetch the assocarray of layername->layerobj from the Cache provider,
+    // then figure out a list of the layernames too so we can seed them sequentially
+    var layers_to_seed = CACHE.registeredLayers();
+    var layernames = [];
+    for (var l in layers_to_seed) layernames[layernames.length] = layers_to_seed[l].options.name;
+    var last_layer_name = layernames[layernames.length-1];
+
+    function seedLayerByIndex(index) {
+        if (index >= layernames.length) {
+            // past the end, we're done
+            $.mobile.changePage("#page-settings");
+            return;
+        }
+        var layername = layernames[index];
+
+        var layer_complete = function(done,total) {
+            // hide the spinner
+            $.mobile.loading('hide');
+            // go on to the next layer
+            seedLayerByIndex(index+1);
+        }
+        var progress = function(done,total) {
+            // show or update the spinner
+            var percent = Math.round( 100 * parseFloat(done) / parseFloat(total) );
+            var text = layername + ': ' + done + '/' + total + ' ' + percent + '%';
+            $.mobile.loading('show', {theme:"a", text:text, textonly:false, textVisible: true});
+            // if we're now done, call the completion function to close the spinner
+            if (done>=total) layer_complete();
+        };
+        var error = function() {
+            alert('Download error!');
+        };
+
+        CACHE.seedCache(layername,lat,lon,zmin,zmax,progress,error);
+    }
+
+    // start it off!
+    seedLayerByIndex(0);
+}
 
 
 /*
