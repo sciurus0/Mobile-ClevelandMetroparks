@@ -210,7 +210,7 @@ function initSettingsPanel() {
     });
 
     // enable the Clear Cache and Seed Cache buttons in Settings, and set up the progress bar
-    $('#page-clearcache a[name="clearcache"]').click(function () {
+    $('#page-cachestatus a[name="clearcache"]').click(function () {
         $.mobile.showPageLoadingMsg("a", "Clearing cache", true);
         CACHE.clearCache(function () {
             // on successful deletion, repopulate the disk usage boxes with what we know is 0
