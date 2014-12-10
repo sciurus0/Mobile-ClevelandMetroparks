@@ -356,7 +356,6 @@ function latLngToGPS(latlng) {
  * On error, we show various "Hey, bad location!" warnings around the app
  * On success, we update the GPS readout, maybe recenter the map, position the 
  */
-//gda
 function handleLocationFound(event) {
     // detect whether we're within the expected area and/or have poor accuracy
     // showing/hiding messages indicating that they may not like what they see
@@ -366,7 +365,7 @@ function handleLocationFound(event) {
 
     // update the GPS marker, the user's current location
     // if we're wanting to auto-center, do so
-    MARKER_GPS.setLatLng(event.latlng);
+    MARKER_GPS.setLatLng(event.latlng).addTo(MAP);
     if (AUTO_CENTER_ON_LOCATION && within) {
         MAP.panTo(event.latlng);
         if (MAP.getZoom() < AUTO_CENTER_ZOOMLEVEL) MAP.setZoom(AUTO_CENTER_ZOOMLEVEL);
@@ -374,7 +373,7 @@ function handleLocationFound(event) {
 
     // update the GPS readout
     var gps = latLngToGPS(event.latlng);
-    $('#gps_location').text(text);
+    $('#gps_location').text(gps);
 
 //gda
 /*

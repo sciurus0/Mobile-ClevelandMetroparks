@@ -108,22 +108,17 @@ li.directions_functions {
 }
 
 
-
-
-
-
-
-
-
-
-/* the front page (Map page) doesn't need padding; it interferes with the splash screen */
-
-#page-map .map-location-warnings {
+#map-location-warnings {
     position:absolute;
     top:0;
-    left:0;
+    right:0;
+    z-index:1000;
 
-    text-align:center;
+    text-align:right;
+
+    color:red;
+    font-weight:bold;
+    font-size:10pt;
 }
 
 #page-map > .ui-content {
