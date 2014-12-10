@@ -167,8 +167,7 @@ function initCacheThenMap() {
     // initialize the filesystem where we store cached tiles. when this is ready, proceed with the map
     CACHE = new OfflineTileCacher(STORAGE_SUBDIR);
     CACHE.init(function () {
-        CACHE.registerLayer(BASEMAPS['terrain']);
-        CACHE.registerLayer(BASEMAPS['photo']);
+        for (var which in BASEMAPS) CACHE.registerLayer( BASEMAPS[which] );
         for (var which in OVERLAYS) CACHE.registerLayer( OVERLAYS[which] );
         initMap();
     }, function () {
