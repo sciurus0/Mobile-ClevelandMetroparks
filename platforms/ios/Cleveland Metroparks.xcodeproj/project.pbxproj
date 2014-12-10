@@ -46,6 +46,9 @@
 		86CD06F4C3914DDDAFEF7CC0 /* CDVFileTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = F849A0CC404146A9ABC7E257 /* CDVFileTransfer.m */; };
 		D4A0D8761607E02300AEF8BB /* Default-568h@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */; };
 		F8159982B2DC42E98067DF2A /* CDVLocalFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C8BCA78431044BBA0A21E1E /* CDVLocalFilesystem.m */; };
+		1487274C180B436BB17F4717 /* CDVConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 7244B9C4317C4384A208BC95 /* CDVConnection.m */; };
+		2C1C1E33707D4B938C83AB01 /* CDVReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AD044A730340B8942FD35D /* CDVReachability.m */; };
+		E848901D8B7649B79AE60EC4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 971C644650004AE3820B691C /* SystemConfiguration.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,6 +125,11 @@
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = "Cleveland Metroparks/config.xml"; sourceTree = "<group>"; };
 		F849A0CC404146A9ABC7E257 /* CDVFileTransfer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVFileTransfer.m; path = "org.apache.cordova.file-transfer/CDVFileTransfer.m"; sourceTree = "<group>"; };
 		FA855CD24B1547A79C366C2C /* CDVFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDVFile.h; path = org.apache.cordova.file/CDVFile.h; sourceTree = "<group>"; };
+		7244B9C4317C4384A208BC95 /* CDVConnection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVConnection.m"; path = "org.apache.cordova.network-information/CDVConnection.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		A5AD044A730340B8942FD35D /* CDVReachability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVReachability.m"; path = "org.apache.cordova.network-information/CDVReachability.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		6647D468AE3440B19DD12D7F /* CDVConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVConnection.h"; path = "org.apache.cordova.network-information/CDVConnection.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		C43691FA2F5A4CDCA0EE4016 /* CDVReachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVReachability.h"; path = "org.apache.cordova.network-information/CDVReachability.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		971C644650004AE3820B691C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "SystemConfiguration.framework"; path = "System/Library/Frameworks/SystemConfiguration.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +142,7 @@
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				305D5FD1115AB8F900A74A75 /* MobileCoreServices.framework in Frameworks */,
 				3FAA08F8F83C41C2BCD43314 /* CoreLocation.framework in Frameworks */,
+				E848901D8B7649B79AE60EC4 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,6 +216,7 @@
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
 				305D5FD0115AB8F900A74A75 /* MobileCoreServices.framework */,
 				38965C158B06489696060035 /* CoreLocation.framework */,
+				971C644650004AE3820B691C /* SystemConfiguration.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -234,6 +244,10 @@
 				F41A624CDC274AEA9D88E286 /* CDVAssetLibraryFilesystem.h */,
 				F849A0CC404146A9ABC7E257 /* CDVFileTransfer.m */,
 				E44A0F553C55463BAB75E94C /* CDVFileTransfer.h */,
+				7244B9C4317C4384A208BC95 /* CDVConnection.m */,
+				A5AD044A730340B8942FD35D /* CDVReachability.m */,
+				6647D468AE3440B19DD12D7F /* CDVConnection.h */,
+				C43691FA2F5A4CDCA0EE4016 /* CDVReachability.h */,
 			);
 			name = Plugins;
 			path = "Cleveland Metroparks/Plugins";
@@ -429,6 +443,8 @@
 				F8159982B2DC42E98067DF2A /* CDVLocalFilesystem.m in Sources */,
 				7FB6774182DF4A7B95E6BD59 /* CDVAssetLibraryFilesystem.m in Sources */,
 				86CD06F4C3914DDDAFEF7CC0 /* CDVFileTransfer.m in Sources */,
+				1487274C180B436BB17F4717 /* CDVConnection.m in Sources */,
+				2C1C1E33707D4B938C83AB01 /* CDVReachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
