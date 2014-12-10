@@ -118,6 +118,14 @@ li.directions_functions {
 
 /* the front page (Map page) doesn't need padding; it interferes with the splash screen */
 
+#page-map .map-location-warnings {
+    position:absolute;
+    top:0;
+    left:0;
+
+    text-align:center;
+}
+
 #page-map > .ui-content {
     padding:0;
 }

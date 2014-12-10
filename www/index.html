@@ -43,10 +43,14 @@
 
 <div data-role="page" id="page-map">
     <div data-role="content">
+        <div id="map-location-warnings">
+            <span class="location_outside">You seem to be outside the Cleveland area. The map may not show anything where you are.</span>
+            <span class="location_fail">Not finding your location. Check that location is enabled and that you have good signal.</span>
+        </div>
 
         <div id="map_canvas">
-                <a id="mapbutton_settings" href="javascript:void(0);" onClick="$.mobile.changePage('#page-settings'); return false;"><img src="images/mapbutton_settings.png" /></a>
-                <a id="mapbutton_gps" href="javascript:void(0);" onClick="toggleGPS(); return false;"><img src="images/mapbutton_gps_off.png" /></a>
+                <a id="mapbutton_settings" href="#page-settings"><img src="images/mapbutton_settings.png" /></a>
+                <a id="mapbutton_gps" href="javascript:void(0);"><img src="images/mapbutton_gps_off.png" /></a>
         </div>
 
         <div id="toolbar" class="above_map">
