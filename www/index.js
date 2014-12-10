@@ -78,9 +78,10 @@ var LAST_BEEP_IDS = [];
 // we cannot render them all into the Radar page at the same time, but we can store them in memory
 var ALL_POIS = [];
 
-// other stuff pertaining to our last known location and auto-centering
-var LAST_KNOWN_LOCATION = L.latLng(41.3953,-81.6730);
+// should we auto-center the map on location updates? don't toggle this directly, see toggleGPS()
+// when we zoom to our own location, to what zoom level?
 var AUTO_CENTER_ON_LOCATION = false;
+var AUTO_CENTER_ZOOMLEVEL   = 13;
 
 // sorting by distance, isn't always by distance
 // what type of sorting do they prefer?
@@ -161,6 +162,18 @@ function init() {
     // now the rest of event handlers, map setup, etc. in stages
     initCacheThenMap();
     initSettingsPanel();
+
+    // ready! set! action!
+    // start constant geolocation, which triggers all 'locationfound' event handler spefified in initMap()
+    // add a one-time location trigger: turn on auto-centering but turn it off again the first time we get a location
+    // thus, we show the local context but then don't annoy the user by continuing to pan the map as they try to pan around
+    toggleGPSOn();
+    var disableMe = function(event) {
+        MAP.off('locationfound', disableMe);
+        toggleGPSOff();
+    };
+    MAP.on('locationfound', disableMe);
+    MAP.locate({ watch: true, enableHighAccuracy: true });
 }
 
 function initCacheThenMap() {
@@ -198,6 +211,20 @@ function initMap() {
     MAP.on('click', function (event) {
         if ($('.leaflet-popup').length) return MAP.closePopup();
         wmsGetFeatureInfoByPoint(event.latlng);
+    });
+
+    // whenever we get a location event, we have a lot of work to do: GPS readout, radar and perhaps playing an alert sound, updating the marker-and-circle on the map, ...
+    // if we get a location error, it affirms that we do not have a location; we need to show certain "Uhm, FYI!" notes around the app, hide the marker-and-circle, ...
+    MAP.on('locationfound', function(event) {
+        handleLocationFound(event);
+    }).on('locationerror', function(event) {
+        handleLocationError(event);
+    });
+
+    // these buttons appear over the map, and are more complex than the simpler hyperlinks at the bottom of the map page
+    //  $('#mapbutton_settings')
+    $('#mapbutton_gps').click(function () {
+        toggleGPS();
     });
 }
 
@@ -286,23 +313,108 @@ function has_internet() {
 
 
 /*
+ * Turn auto-recentering off and on
+ * Do not simply set the variable; this updates various states such as the location icon
+ */
+
+function toggleGPS() {
+    AUTO_CENTER_ON_LOCATION ? toggleGPSOff() : toggleGPSOn();
+}
+function toggleGPSOn() {
+    AUTO_CENTER_ON_LOCATION = true;
+    $('#mapbutton_gps img').prop('src','images/mapbutton_gps_ios_on.png');
+}
+function toggleGPSOff() {
+    AUTO_CENTER_ON_LOCATION = false;
+    $('#mapbutton_gps img').prop('src','images/mapbutton_gps_ios_off.png');
+}
+
+
+
+
+/*
+ * Given a L.Latlng object, return a string of the coordinates in standard GPS or geocaching.com format
+ * That is:  N DD MM.MMM W DDD MM.MMM
+ * This is useful if you're printing the coordinates to the screen for the end user, as it's the expected format for GPS enthusiasts.
+ */
+function latLngToGPS(latlng) {
+    var lat = latlng.lat;
+    var lng = latlng.lng;
+    var ns = lat < 0 ? 'S' : 'N';
+    var ew = lng < 0 ? 'W' : 'E';
+    var latdeg = Math.abs(parseInt(lat));
+    var lngdeg = Math.abs(parseInt(lng));
+    var latmin = ( 60 * (Math.abs(lat) - Math.abs(parseInt(lat))) ).toFixed(3);
+    var lngmin = ( 60 * (Math.abs(lng) - Math.abs(parseInt(lng))) ).toFixed(3);
+    var text = ns + ' ' + latdeg + ' ' + latmin + ' ' + ew + ' ' + lngdeg + ' ' + lngmin;
+    return text;
+}
+
+
+/*
+ * The functions triggered when we get location events, both good and bad.
+ * On error, we show various "Hey, bad location!" warnings around the app
+ * On success, we update the GPS readout, maybe recenter the map, position the 
+ */
+//gda
+function handleLocationFound(event) {
+    // detect whether we're within the expected area and/or have poor accuracy
+    // showing/hiding messages indicating that they may not like what they see
+    var within = MAX_BOUNDS.contains(event.latlng);
+    within ? $('.location_outside').hide() : $('.location_outside').show();
+    event.accuracy > 50 ? $('.location_fail').show() : $('.location_fail').hide();
+
+    // update the GPS marker, the user's current location
+    // if we're wanting to auto-center, do so
+    MARKER_GPS.setLatLng(event.latlng);
+    if (AUTO_CENTER_ON_LOCATION && within) {
+        MAP.panTo(event.latlng);
+        if (MAP.getZoom() < AUTO_CENTER_ZOOMLEVEL) MAP.setZoom(AUTO_CENTER_ZOOMLEVEL);
+    }
+
+    // update the GPS readout
+    var gps = latLngToGPS(event.latlng);
+    $('#gps_location').text(text);
+
+//gda
+/*
+    // sort any visible distance-sorted lists
+    sortLists();
+*/
+
+//gda
+/*
+    // adjust the Near You Now listing
+    updateNearYouNow();
+*/
+
+//gda
+/*
+    // check the Radar alerts to see if anything relevant is within range
+    if ( $('#radar_enabled').is(':checked') ) {
+        var meters = $('#radar_radius').val();
+        var categories = [];
+        $('input[name="radar_category"]:checked').each(function () { categories[categories.length] = $(this).val() });
+        placeRADAR_CIRCLE(event.latlng.lat,event.latlng.lng,meters);
+        checkRadar(event.latlng,meters,categories);
+    }
+*/
+
+}
+
+//gda
+function handleLocationError(event) {
+    // show the various "Location failed!" messages
+    $('.location_fail').show();
+}
+
+
+/*
  * This provides a dialog panel for showing an error message, which has
  * some benefits over using alert() to report errors or acknowledgements.
  * First, it is more mobile-esque and less canned than alert()
  * Second, it does not block JavaScript processing. Sometimes you do want to block, but often not.
  */
-/*
- * The target dialog is as follows. Place it into your HTML.
- * You can then use alertdialog(message) same as alert()
-
-<div data-role="dialog" id="dialog-error">
-    <div data-role="header">
-        <h1></h1>
-    </div>
-    <div data-role="content">
-    </div>
-</div>
-*/
 function mobilealert(message,header) {
     if (typeof header == 'undefined') header = 'Error';
 
