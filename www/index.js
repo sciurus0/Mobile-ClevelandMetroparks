@@ -28,8 +28,8 @@ BASEMAPS['photo']   = new L.TileLayer("http://{s}.tiles.mapbox.com/v3/greeninfo.
 // these are simply added to the list in sequence
 // tip: the name attribute is used by the OfflineTileCacher
 var OVERLAYS  = {};
-OVERLAYS['markers'] = L.tileLayer.wms("http://maps{s}.clemetparks.com/gwms", { name:'markers', layers:'cm:closures,cm:markers_other,cm:markers_swgh', format:'image/png', transparent:'TRUE', subdomains:'123' });
-OVERLAYS['labels']  = L.tileLayer.wms("http://maps{s}.clemetparks.com/gwc", { name:'labels', layers:'group_overlays', format:'image/png', transparent:'TRUE', subdomains:'123' });
+OVERLAYS['specials'] = L.tileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/geoserver_features/{z}/{x}/{y}.png", { name:'specials', subdomains:'123' });
+OVERLAYS['labels']   = L.tileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/geoserver_labels/{z}/{x}/{y}.png",   { name:'labels'  , subdomains:'123' });
 
 // a whole bunch of markers
 var MARKER_TARGET = L.marker(L.latLng(0,0), {
