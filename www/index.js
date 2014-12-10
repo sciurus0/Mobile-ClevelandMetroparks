@@ -370,6 +370,7 @@ function beginSeedingCache() {
             if (done>=total) layer_complete();
         };
         var error = function() {
+            $.mobile.hidePageLoadingMsg();
             alert('Download error!');
         };
 
