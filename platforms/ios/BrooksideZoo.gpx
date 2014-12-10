@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.0">
+    <name>Example GPX File for Testing</name>
+    <wpt lat="41.4461524" lon="-81.7127841">
+        <ele>0</ele>
+        <name>Brookside Zoo</name>
+    </wpt>
+</gpx>
