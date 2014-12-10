@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.0">
+    <name>Example GPX File for Testing</name>
+    <wpt lat="41.3021197" lon="-81.797289">
+        <ele>0</ele>
+        <name>Mill Stream Run, South</name>
+    </wpt>
+</gpx>

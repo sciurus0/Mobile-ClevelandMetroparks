@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.0">
+    <name>Example GPX File for Testing</name>
+    <wpt lat="41.411835" lon="-81.9593811">
+        <ele>0</ele>
+        <name>Bradley Woods</name>
+    </wpt>
+</gpx>
