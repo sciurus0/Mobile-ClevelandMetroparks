@@ -397,31 +397,15 @@
 
 <div data-role="page" id="page-cachestatus">
     <div data-role="header" data-position="inline">
-    <h1>Cache Storage</h1>
+    <h1>Offline Map Storage</h1>
     </div>
 
 
     <div data-role="content">
         <input type="text" id="cachestatus_storage" value="Calculating" readonly="readonly" style="text-align:center;" />
         <input type="text" id="cachestatus_files" value="Calculating" readonly="readonly" style="text-align:center;" />
-        <a href="#page-clearcache" data-role="button" data-rel="dialog">Clear map tiles</a>
+        <a href="#page-clearcache" data-role="button" name="clearcache">Delete offline tiles</a>
         <a href="#page-settings" data-role="button" data-rel="back">Back</a>
-    </div>
-</div>
-
-
-
-
-<div data-role="page" id="page-clearcache">
-    <div data-role="header" data-position="inline">
-    <h1>Clear Tiles?</h1>
-    </div>
-
-    <div data-role="content">
-        <p>This will delete the downloaded map tiles. You will not be able to use the map when offline, until you go online and browse to re-cache the map.</p>
-        <a href="javascript:void(0);" name="clearcache" data-role="button" data-rel="back" data-theme="b">Clear cache</a>
-        <a href="#page-cachestatus" data-role="button" data-rel="back">Cancel</a>
-    </div>
     </div>
 </div>
 
