@@ -296,17 +296,16 @@ var OfflineTileCacher = function(directoryname) {
 
         // does this file exist? if so (succesful file open) then move on to the next one
         // if not, then proceed with downloading it
-        var filename_exists = urls[index].filename;
-        myself.TILEDIRECTORY.getFile(filename_exists, {create:false}, function () {
+        myself.TILEDIRECTORY.getFile(urls[index].filename, {create:false}, function () {
             // file opened successfully, so we don't need to download it
-            //console.log(['already in cache',filename_exists]);
+            //console.log(['already in cache',urls[index].filename]);
             if (progress) progress(index+1,urls.length);
             myself.downloadFile(urls,index+1,progress,error_handler);
         }, function () {
             // file open failed, which means we need to download it
             // design pattern to do sequential asynchronous downloads: on success, call download(index+1)
-            //console.log(['not in cache',filename_exists]);
-            myself.FileTransfer.download(urls[index].url, urls[index].filename,
+            //console.log(['not in cache',urls[index].filename,myself.TILEDIRECTORY.toURL() + '/' + urls[index].filename ]);
+            myself.FileTransfer.download(urls[index].url, myself.TILEDIRECTORY.toURL() + '/' + urls[index].filename,
                 function(file) {
                     // tile downloaded OK
                     // set the Apple "don't back up" flag for iTUnes Connect / Apple Store compliance, then move on to the next URL on the list   (yes 1 means DO NOT backup)
@@ -378,7 +377,7 @@ var OfflineTileCacher = function(directoryname) {
                     //console.log(url);
 
                     // make up the filename, a flat list of files under the tiles/ directory
-                    var filename = myself.TILEDIRECTORY.toURL() + '/' + [layername,z,x,y].join('-') + '.png';
+                    var filename = [layername,z,x,y].join('-') + '.png';
                     //console.log(filename);
 
                     // add it to the list
