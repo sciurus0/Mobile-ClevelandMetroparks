@@ -24,15 +24,15 @@ var BING_API_KEY = "AjBuYw8goYn_CWiqk65Rbf_Cm-j1QFPH-gGfOxjBipxuEB2N3n9yACKu5s8D
 // basemap choices
 // the terrain map is the Cleveland awesomeness: ParkInfo styling, parks and trail rendering baked in, ...
 var BASEMAPS = {};
-BASEMAPS['terrain'] = new L.TileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/basemap/{z}/{x}/{y}.jpg", { name:'terrain', subdomains:'123' });
-BASEMAPS['photo']   = new L.TileLayer("http://{s}.tiles.mapbox.com/v3/greeninfo.map-zudfckcw/{z}/{x}/{y}.jpg", { name:'photo' });
+BASEMAPS['terrain'] = new L.TileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/basemap/{z}/{x}/{y}.jpg", { name:'terrain', subdomains:'123', updateWhenIdle:true });
+BASEMAPS['photo']   = new L.TileLayer("http://{s}.tiles.mapbox.com/v3/greeninfo.map-zudfckcw/{z}/{x}/{y}.jpg", { name:'photo', subdomains:'123', updateWhenIdle:true });
 
 // overlays: closures and labels are separate from the basemap
 // these are simply added to the list in sequence
 // tip: the name attribute is used by the OfflineTileCacher
 var OVERLAYS  = {};
-OVERLAYS['specials'] = L.tileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/geoserver_features/{z}/{x}/{y}.png", { name:'specials', subdomains:'123' });
-OVERLAYS['labels']   = L.tileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/geoserver_labels/{z}/{x}/{y}.png",   { name:'labels'  , subdomains:'123' });
+OVERLAYS['specials'] = L.tileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/geoserver_features/{z}/{x}/{y}.png", { name:'specials', subdomains:'123', updateWhenIdle:true });
+OVERLAYS['labels']   = L.tileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/geoserver_labels/{z}/{x}/{y}.png",   { name:'labels'  , subdomains:'123', updateWhenIdle:true });
 
 // a whole bunch of markers
 var MARKER_TARGET = L.marker(L.latLng(0,0), {
@@ -153,11 +153,8 @@ $(window).bind('orientationchange pageshow resize', function() {
 });
 
 function init() {
-    // enable FastClick
-    FastClick.attach(document.body);
-
     // disable page transitions for faster... transitions
-    $.mobile.defaultPageTransition="none";
+    $.mobile.defaultPageTransition = 'none';
 
     // pre-render the pages so we don't have that damnable lazy rendering thing messing with it
     $('div[data-role="page"]').page();
@@ -183,16 +180,16 @@ function initCacheThenMap() {
 function initMap() {
     // start the map, only the basemap for starters
     MAP = new L.Map('map_canvas', {
-        attributionControl: false, zoomControl: true, dragging: true,
-        closePopupOnClick: false,
-        crs: L.CRS.EPSG3857,
+        attributionControl:false, zoomControl:true,
         minZoom: MIN_ZOOM, maxZoom: MAX_ZOOM,
-        layers : [ BASEMAPS['terrain'] ]
+        layers : [ BASEMAPS['terrain'] ],
+        dragging:true, scrollWheelZoom:false, tap:true, boxZoom:false, closePopupOnClick:false, keyboard:false
     }).fitBounds(MAX_BOUNDS);
 
     // add the overlay layers
     // once these are on the map, they stay there; there's no UI to turn them off
-    for (var which in OVERLAYS) MAP.addLayer( OVERLAYS[which] );
+//gda
+    //for (var which in OVERLAYS) MAP.addLayer( OVERLAYS[which] );
 
     // additional Controls
     L.control.scale().addTo(MAP);
