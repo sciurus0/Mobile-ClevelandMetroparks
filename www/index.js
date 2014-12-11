@@ -660,12 +660,21 @@ function wmsGetFeatureInfoByLatLngBBOX(bbox,anchor) {
     });
 }
 
-//gda
-function searchPOIs(activity) {
+
+/*
+ * The searchXXX() family of functions
+ * have a surprising amount in common and different
+ * they all have the same AJAX data endpoint, passing different params to hint the endpoint as to what we're looking for
+ * and they all hand off to searchProcessResults() for rendering on the Results panel
+ */
+function searchPOIs(category) {
+    var params = {};
+    params.category = 'pois_usetype_' + category;
+
     $.mobile.showPageLoadingMsg("a", "Loading", true);
-    $.get('../ajax/browse_items', { category:category }, function (reply) {
+    $.get( BASE_URL + '/ajax/browse_items', params, function (reply) {
         $.mobile.hidePageLoadingMsg();
-        searchProcessResults(reply.results, reply.title, '#page-find-pois');
+          searchProcessResults(reply.results, reply.title, '#page-find-pois');
     },'json').error(function (error) {
         searchProcessError(error);
     });
@@ -690,7 +699,6 @@ function searchProcessResults(resultlist,title,from) {
     var target = $('#search_results').empty();
     for (var i=0, l=resultlist.length; i<l; i++) {
         var result = resultlist[i];
-//gda
 
         // the result entry has a copy of the raw data in it, so it can do intelligent things when the need arises
         var li = $('<li></li>').addClass('zoom').appendTo(target).data('raw',result);
