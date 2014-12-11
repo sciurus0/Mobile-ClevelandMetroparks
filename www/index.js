@@ -716,7 +716,7 @@ function searchPOIs(category) {
     var params = {};
     params.category = 'pois_usetype_' + category;
 
-    $.mobile.showPageLoadingMsg("a", "Loading", true);
+    $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/browse_items', params, function (reply) {
         $.mobile.hidePageLoadingMsg();
           searchProcessResults(reply.results, reply.title, '#page-find-pois');
@@ -728,7 +728,7 @@ function searchPOIs(category) {
 function searchKeyword(keyword) {
     var params = { keyword:keyword, limit:100 };
 
-    $.mobile.showPageLoadingMsg("a", "Loading", true);
+    $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/keyword', params, function (results) {
         $.mobile.hidePageLoadingMsg();
           searchProcessResults(results, "Keyword: " + keyword , '#page-find');
@@ -739,6 +739,8 @@ function searchKeyword(keyword) {
 
 function searchTrails(options) {
     var params = options;
+
+    $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/search_trails', params, function (results) {
         $.mobile.hidePageLoadingMsg();
         searchProcessResults(results, 'Trail Finder', '#page-find-trails');
