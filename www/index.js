@@ -360,12 +360,12 @@ function initFindKeyword() {
     var form = $('#page-find fieldset[data-type="geocode"]');
     form.find('input[type="text"]').keydown(function (key) {
         if(key.keyCode != 13) return;
-        $(this).siblings('input[type="button"]').click();
+        $(this).closest('fieldset').find('input[type="button"]').click();
     });
     form.find('input[type="button"]').click(function () {
-        var keyword = $(this).siblings('input[type="text"]').val().trim();
+        var keyword = $(this).closest('fieldset').find('input[type="text"]').val().trim();
         if (! keyword ) return false;
-        searchKeyword(keword);
+        searchKeyword(keyword);
     });
 }
 
@@ -672,7 +672,7 @@ function wmsGetFeatureInfoByLatLngBBOX(bbox,anchor) {
 /*
  * The searchXXX() family of functions
  * have a surprising amount in common and different
- * they all have the same AJAX data endpoint, passing different params to hint the endpoint as to what we're looking for
+ * they (mostly) have the same AJAX data endpoint, passing different params to hint the endpoint as to what we're looking for
  * and they all hand off to searchProcessResults() for rendering on the Results panel
  */
 function searchPOIs(category) {
@@ -692,9 +692,9 @@ function searchKeyword(keyword) {
     var params = { keyword:keyword, limit:100 };
 
     $.mobile.showPageLoadingMsg("a", "Loading", true);
-    $.get( BASE_URL + '/ajax/keyword', params, function (reply) {
+    $.get( BASE_URL + '/ajax/keyword', params, function (results) {
         $.mobile.hidePageLoadingMsg();
-          searchProcessResults(reply.results, reply.title, '#page-find-pois');
+          searchProcessResults(results, "Keyword: " + keyword , '#page-find');
     },'json').error(function (error) {
         searchProcessError(error);
     });
