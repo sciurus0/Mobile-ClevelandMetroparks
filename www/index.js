@@ -121,25 +121,25 @@ var LIST_RESERVATIONS = [
 //          if CMP changes the name of a CATEGORY, ADDS/REMOVES A CATEGORY, they must publish a new version of the mobile app!
 //          tip: Why not have this automatically update when the app starts? Consumes data, not helpful offline, would 100% cripple the UI if it fails
 var ACTIVITY_ICONS = {
-    'Archery' : 'archery.png',
-    'Beach' : 'beach.png',
-    'Boating' : 'boat.png',
-    'Drinking Fountain' : 'drinkingfountain.png',
-    'Exploring Culture & History' : 'history.png',
-    'Exploring Nature' : 'nature.png',
-    'Facilities' : 'reservable.png',
-    'Fishing & Ice Fishing' : 'fish.png',
-    'Food' : 'food.png',
-    'Geologic Feature' : 'geology.png',
-    'Golfing' : 'golf.png',
-    'Horseback Riding' : 'horse.png',
-    'Kayaking' : 'kayak.png',
-    'Picnicking' : 'picnic.png',
-    'Play Areas' : 'play.png',
-    'Restroom' : 'restroom.png',
-    'Sledding & Tobogganing' : 'sled.png',
-    'Swimming' : 'swim.png',
-    'Viewing Wildlife' : 'wildlife.png'
+    'Archery' : 'archery.svg',
+    'Beach' : 'beach.svg',
+    'Boating' : 'boat.svg',
+    'Drinking Fountain' : 'drinkingfountain.svg',
+    'Exploring Culture & History' : 'history.svg',
+    'Exploring Nature' : 'nature.svg',
+    'Facilities' : 'reservable.svg',
+    'Fishing & Ice Fishing' : 'fish.svg',
+    'Food' : 'food.svg',
+    'Geologic Feature' : 'geology.svg',
+    'Golfing' : 'golf.svg',
+    'Horseback Riding' : 'horse.svg',
+    'Kayaking' : 'kayak.svg',
+    'Picnicking' : 'picnic.svg',
+    'Play Areas' : 'play.svg',
+    'Restroom' : 'restroom.svg',
+    'Sledding & Tobogganing' : 'sled.svg',
+    'Swimming' : 'swim.svg',
+    'Viewing Wildlife' : 'wildlife.svg'
 };
 var LIST_ACTIVITIES = [];
 for (var i in ACTIVITY_ICONS) LIST_ACTIVITIES.push(i);
@@ -333,7 +333,7 @@ function initFindPOIs() {
     var target = $('#page-find-pois ul[data-role="listview"]');
     for (var i=0, l=LIST_ACTIVITIES.length; i<l; i++) {
         var activity = LIST_ACTIVITIES[i];
-        var icon     = 'images/pois/' + ACTIVITY_ICONS[activity] + '.svg';
+        var icon     = 'images/pois/' + ACTIVITY_ICONS[activity];
 
         var link  = $('<a></a>').prop('href','javascript:void(0);').attr('data-activity',activity).text(activity);
         var image = $('<img></img>').addClass('ui-li-icon').prop('src',icon).prependTo(link);
