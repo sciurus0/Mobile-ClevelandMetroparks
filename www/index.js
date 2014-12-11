@@ -756,10 +756,13 @@ function searchProcessError(error) {
 }
 
 function searchProcessResults(resultlist,title,from) {
-    // hide the spinner, if the caller forgot
+    // hide the spinner, if the caller forgot (or so we can funnel responsibility for it here)
+    // then bail if there are 0 results, so the caller doesn't need that responsibility either
+    $.mobile.hidePageLoadingMsg();
+    if (! resutlist.length) mobilealert("Try a different keyword, location, or other filters.", "No Results");
+
     // set the Results panel's Back button to go to the indicated search page, head over to the Results page
     // set the Results title to whatever title was given by the search endpoint (we can trust it)
-    $.mobile.hidePageLoadingMsg();
     $.mobile.changePage('#page-find-results');
     $('#page-find-results div[data-role="header"] a[data-icon="back"]').prop('href',from);
     $('#page-find-results div[data-role="header"] h1').text(title);
