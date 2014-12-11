@@ -202,6 +202,9 @@ function initMap() {
     $('#mapbutton_gps').click(function () {
         toggleGPS();
     });
+    $('#mapbutton_settings').click(function (event) {
+        event.stopPropagation();
+    });
 
     // ready! set! action!
     // start constant geolocation, which triggers the 'locationfound' event handlers defined above
