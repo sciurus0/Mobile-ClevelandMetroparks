@@ -2,6 +2,9 @@
  ***** CONSTANTS
  ******************************************************************************/
 
+// the base URL where all data endpoints reside: the CMP website
+var BASE_URL = "http://maps.clevelandmetroparks.com/";
+
 // the big MAP object, the starting view
 var MAP;
 var BBOX_SOUTHWEST = L.latLng(41.11816, -82.08504);
@@ -393,7 +396,6 @@ function handleLocationFound(event) {
 
 }
 
-//gda
 function handleLocationError(event) {
     // show the various "Location failed!" messages
     $('.location_fail').show();
@@ -490,6 +492,36 @@ function beginSeedingCache() {
  * The other wrappers do things like take a latlng point and add a little padding to it, since a lot of the target content is points
  */
 function wmsGetFeatureInfoByPoint(latlng) {
-//gda
-    alert(point);
+    var pixelbuffer = 20;
+    var sw = MAP.layerPointToLatLng(new L.Point(pixel.x - pixelbuffer , pixel.y + pixelbuffer));
+    var ne = MAP.layerPointToLatLng(new L.Point(pixel.x + pixelbuffer , pixel.y - pixelbuffer));
+    var bbox   = { w:sw.lng, s: sw.lat, e:ne.lng , n:ne.lat };
+    var anchor = MAP.layerPointToLatLng(new L.Point(pixel.x,pixel.y));
+    wmsGetFeatureInfoByLatLngBBOX(bbox,anchor);
+}
+function wmsGetFeatureInfoByLatLng(latlng) {
+    var bbox   = { w:latlng.lng, s: latlng.lat, e:latlng.lng , n:latlng.lat };
+    var anchor = latlng;
+    wmsGetFeatureInfoByLatLngBBOX(bbox,anchor);
+}
+function wmsGetFeatureInfoByLatLngBBOX(bbox,anchor) {
+    var data = bbox;
+    data.zoom = MAP.getZoom();
+
+    $.get( BASE_URL + '/ajax/query', data, function (html) {
+        if (!html) return;
+alert(html);//gda
+
+        // set up the Popup and load its content
+        // beware of very-lengthy content and force a max height on the bubble
+        var options = {};
+        options.maxHeight = parseInt( $('#map_canvas').height() - $('#toolbar').height() - 20 );
+        options.maxWidth = parseInt( $('#map_canvas').width() - 40 );
+
+        var popup = new L.Popup(options).setLatLng(anchor).setContent(html);
+        MAP.openPopup(popup);
+    }, 'html').error(function (error) {
+        // no error handling
+        // if they tapped on the map and lost signal or something, don't pester them with messages, just be quiet
+    });
 }
