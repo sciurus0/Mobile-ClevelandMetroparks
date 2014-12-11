@@ -200,8 +200,7 @@ function initMap() {
     // our version of a WMS GetFeatureInfo control: a map click calls query.php to get JSON info, and we construct a bubble
     // BUT, we only call this if a popup is not open: if one is open, we instead close it
     MAP.on('click', function (event) {
-        if ($('.leaflet-popup').length) return MAP.closePopup();
-        wmsGetFeatureInfoByPoint(event.latlng);
+        wmsGetFeatureInfoByPoint(event.layerPoint);
     });
 
     // whenever we get a location event, we have a lot of work to do: GPS readout, radar and perhaps playing an alert sound, updating the marker-and-circle on the map, ...
@@ -491,7 +490,7 @@ function beginSeedingCache() {
  * wmsGetFeatureInfoByLatLngBBOX() is the actual target function, and performs the server-side query for a given bounding box
  * The other wrappers do things like take a latlng point and add a little padding to it, since a lot of the target content is points
  */
-function wmsGetFeatureInfoByPoint(latlng) {
+function wmsGetFeatureInfoByPoint(pixel) {
     var pixelbuffer = 20;
     var sw = MAP.layerPointToLatLng(new L.Point(pixel.x - pixelbuffer , pixel.y + pixelbuffer));
     var ne = MAP.layerPointToLatLng(new L.Point(pixel.x + pixelbuffer , pixel.y - pixelbuffer));
@@ -505,18 +504,20 @@ function wmsGetFeatureInfoByLatLng(latlng) {
     wmsGetFeatureInfoByLatLngBBOX(bbox,anchor);
 }
 function wmsGetFeatureInfoByLatLngBBOX(bbox,anchor) {
-    var data = bbox;
-    data.zoom = MAP.getZoom();
+    // start with the bounding box as the params, then add the current zoom level
+    // atypical, but means that the query endpoint can have knowledge of the map's zoom level and configure its behavior accordingly
+    // makes for spiffy behaviors such as not being able to click buildings at the full zoom level, but preferring to click buildings over parks when close in
+    var params = bbox;
+    params.zoom = MAP.getZoom();
 
-    $.get( BASE_URL + '/ajax/query', data, function (html) {
+    $.get( BASE_URL + '/ajax/query', params, function (html) {
         if (!html) return;
-alert(html);//gda
 
         // set up the Popup and load its content
         // beware of very-lengthy content and force a max height on the bubble
         var options = {};
         options.maxHeight = parseInt( $('#map_canvas').height() - $('#toolbar').height() - 20 );
-        options.maxWidth = parseInt( $('#map_canvas').width() - 40 );
+        options.maxWidth  = parseInt( $('#map_canvas').width() - 40 );
 
         var popup = new L.Popup(options).setLatLng(anchor).setContent(html);
         MAP.openPopup(popup);
