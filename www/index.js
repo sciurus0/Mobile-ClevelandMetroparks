@@ -335,15 +335,15 @@ function initFindPOIs() {
         var activity = LIST_ACTIVITIES[i];
         var icon     = 'images/pois/' + ACTIVITY_ICONS[activity];
 
-        var link  = $('<a></a>').prop('href','javascript:void(0);').attr('data-activity',activity).text(activity);
+        var link  = $('<a></a>').prop('href','javascript:void(0);').text(activity);
         var image = $('<img></img>').addClass('ui-li-icon').prop('src',icon).prependTo(link);
-        var li    = $('<li></li>').append(link).appendTo(target);
+        var li    = $('<li></li>').append(link).attr('data-activity',activity).appendTo(target);
         li.click(function () {
             var activity = $(this).attr('data-activity');
             searchPOIs(activity);
         });
     }
-    target.listview('refresh');
+    target.listview('refresh',true);
 }
 
 //gda
