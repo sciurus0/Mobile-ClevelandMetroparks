@@ -140,7 +140,6 @@
     <div data-role="header">
         <a href="#page-find" data-icon="back">Back</a>
         <h1>Find POIs</h1>
-        <a href="#page-map">Map</a>
     </div>
     <div data-role="content">
 
@@ -156,41 +155,40 @@
     <div data-role="header">
         <a href="#page-find" data-icon="back">Back</a>
         <h1>Trail Finder</h1>
-        <a href="#page-map">Map</a>
     </div>
     <div data-role="content">
 
         <div>
             <!-- UI is tapping icons, not a SELECT element; see initFindTrails() and searchTrails() -->
-            <div style="display:none;">
-            <b>Activities</b><br/>
-            <div>
+            <div style="text-align:center;">
+                <b>Select Activities</b><br/>
                 <img data-field="activity" data-value="Hiking & Walking"  src="images/trailfinder_hike_off.png" />
                 <img data-field="activity" data-value="Biking"            src="images/trailfinder_bike_off.png" />
                 <img data-field="activity" data-value="Horseback Riding"  src="images/trailfinder_horse_off.png" />
-                <img data-field="activity" data-value="Exercising"        src="images/trailfinder_exercise_off.png" />
                 <img data-field="activity" data-value="Mountain Biking"   src="images/trailfinder_mtnbike_off.png" />
             </div>
 
             <!-- Pavement selector: they want it hidden but endpoint needs it, and they will likely want it back anyway -->
-            <div style="display:none;">
+            <div style="text-align:center; display:none;">
             <b>Pavement:</b><br/>
-            <fieldset data=role="controlgroup">
-                <select name="paved" data-mini="true">
-                    <option value="">No preference</option>
-                    <option value="Yes">Paved</option>
-                    <option value="No">Unpaved</option>
-                </select>
-            </fieldset>
+                <select name="paved">
+                <option value="">No preference</option>
+                <option value="Yes">Paved</option>
+                <option value="No">Unpaved</option>
+            </select>
             </div>
 
             <!-- Reservation filter: populated from a list, see initFindTrails() -->
-            <select name="reservation" data-mini="true">
-            <option value="">(any reservation)</option>
-            </select>
+            <div style="text-align:center; margin-top:1em;">
+                <b>Select Location</b><br/>
+                <select name="reservation">
+                <option value="">(any reservation)</option>
+                </select>
+            </div>
 
-            <br/>
-            <input type="button" value="Search" />
+            <div style="text-align:center; margin-top:1em;">
+                <input type="button" value="Search" />
+            </div>
         </div>
 
     </div>
@@ -202,7 +200,6 @@
     <div data-role="header">
         <a href="#page-find" data-icon="back">Back</a>
         <h1>Loops &amp; Routes</h1>
-        <a href="#page-map">Map</a>
     </div>
     <div data-role="content">
         <fieldset data=role="controlgroup">

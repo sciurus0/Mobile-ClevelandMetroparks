@@ -348,7 +348,7 @@ function initFindPOIs() {
 
 function initFindTrails() {
     // start by populating the selector for which Reservation they want (including a blank/ALL option)
-    var target = $('#page-find-trails select[name="trailfinder_paved"]').empty();
+    var target = $('#page-find-trails select[name="reservation"]').empty();
     $('<option></option>').text("(any reservation)").prop('value','').appendTo(target);
     for (var i=0, l=LIST_RESERVATIONS.length; i<l; i++) {
         $('<option></option>').text(LIST_RESERVATIONS[i]).prop('value',LIST_RESERVATIONS[i]).appendTo(target);
@@ -361,10 +361,12 @@ function initFindTrails() {
         // tag this one AND ONLY THIS ONE as being the data-selected element
         //      this also means some URL wapping to switch out icons
         // data endpoint was specifically meant to accept multiple use types, but later they decided that they prefer to use only one
-        var thisone = $(this).attr('data-selected','true');
-        thisone.prop('src', thisone.prop('src').replace('_off.png', '_on.png') );
-        var siblings = $(this).siblings().removeAttr('data-selected').each(function () {
-            $(this).prop('src', $(this).prop('src').replace('_on.png', '_off.png') );
+        var src = $(this).prop('src').replace('_off.png', '_on.png');
+        $(this).attr('data-selected','true').prop('src', src);
+
+        $(this).siblings('img[data-field="activity"]').each(function () {
+            var src = $(this).prop('src').replace('_on.png', '_off.png');
+            $(this).removeAttr('data-selected').prop('src',src);
         })
     }).first().click();
 
@@ -372,12 +374,10 @@ function initFindTrails() {
     // collect the form elements and pass them to the searchificator-inator
     // but wait! there's not just form elements, but weirdness like icons with a data-selected= attribute
     $('#page-find-trails input[type="button"]').click(function () {
-//gda
         var params = {};
         params.paved       = $('#page-find-trails select[name="paved"]').val();
         params.reservation = $('#page-find-trails select[name="reservation"]').val();
         params.uses        = $('#page-find-trails img[data-field="activity"][data-selected]').attr('data-value'); // should be commma-joined list, but only 1 option desired these days
-for (var i in params) alert(i + ' = ' + params[i] );
 
         searchTrails(params);
     });
@@ -738,10 +738,10 @@ function searchKeyword(keyword) {
 }
 
 function searchTrails(options) {
-    //gda
+    var params = options;
     $.get( BASE_URL + '/ajax/search_trails', params, function (results) {
         $.mobile.hidePageLoadingMsg();
-          searchProcessResults(results, 'Trail Finder', '#page-find-trails');
+        searchProcessResults(results, 'Trail Finder', '#page-find-trails');
     }, 'json').error(function (error) {
         searchProcessError(error);
     });
