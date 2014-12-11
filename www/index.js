@@ -81,7 +81,7 @@ var ALL_POIS = [];
 // should we auto-center the map on location updates? don't toggle this directly, see toggleGPS()
 // when we zoom to our own location, to what zoom level?
 var AUTO_CENTER_ON_LOCATION = false;
-var AUTO_CENTER_ZOOMLEVEL   = 13;
+var AUTO_CENTER_ZOOMLEVEL   = 16;
 
 // sorting by distance, isn't always by distance
 // what type of sorting do they prefer?
@@ -162,18 +162,6 @@ function init() {
     // now the rest of event handlers, map setup, etc. in stages
     initCacheThenMap();
     initSettingsPanel();
-
-    // ready! set! action!
-    // start constant geolocation, which triggers all 'locationfound' event handler spefified in initMap()
-    // add a one-time location trigger: turn on auto-centering but turn it off again the first time we get a location
-    // thus, we show the local context but then don't annoy the user by continuing to pan the map as they try to pan around
-    toggleGPSOn();
-    var disableMe = function(event) {
-        MAP.off('locationfound', disableMe);
-        toggleGPSOff();
-    };
-    MAP.on('locationfound', disableMe);
-    MAP.locate({ watch: true, enableHighAccuracy: true });
 }
 
 function initCacheThenMap() {
@@ -226,6 +214,10 @@ function initMap() {
     $('#mapbutton_gps').click(function () {
         toggleGPS();
     });
+
+    // ready! set! action!
+    // start constant geolocation, which triggers the 'locationfound' event handlers defined above
+    MAP.locate({ watch: true, enableHighAccuracy: true });
 }
 
 
