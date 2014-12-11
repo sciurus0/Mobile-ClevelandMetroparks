@@ -199,7 +199,9 @@ function initMap() {
 
     // our version of a WMS GetFeatureInfo control: a map click calls query.php to get JSON info, and we construct a bubble
     // BUT, we only call this if a popup is not open: if one is open, we instead close it
+    // normally we would use MAP's own closePopupOnClick but that doesn't in fact CANCEL the click-and-query event
     MAP.on('click', function (event) {
+        if ( $('.leaflet-popup').length ) return MAP.closePopup();
         wmsGetFeatureInfoByPoint(event.layerPoint);
     });
 
