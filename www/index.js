@@ -356,9 +356,17 @@ function initFindLoops() {
     
 }
 
-//gda
 function initFindKeyword() {
-    
+    var form = $('#page-find fieldset[data-type="geocode"]');
+    form.find('input[type="text"]').keydown(function (key) {
+        if(key.keyCode != 13) return;
+        $(this).siblings('input[type="button"]').click();
+    });
+    form.find('input[type="button"]').click(function () {
+        var keyword = $(this).siblings('input[type="text"]').val().trim();
+        if (! keyword ) return false;
+        searchKeyword(keword);
+    });
 }
 
 
@@ -673,6 +681,18 @@ function searchPOIs(category) {
 
     $.mobile.showPageLoadingMsg("a", "Loading", true);
     $.get( BASE_URL + '/ajax/browse_items', params, function (reply) {
+        $.mobile.hidePageLoadingMsg();
+          searchProcessResults(reply.results, reply.title, '#page-find-pois');
+    },'json').error(function (error) {
+        searchProcessError(error);
+    });
+}
+
+function searchKeyword(keyword) {
+    var params = { keyword:keyword, limit:100 };
+
+    $.mobile.showPageLoadingMsg("a", "Loading", true);
+    $.get( BASE_URL + '/ajax/keyword', params, function (reply) {
         $.mobile.hidePageLoadingMsg();
           searchProcessResults(reply.results, reply.title, '#page-find-pois');
     },'json').error(function (error) {
