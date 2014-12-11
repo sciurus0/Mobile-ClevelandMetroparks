@@ -505,11 +505,8 @@ function handleLocationFound(event) {
     var gps = latLngToGPS(event.latlng);
     $('#gps_location').text(gps);
 
-//gda
-/*
-    // sort any visible distance-sorted lists
-    sortLists();
-*/
+    // sort any visible distance-sorted lists on the Results page
+    calculateDistancesAndSortSearchResultsList();
 
 //gda
 /*
@@ -665,6 +662,63 @@ function wmsGetFeatureInfoByLatLngBBOX(bbox,anchor) {
 
 //gda
 function searchPOIs(activity) {
-    alert(activity);
+    $.mobile.showPageLoadingMsg("a", "Loading", true);
+    $.get('../ajax/browse_items', { category:category }, function (reply) {
+        $.mobile.hidePageLoadingMsg();
+        searchProcessResults(reply.results, reply.title, '#page-find-pois');
+    },'json').error(function (error) {
+        searchProcessError(error);
+    });
+}
+
+function searchProcessError(error) {
+    // hide any loading spinner, set the results title to clearly indicate a problem
+    $.mobile.hidePageLoadingMsg();
+    mobilealert("Check that you have data service, then try again.", "No connection?");
+}
+
+function searchProcessResults(resultlist,title,from) {
+    // hide the spinner, if the caller forgot
+    // set the Results panel's Back button to go to the indicated search page, head over to the Results page
+    // set the Results title to whatever title was given by the search endpoint (we can trust it)
+    $.mobile.hidePageLoadingMsg();
+    $.mobile.changePage('#page-find-results');
+    $('#page-find-results div[data-role="header"] a[data-icon="back"]').prop('href',from);
+    $('#page-find-results div[data-role="header"] h1').text(title);
+
+    // empty the results list and repopulate it
+    var target = $('#search_results').empty();
+    for (var i=0, l=resultlist.length; i<l; i++) {
+        var result = resultlist[i];
+//gda
+
+        // the result entry has a copy of the raw data in it, so it can do intelligent things when the need arises
+        var li = $('<li></li>').addClass('zoom').appendTo(target).data('raw',result);
+        li.click(function () {
+            var info = $(this).data('raw');
+            showInfoPanel(info);
+        });
+
+        // the title and perhaps a footnote; that's really up to the very intelligent query endpoint
+        var div = $('<div></div>').addClass('ui-btn-text').appendTo(li);
+        $('<span></span>').addClass('ui-li-heading').text(result.name).appendTo(div);
+        if (result.note) {
+            $('<span></span>').addClass('ui-li-desc').html(result.note).appendTo(div);
+        }
+
+        // distance readout, to be sorted later by calculateDistancesAndSortSearchResultsList() (sorted, get it? ha ha)
+        $('<span></span>').addClass('zoom_distance').addClass('ui-li-count').addClass('ui-btn-up-c').addClass('ui-btn-corner-all').text('0 mi').appendTo(div);
+    }
+    target.listview('refresh',true);
+    calculateDistancesAndSortSearchResultsList();
+}
+
+function calculateDistancesAndSortSearchResultsList() {
+    //gda   aka sortLists()
+}
+
+//gda
+function showInfoPanel(info) {
+    alert(info);
 }
 
