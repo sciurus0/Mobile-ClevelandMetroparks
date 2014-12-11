@@ -87,6 +87,64 @@ var DEFAULT_SORT = 'distance';
 // this is particularly important on Android where filesystem is not a sandbox but your SD card
 var STORAGE_SUBDIR = "ClevelandMetroparks";
 
+// the list of Reservations (parks)
+// used to build select elements and potentially listviews, e.g. filtering for Loops or Trails by reservation
+// WARNING: these must exactly match the spellings as they appear in the Use Areas (POIs) DB table, as they are used for matching
+//          if CMP changes the name of a reservation, they must update their Use Areas dataset as they expect, but also publish a new version of the mobile app!
+//          tip: Why not have this automatically update when the app starts? Consumes data, not helpful offline, would 100% cripple the UI if it fails
+var LIST_RESERVATIONS = [
+    "Acacia Reservation",
+    "Bedford Reservation",
+    "Big Creek Reservation",
+    "Bradley Woods Reservation",
+    "Brecksville Reservation",
+    "Brookside Reservation",
+    "Cleveland Metroparks Zoo",
+    "Euclid Creek Reservation",
+    "Garfield Park Reservation",
+    "Hinckley Reservation",
+    "Huntington Reservation",
+    "Lakefront Reservation",
+    "Mill Stream Run Reservation",
+    "North Chagrin Reservation",
+    "Ohio & Erie Canal Reservation",
+    "Rocky River Reservation",
+    "South Chagrin Reservation",
+    "Washington Reservation (including Rivergate)",
+    "West Creek Reservation"
+];
+
+// the set of Use Area categories, aka Activities
+// used to build select elements and potentially listviews, e.g. find POIs which have *this* activity
+// this has two parts: the sequential list so we can keep it sorted and efficient, and a mapping of Category->Icon PNG to provide an icon for one of the listviews
+// WARNING: these must exactly match the spellings as they appear in the Use Areas (POIs) DB table, as they are used for matching
+//          if CMP changes the name of a CATEGORY, ADDS/REMOVES A CATEGORY, they must publish a new version of the mobile app!
+//          tip: Why not have this automatically update when the app starts? Consumes data, not helpful offline, would 100% cripple the UI if it fails
+var ACTIVITY_ICONS = {
+    'Archery' : 'archery.png',
+    'Beach' : 'beach.png',
+    'Boating' : 'boat.png',
+    'Drinking Fountain' : 'drinkingfountain.png',
+    'Exploring Culture & History' : 'history.png',
+    'Exploring Nature' : 'nature.png',
+    'Facilities' : 'reservable.png',
+    'Fishing & Ice Fishing' : 'fish.png',
+    'Food' : 'food.png',
+    'Geologic Feature' : 'geology.png',
+    'Golfing' : 'golf.png',
+    'Horseback Riding' : 'horse.png',
+    'Kayaking' : 'kayak.png',
+    'Picnicking' : 'picnic.png',
+    'Play Areas' : 'play.png',
+    'Restroom' : 'restroom.png',
+    'Sledding & Tobogganing' : 'sled.png',
+    'Swimming' : 'swim.png',
+    'Viewing Wildlife' : 'wildlife.png'
+};
+var LIST_ACTIVITIES = [];
+for (var i in ACTIVITY_ICONS) LIST_ACTIVITIES.push(i);
+LIST_ACTIVITIES.sort();
+
 
 /******************************************************************************
  ***** LEAFLET EXTENSIONS
@@ -155,6 +213,13 @@ function init() {
     // now the rest of event handlers, map setup, etc. in stages
     initCacheThenMap();
     initSettingsPanel();
+
+    // the various Find subtypes, which have surprisingly little in common
+    // except that the results all go to a common results panel
+    initFindPOIs();
+    initFindTrails();
+    initFindLoops();
+    initFindKeyword();
 }
 
 function initCacheThenMap() {
@@ -263,6 +328,39 @@ function initSettingsPanel() {
     });
 }
 
+function initFindPOIs() {
+    // populate the Find POIs By Activity listview, with a list of activities
+    var target = $('#page-find-pois ul[data-role="listview"]');
+    for (var i=0, l=LIST_ACTIVITIES.length; i<l; i++) {
+        var activity = LIST_ACTIVITIES[i];
+        var icon     = 'images/pois/' + ACTIVITY_ICONS[activity] + '.svg';
+
+        var link  = $('<a></a>').prop('href','javascript:void(0);').attr('data-activity',activity).text(activity);
+        var image = $('<img></img>').addClass('ui-li-icon').prop('src',icon).prependTo(link);
+        var li    = $('<li></li>').append(link).appendTo(target);
+        li.click(function () {
+            var activity = $(this).attr('data-activity');
+            searchPOIs(activity);
+        });
+    }
+    target.listview('refresh');
+}
+
+//gda
+function initFindTrails() {
+    
+}
+
+//gda
+function initFindLoops() {
+    
+}
+
+//gda
+function initFindKeyword() {
+    
+}
+
 
 /******************************************************************************
  ***** OTHER FUNCTIONS
@@ -319,6 +417,7 @@ function toggleGPSOff() {
  * Given a L.Latlng object, return a string of the coordinates in standard GPS or geocaching.com format
  * That is:  N DD MM.MMM W DDD MM.MMM
  * This is useful if you're printing the coordinates to the screen for the end user, as it's the expected format for GPS enthusiasts.
+ * The inverse operation is provided by gpsToLatLng()   Given a GPS string, return a L.LatLng object or else a null indicating falure
  */
 function latLngToGPS(latlng) {
     var lat = latlng.lat;
@@ -331,6 +430,54 @@ function latLngToGPS(latlng) {
     var lngmin = ( 60 * (Math.abs(lng) - Math.abs(parseInt(lng))) ).toFixed(3);
     var text = ns + ' ' + latdeg + ' ' + latmin + ' ' + ew + ' ' + lngdeg + ' ' + lngmin;
     return text;
+}
+
+
+
+// given a string, try to parse it as coordinates and return a L.LatLng instance
+// currently supports these formats:
+//      N 44 35.342 W 123 15.669
+//      44.589033 -123.26115
+function gpsToLatLng(text) {
+    var text = text.replace(/\s+$/,'').replace(/^\s+/,'');
+
+    // simplest format is decimal numbers and minus signs and that's about it
+    // one of them must be negative, which means it's the longitude here in North America
+    if (text.match(/^[\d\.\-\,\s]+$/)) {
+        var dd = text.split(/[\s\,]+/);
+        if (dd.length == 2) {
+            dd[0] = parseFloat(dd[0]);
+            dd[1] = parseFloat(dd[1]);
+            if (dd[0] && dd[1]) {
+                var lat,lng;
+                if (dd[0] < 0) {
+                    lat = dd[1];
+                    lng = dd[0];
+                } else {
+                    lat = dd[0];
+                    lng = dd[1];
+                }
+                return L.latLng([lat,lng]);
+            }
+        }
+    }
+
+    // okay, how about GPS/geocaching format:   N xx xx.xxx W xxx xx.xxx
+    var gps = text.match(/^N\s*(\d\d)\s+(\d\d\.\d\d\d)\s+W\s*(\d\d\d)\s+(\d\d\.\d\d\d)$/i);
+    if (gps) {
+        var latd = parseInt(gps[1]);
+        var latm = parseInt(gps[2]);
+        var lond = parseInt(gps[3]);
+        var lonm = parseInt(gps[4]);
+
+        var lat = latd + (latm/60);
+        var lng = -lond - (lonm/60);
+
+        return L.latLng([lat,lng]);
+    }
+
+    //if we got here then nothing matched, so bail
+    return null;
 }
 
 
@@ -515,3 +662,9 @@ function wmsGetFeatureInfoByLatLngBBOX(bbox,anchor) {
         // if they tapped on the map and lost signal or something, don't pester them with messages, just be quiet
     });
 }
+
+//gda
+function searchPOIs(activity) {
+    alert(activity);
+}
+

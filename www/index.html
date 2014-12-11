@@ -57,7 +57,7 @@
         <div id="toolbar" class="above_map">
             <table>
             <tr>
-                <td><a class="button" id="button_find" href="#page-browse"><img src="images/button_find.png" /></a></td>
+                <td><a class="button" id="button_find" href="#page-find"><img src="images/button_find.png" /></a></td>
                 <td><a class="button" id="button_radar" href="#page-radar"><img src="images/button_radar.png" /></a></td>
                 <td><a class="button" id="button_directions" href="#page-getdirections"><img src="images/button_directions.png" /></a></td>
             </tr>
@@ -94,9 +94,7 @@
             <strong>Watch for these types of features:</strong>
             <fieldset data-role="controlgroup">
             <label><input type="checkbox" name="radar_category" value="Health Tips" checked="checked">Health Tips</label>
-            <?php foreach ($poicategories as $category) { ?>
-            <label><input type="checkbox" name="radar_category" value="<?= htmlspecialchars($category) ?>"><?= htmlspecialchars($category) ?></label>
-            <?php } ?>
+<!--gda not implemented yet, see a future initRadar() function perhaps? -->
             </fieldset>
         </div>
 
@@ -111,7 +109,7 @@
 
 
 
-<div data-role="page" id="page-browse">
+<div data-role="page" id="page-find">
     <div data-role="header">
         <a href="#page-map">Back</a>
         <h1>Find</h1>
@@ -119,17 +117,17 @@
     </div>
     <div data-role="content">
 
-        <fieldset data=role="controlgroup">
+        <fieldset data-role="controlgroup" data-type="geocode">
             <b>Keyword search:</b>
-            <input type="text" data-mini="true" id="browse_keyword" />
-            <ul id="browse_keyword_autocomplete" data-role="listview" data-inset="true"></ul>
-            <input type="button" data-mini="true" id="browse_keyword_button" value="Search &gt;&gt;" />
+            <input type="text" data-mini="true" />
+            <ul data-role="listview" data-inset="true" data-type="autocomplete"></ul>
+            <input type="button" data-mini="true" value="Search &gt;&gt;" />
         </fieldset>
 
         <ul data-role="listview" data-inset="true">
-            <li><a href="#page-browse-pois-activity"><img class="ui-li-icon" src="images/menu_pois.png" /> Points of Interest</a></li>
-            <li><a href="#page-trailfinder"><img class="ui-li-icon" src="images/menu_trailfinder.png" /> Trail Finder</a></li>
-            <li><a href="#page-loops-search"><img class="ui-li-icon" src="images/menu_loops.png" /> Featured Routes</a></li>
+            <li><a href="#page-find-pois"><img class="ui-li-icon" src="images/menu_pois.png" /> Points of Interest</a></li>
+            <li><a href="#page-find-trails"><img class="ui-li-icon" src="images/menu_trailfinder.png" /> Trail Finder</a></li>
+            <li><a href="#page-find-loops"><img class="ui-li-icon" src="images/menu_loops.png" /> Featured Routes</a></li>
         </ul>
 
     </div>
@@ -138,16 +136,16 @@
 
 
 
-<div data-role="page" id="page-trailfinder">
+<div data-role="page" id="page-find-trails">
     <div data-role="header">
-        <a href="#page-browse">Back</a>
+        <a href="#page-find">Back</a>
         <h1>Trail Finder</h1>
         <a href="#page-map">Map</a>
     </div>
     <div data-role="content">
 
         <div>
-<div style="display:none;"><!-- May 2014, they don't want to see this but we need the form controls internally; and coluld change back at any time... -->
+<div style="display:none;"><!-- May 2014, they don't want to see this but we need the form controls internally; and could change back at any time... -->
             <b>Activities</b><br/>
             <fieldset data-role="controlgroup">
                 <label><input type="checkbox" data-mini="true" name="trailfinder_uses" checked="true" value="Hiking & Walking" /> Hiking &amp Walking</label>
@@ -202,308 +200,25 @@
 
 
 
-<div data-role="page" id="page-browse-pois-activity">
+<div data-role="page" id="page-find-pois">
     <div data-role="header">
-        <a href="#page-browse">Back</a>
+        <a href="#page-find">Back</a>
         <h1>Find POIs</h1>
         <a href="#page-map">Map</a>
     </div>
     <div data-role="content">
 
-        <ul data-role="listview" data-inset="true">
-            <?php foreach ($poicategories as $category) { ?>
-            <li><a href="#browse-items?category=pois_usetype_<?= urlencode($category) ?>"><img class="ui-li-icon" style="width:16px; height:16px;" src="<?= site_url("/static/wms/pois/{$poicategory_icons[$category]}") ?>" /> <?= htmlspecialchars($category) ?></a></li>
-            <?php } ?>
-        </ul>
+        <!-- this is populated by initFindPOIs() -->
+        <ul data-role="listview" data-inset="true"></ul>
 
     </div>
 </div>
 
 
-<div data-role="page" id="page-browse-results">
+
+<div data-role="page" id="page-find-loops">
     <div data-role="header">
-        <a href="#page-browse">Back</a>
-        <h1>Find</h1>
-        <a href="#page-map">Map</a>
-    </div>
-    <div data-role="content">
-
-        <div class="sortpicker">
-            <span class="fakelink" value="distance">Sort by distance</span>
-            &bull;
-            <span class="fakelink" value="alphabetical">Sort alphabetically</span>
-        </div>
-
-        <ul id="browse_results" data-role="listview" data-inset="true" class="distance_sortable">
-        </ul>
-
-    </div>
-</div>
-
-
-
-<div data-role="page" id="page-search">
-    <div data-role="header">
-        <a href="#page-browse">Back</a>
-        <h1>Search</h1>
-        <a href="#page-map">Map</a>
-    </div>
-    <div data-role="content">
-
-        <fieldset data-role="controlgroup">
-            <h3>Keyword or name:</h3>
-            <input type="text" data-mini="true" id="search_keyword" />
-            <ul id="search_keyword_autocomplete" data-role="listview" data-inset="true"></ul>
-            <input type="button" data-mini="true" id="search_keyword_button" value="Search &gt;&gt;" value0="Loading" value1="Search &gt;&gt;" />
-        </fieldset>
-
-        <br/>
-
-        <div class="sortpicker">
-            <span class="fakelink" value="distance">Sort by distance</span>
-            &bull;
-            <span class="fakelink" value="alphabetical">Sort alphabetically</span>
-            <br/>
-            <br/>
-        </div>
-
-        <ul id="keyword_results" data-role="listview" class="distance_sortable">
-        </ul>
-
-    </div>
-</div>
-
-
-
-
-<div data-role="page" id="page-photo">
-    <div data-role="header">
-        <a href="#page-info">Back</a>
-        <h1>Photo</h1>
-    </div>
-    <div data-role="content">
-
-        <div style="text-align:center;">
-           <img id="photo" src="about:blank" />
-        </div>
-
-    </div>
-</div>
-
-
-
-
-<div data-role="page" id="page-elevationprofile">
-    <div data-role="header">
-        <a href="#page-getdirections">Back</a>
-        <h1>Elevation</h1>
-    </div>
-    <div data-role="content">
-
-        <div class="elevationprofileimage" style="text-align:center;">
-           <img id="elevation" src="about:blank" />
-        </div>
-
-    </div>
-</div>
-
-
-
-
-<div data-role="page" id="page-info">
-    <div data-role="header">
-        <a href="#page-map">Back</a>
-        <h1>Details</h1>
-        <a href="#page-map">Map</a>
-    </div>
-    <div data-role="content">
-
-        <div style="float:right; clear:both; text-align:center;">
-            <b>Directions:</b><br/>
-            <img src="images/directions_hike.svg"   class="moreinfo_directions_button" id="directions_hike" title="Get directions via hiking trails" />
-            <img src="images/directions_bike.svg"   class="moreinfo_directions_button" id="directions_bike" title="Get directions via bicycle trails" />
-            <!--<img src="images/directions_bridle.svg" class="moreinfo_directions_button" id="directions_bridle" title="Get directions via equestrian trails" />-->
-            <img src="images/directions_car.svg"    class="moreinfo_directions_button" id="directions_car" title="Get driving directions" />
-            <img src="images/directions_bus.svg"    class="moreinfo_directions_button" id="directions_bus" title="Get directions via public transit" />
-        </div>
-
-        <div id="info-content"></div>
-
-        <input type="button" data-mini="true" id="show_on_map" value="Show on Map" />
-
-    </div>
-</div>
-
-
-
-
-<div data-role="page" id="page-settings">
-    <div data-role="header">
-        <a href="#page-map">Apply</a>
-        <h1>Map Settings</h1>
-    </div>
-    <div data-role="content">
-
-        <h3>Map Type</h3>
-        <fieldset data-role="controlgroup">
-        <label><input type="radio" name="basemap" value="terrain" checked="true" /> Map </label>
-        <label><input type="radio" name="basemap" value="photo" /> Satellite </label>
-        <label><input type="checkbox" id="basemap_offline_checkbox" value="1" /> Offline, use cached map data</label>
-        </fieldset>
-
-        <h3>Legend</h3>
-        <fieldset data-role="controlgroup" style="margin-left:25px;">
-
-            <b>POIs / Use Areas</b><br/>
-            <img class="legend" value="useareapois" style="display:block;" src="images/legend_useareapois.png" />
-
-            <b>Reservations</b><br/>
-            <img class="legend" value="reservations" style="display:block;" src="images/legend_parks.png" />
-
-            <b>Trail Tips</b><br/>
-            <img class="legend" value="markers_swgh" style="display:block;" src="images/legend_markers.png" />
-
-        </fieldset>
-
-        <h3>GPS Location</h3>
-        <div class="fakeinput" id="gps_location" style="text-align:center;">N 00 00.000 W 000 00.000</div>
-
-        <h3>Offline Map</h3>
-        <div data-role="controlgroup">
-            <a href="#page-seedcache" data-role="button" data-rel="dialog">Download map tiles</a>
-            <a href="#page-cachestatus" data-role="button" data-rel="dialog">Offline tile usage</a>
-        </div>
-
-        <div style="text-align:center;">
-            <br/>
-            <a href="#page-credits">About this app</a>
-        </div>
-
-    </div>
-</div>
-
-
-
-
-<div data-role="page" id="page-seedcache">
-    <div data-role="header" data-position="inline">
-    <h1>Download Tiles?</h1>
-    </div>
-
-    <div data-role="content">
-        <p>This will download map tiles within the current map view, so you can use the map without Internet access. This will take a while, and could use a few megabytes of network data. You may prefer to do this over a wifi connection.</p>
-        <a href="javascript:void(0);" name="seedcache" data-role="button" data-rel="back" data-theme="b">Download</a>
-        <a href="#page-settings" data-role="button" data-rel="back">Cancel</a>
-    </div>
-</div>
-
-
-
-
-<div data-role="page" id="page-cachestatus">
-    <div data-role="header" data-position="inline">
-    <h1>Offline Map Storage</h1>
-    </div>
-
-
-    <div data-role="content">
-        <input type="text" id="cachestatus_storage" value="Calculating" readonly="readonly" style="text-align:center;" />
-        <input type="text" id="cachestatus_files" value="Calculating" readonly="readonly" style="text-align:center;" />
-        <a href="#page-clearcache" data-role="button" name="clearcache">Delete offline tiles</a>
-        <a href="#page-settings" data-role="button" data-rel="back">Back</a>
-    </div>
-</div>
-
-
-
-
-<div data-role="page" id="page-getdirections">
-    <div data-role="header">
-        <a href="#page-map">Back</a>
-        <h1>Get Directions</h1>
-        <a href="#page-map">Map</a>
-    </div>
-    <div data-role="content">
-        <input type="hidden" id="directions_source_lat" value="" />
-        <input type="hidden" id="directions_source_lng" value="" />
-        <input type="hidden" id="directions_source_type" value="" />
-        <input type="hidden" id="directions_source_gid"  value="" />
-        <input type="hidden" id="directions_target_lat" value="" />
-        <input type="hidden" id="directions_target_lng" value="" />
-        <input type="hidden" id="directions_target_type" value="" />
-        <input type="hidden" id="directions_target_gid"  value="" />
-
-        <div id="getdirections_disabled">
-            Please select a destination.
-            <br/>
-            <input type="button" id="change_directions_target2" value="Select a destination" />
-        </div>
-        <div id="getdirections_enabled" style="display:none;">
-            <div id="change_directions_target">
-                <a href="#page-browse">change<br/>destination</a>
-            </div>
-
-            <fieldset data=role="controlgroup">
-                <select id="directions_reverse" data-mini="true">
-                <option value="to">Get directions to</option>
-                <option value="from">Get directions from</option>
-                </select>
-                <br/>
-
-                <div id="directions_target_title"></div>
-                <br/>
-
-                <select id="directions_type" data-mini="true">
-                <option value="gps">from your current location</option>
-                <option value="geocode">from a street address</option>
-                <option value="features">from a park feature or point of interest</option>
-                </select>
-
-                <div id="directions_type_geocode_wrap" style="display:none;">
-                    <input type="text" data-mini="true" id="directions_address" placeholder="enter address or place name" />
-                </div>
-
-                <select id="directions_via" data-mini="true"><!-- if the default changes, may need to change the via supplements below -->
-                <option value="bike">By bicycle</option>
-                <option value="car" selected="true">By car</option>
-                <option value="hike">By foot</option>
-                <!--<option value="bridle">By horse</option>-->
-                <option value="bus">By public transportation</option>
-                </select>
-
-                <span id="directions_via_bike_wrap" style="display:none;"><!-- hide because Car is default -->
-                    <select id="directions_via_bike" data-mini="true">
-                    <option value="bike_advanced">Advanced</option>
-                    <option value="bike_intermediate">Intermediate</option>
-                    <option value="bike_beginner">Beginner</option>
-                    <option value="bike_novice">Novice</option>
-                    </select>
-                </span>
-
-            <select id="directions_prefer" data-mini="true">
-                <option value="recommended" selected="true">Recommended route</option>
-                <option value="shortest">Shortest route</option>
-                <!--<option value="fastest">Fastest route</option>-->
-            </select>
-
-            <span id="directions_button_wrapper">
-                <input type="button" data-mini="true" id="directions_button" value="Get directions" value0="Loading" value1="Get directions" />
-            </span>
-            </fieldset>
-        <br/>
-
-        <ul id="directions_steps" data-role="listview"></ul>
-    </div>
-
-    </div>
-</div>
-
-
-
-
-<div data-role="page" id="page-loops-search">
-    <div data-role="header">
-        <a href="#page-browse">Back</a>
+        <a href="#page-find">Back</a>
         <h1>Loops &amp; Routes</h1>
         <a href="#page-map">Map</a>
     </div>
@@ -592,6 +307,113 @@
         </ul>
     </div>
 </div>
+
+
+
+
+<div data-role="page" id="page-find-results">
+    <div data-role="header">
+        <a href="#page-find">Back</a>
+        <h1>Find</h1>
+        <a href="#page-map">Map</a>
+    </div>
+    <div data-role="content">
+
+        <div class="sortpicker">
+            <span class="fakelink" value="distance">Sort by distance</span>
+            &bull;
+            <span class="fakelink" value="alphabetical">Sort alphabetically</span>
+        </div>
+
+        <ul id="search_results" data-role="listview" data-inset="true" class="distance_sortable">
+        </ul>
+
+    </div>
+</div>
+
+
+
+
+
+
+<div data-role="page" id="page-settings">
+    <div data-role="header">
+        <a href="#page-map">Apply</a>
+        <h1>Map Settings</h1>
+    </div>
+    <div data-role="content">
+
+        <h3>Map Type</h3>
+        <fieldset data-role="controlgroup">
+        <label><input type="radio" name="basemap" value="terrain" checked="true" /> Map </label>
+        <label><input type="radio" name="basemap" value="photo" /> Satellite </label>
+        <label><input type="checkbox" id="basemap_offline_checkbox" value="1" /> Offline, use cached map data</label>
+        </fieldset>
+
+        <h3>Legend</h3>
+        <fieldset data-role="controlgroup" style="margin-left:25px;">
+
+            <b>POIs / Use Areas</b><br/>
+            <img class="legend" value="useareapois" style="display:block;" src="images/legend_useareapois.png" />
+
+            <b>Reservations</b><br/>
+            <img class="legend" value="reservations" style="display:block;" src="images/legend_parks.png" />
+
+            <b>Trail Tips</b><br/>
+            <img class="legend" value="markers_swgh" style="display:block;" src="images/legend_markers.png" />
+
+        </fieldset>
+
+        <h3>GPS Location</h3>
+        <div class="fakeinput" id="gps_location" style="text-align:center;">N 00 00.000 W 000 00.000</div>
+
+        <h3>Offline Map</h3>
+        <div data-role="controlgroup">
+            <a href="#page-seedcache" data-role="button" data-rel="dialog">Download map tiles</a>
+            <a href="#page-cachestatus" data-role="button" data-rel="dialog">Offline tile usage</a>
+        </div>
+
+        <div style="text-align:center;">
+            <br/>
+            <a href="#page-credits">About this app</a>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<div data-role="page" id="page-seedcache">
+    <div data-role="header" data-position="inline">
+    <h1>Download Tiles?</h1>
+    </div>
+
+    <div data-role="content">
+        <p>This will download map tiles within the current map view, so you can use the map without Internet access. This will take a while, and could use a few megabytes of network data. You may prefer to do this over a wifi connection.</p>
+        <a href="javascript:void(0);" name="seedcache" data-role="button" data-rel="back" data-theme="b">Download</a>
+        <a href="#page-settings" data-role="button" data-rel="back">Cancel</a>
+    </div>
+</div>
+
+
+
+
+<div data-role="page" id="page-cachestatus">
+    <div data-role="header" data-position="inline">
+    <h1>Offline Map Storage</h1>
+    </div>
+
+
+    <div data-role="content">
+        <input type="text" id="cachestatus_storage" value="Calculating" readonly="readonly" style="text-align:center;" />
+        <input type="text" id="cachestatus_files" value="Calculating" readonly="readonly" style="text-align:center;" />
+        <a href="#page-clearcache" data-role="button" name="clearcache">Delete offline tiles</a>
+        <a href="#page-settings" data-role="button" data-rel="back">Back</a>
+    </div>
+</div>
+
+
 
 
 

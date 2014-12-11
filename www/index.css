@@ -126,6 +126,12 @@ li.directions_functions {
 }
 
 
+
+#page-find-pois ul[data-role="listview"] img.ui-li-icon {
+    width:16px;
+    height:16px;
+}
+
 /* global font stuff */
 
 .ui-header {
@@ -359,7 +365,7 @@ div.fakeinput {
     text-align:center;
 }
 
-#page-browse-results .sortpicker {
+#page-find-results .sortpicker {
     display:block;
 }
 
@@ -376,7 +382,7 @@ div.elevationprofileimage img {
 
 /* icons in the Find menu */
 
-#page-browse ul[data-role="listview"] li img {
+#page-find ul[data-role="listview"] li img {
     margin-top: -5px; /* hack to make the icons align to the text */
 }
 
