@@ -68,7 +68,7 @@ var SKIP_TO_DIRECTIONS = false;
 var ELEVATION_PROFILE     = null;
 
 // styles of lines and then the Linestring objects themselves
-// used for drawing h'ighlight borders on things, and for drawing the path of directions onto the map
+// used for drawing highlight borders on things, and for drawing the path of directions onto the map
 var DIRECTIONS_LINE       = null;
 var DIRECTIONS_LINE_STYLE = { color:"#0000FF", weight:5, opacity:1.00, clickable:false, smoothFactor:0.25 };
 var HIGHLIGHT_LINE       = null;
