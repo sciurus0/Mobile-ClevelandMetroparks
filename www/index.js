@@ -434,7 +434,7 @@ function initFindLoops() {
         var params = {};
         params.paved       = $('#page-find-loops select[name="paved"]').val();
         params.reservation = $('#page-find-loops select[name="reservation"]').val();
-        params.uses        = $('#page-find-loops img[data-field="activity"][data-selected]').attr('data-value');
+        params.filter_type = $('#page-find-loops img[data-field="activity"][data-selected]').attr('data-value');
         params.minfeet     = 5280 * $('#page-find-loops img[data-field="length"][data-selected]').attr('data-min');
         params.maxfeet     = 5280 * $('#page-find-loops img[data-field="length"][data-selected]').attr('data-max');
         params.minseconds  = 3600 * $('#page-find-loops input[name="duration_min"]').val();
@@ -806,7 +806,16 @@ function searchLoops(options) {
     $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/search_loops', params, function (results) {
         $.mobile.hidePageLoadingMsg();
-        searchProcessResults(results, 'Featured Trails', '#page-find-loops');
+          // this endpoint is a little unusual
+          // we compose the note attribute from the duration and distance fields
+          // and the 'name' field is misnamed 'title'
+          var cookedresults = [];
+          for (var q=0, p=results.length; q<p; q++) {
+                  results[q].note = results[q].distance + ', ' + results[q].duration;
+                  results[q].name = results[q].title;
+                  cookedresults.push(results[q]);
+          }
+          searchProcessResults(cookedresults, 'Featured Trails', '#page-find-loops');
     }, 'json').error(function (error) {
         searchProcessError(error);
     });
