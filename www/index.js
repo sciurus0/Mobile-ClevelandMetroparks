@@ -799,8 +799,15 @@ function searchTrails(options) {
 }
 
 function searchLoops(options) {
-    //gda
-    for (var i in options) alert(i + ' = ' + options[i] );
+    var params = options;
+
+    $.mobile.showPageLoadingMsg("a", "Loading", false);
+    $.get( BASE_URL + '/ajax/search_loops', params, function (results) {
+        $.mobile.hidePageLoadingMsg();
+        searchProcessResults(results, 'Featured Trails', '#page-find-loops');
+    }, 'json').error(function (error) {
+        searchProcessError(error);
+    });
 }
 
 function searchProcessError(error) {
