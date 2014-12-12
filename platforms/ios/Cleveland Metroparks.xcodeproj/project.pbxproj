@@ -6,9 +6,11 @@
 	objectVersion = 46;
 	objects = {
 /* Begin PBXBuildFile section */
+		1487274C180B436BB17F4717 /* CDVConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 7244B9C4317C4384A208BC95 /* CDVConnection.m */; };
 		1D3623260D0F684500981E51 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		2C1C1E33707D4B938C83AB01 /* CDVReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AD044A730340B8942FD35D /* CDVReachability.m */; };
 		301BF552109A68D80062928A /* libCordova.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 301BF535109A57CC0062928A /* libCordova.a */; };
 		302D95F114D2391D003F00A1 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 302D95EF14D2391D003F00A1 /* MainViewController.m */; };
 		302D95F214D2391D003F00A1 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 302D95F014D2391D003F00A1 /* MainViewController.xib */; };
@@ -45,10 +47,11 @@
 		7FB6774182DF4A7B95E6BD59 /* CDVAssetLibraryFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 00A3365A231F49FD9C0E3B5D /* CDVAssetLibraryFilesystem.m */; };
 		86CD06F4C3914DDDAFEF7CC0 /* CDVFileTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = F849A0CC404146A9ABC7E257 /* CDVFileTransfer.m */; };
 		D4A0D8761607E02300AEF8BB /* Default-568h@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */; };
-		F8159982B2DC42E98067DF2A /* CDVLocalFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C8BCA78431044BBA0A21E1E /* CDVLocalFilesystem.m */; };
-		1487274C180B436BB17F4717 /* CDVConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 7244B9C4317C4384A208BC95 /* CDVConnection.m */; };
-		2C1C1E33707D4B938C83AB01 /* CDVReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AD044A730340B8942FD35D /* CDVReachability.m */; };
 		E848901D8B7649B79AE60EC4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 971C644650004AE3820B691C /* SystemConfiguration.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		F8159982B2DC42E98067DF2A /* CDVLocalFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C8BCA78431044BBA0A21E1E /* CDVLocalFilesystem.m */; };
+		FAB27CEB1A39161B0080A42F /* BradleyWoods.gpx in Resources */ = {isa = PBXBuildFile; fileRef = FAB27CEA1A39161B0080A42F /* BradleyWoods.gpx */; };
+		FAB27CED1A3916210080A42F /* BrooksideZoo.gpx in Resources */ = {isa = PBXBuildFile; fileRef = FAB27CEC1A3916210080A42F /* BrooksideZoo.gpx */; };
+		FAB27CEF1A3916290080A42F /* MillStreamRunSouth.gpx in Resources */ = {isa = PBXBuildFile; fileRef = FAB27CEE1A3916290080A42F /* MillStreamRunSouth.gpx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,8 +103,10 @@
 		38965C158B06489696060035 /* CoreLocation.framework */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		5C8BCA78431044BBA0A21E1E /* CDVLocalFilesystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVLocalFilesystem.m; path = org.apache.cordova.file/CDVLocalFilesystem.m; sourceTree = "<group>"; };
+		6647D468AE3440B19DD12D7F /* CDVConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDVConnection.h; path = "org.apache.cordova.network-information/CDVConnection.h"; sourceTree = "<group>"; };
 		6A9BFC081A194D30A69055B7 /* CDVLocalFilesystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDVLocalFilesystem.h; path = org.apache.cordova.file/CDVLocalFilesystem.h; sourceTree = "<group>"; };
 		6C82B61158524619BCE13673 /* CDVDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVDevice.m; path = org.apache.cordova.device/CDVDevice.m; sourceTree = "<group>"; };
+		7244B9C4317C4384A208BC95 /* CDVConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVConnection.m; path = "org.apache.cordova.network-information/CDVConnection.m"; sourceTree = "<group>"; };
 		7E7966D41810823500FA85AD /* icon-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-40.png"; sourceTree = "<group>"; };
 		7E7966D51810823500FA85AD /* icon-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-40@2x.png"; sourceTree = "<group>"; };
 		7E7966D61810823500FA85AD /* icon-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-50.png"; sourceTree = "<group>"; };
@@ -115,6 +120,9 @@
 		8D1107310486CEB800E47090 /* Cleveland Metroparks-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Cleveland Metroparks-Info.plist"; path = "../Cleveland Metroparks-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		910A34149B1A416C8B8D1C2C /* CDVLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDVLocation.h; path = org.apache.cordova.geolocation/CDVLocation.h; sourceTree = "<group>"; };
 		965BA641D0084FAFBB20935D /* CDVDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDVDevice.h; path = org.apache.cordova.device/CDVDevice.h; sourceTree = "<group>"; };
+		971C644650004AE3820B691C /* SystemConfiguration.framework */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		A5AD044A730340B8942FD35D /* CDVReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVReachability.m; path = "org.apache.cordova.network-information/CDVReachability.m"; sourceTree = "<group>"; };
+		C43691FA2F5A4CDCA0EE4016 /* CDVReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDVReachability.h; path = "org.apache.cordova.network-information/CDVReachability.h"; sourceTree = "<group>"; };
 		D42A6675657C4B1EB460D2BF /* CDVLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVLocation.m; path = org.apache.cordova.geolocation/CDVLocation.m; sourceTree = "<group>"; };
 		D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x~iphone.png"; sourceTree = "<group>"; };
 		E44A0F553C55463BAB75E94C /* CDVFileTransfer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDVFileTransfer.h; path = "org.apache.cordova.file-transfer/CDVFileTransfer.h"; sourceTree = "<group>"; };
@@ -125,11 +133,9 @@
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = "Cleveland Metroparks/config.xml"; sourceTree = "<group>"; };
 		F849A0CC404146A9ABC7E257 /* CDVFileTransfer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVFileTransfer.m; path = "org.apache.cordova.file-transfer/CDVFileTransfer.m"; sourceTree = "<group>"; };
 		FA855CD24B1547A79C366C2C /* CDVFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDVFile.h; path = org.apache.cordova.file/CDVFile.h; sourceTree = "<group>"; };
-		7244B9C4317C4384A208BC95 /* CDVConnection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVConnection.m"; path = "org.apache.cordova.network-information/CDVConnection.m"; sourceTree = "<group>"; fileEncoding = 4; };
-		A5AD044A730340B8942FD35D /* CDVReachability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVReachability.m"; path = "org.apache.cordova.network-information/CDVReachability.m"; sourceTree = "<group>"; fileEncoding = 4; };
-		6647D468AE3440B19DD12D7F /* CDVConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVConnection.h"; path = "org.apache.cordova.network-information/CDVConnection.h"; sourceTree = "<group>"; fileEncoding = 4; };
-		C43691FA2F5A4CDCA0EE4016 /* CDVReachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVReachability.h"; path = "org.apache.cordova.network-information/CDVReachability.h"; sourceTree = "<group>"; fileEncoding = 4; };
-		971C644650004AE3820B691C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "SystemConfiguration.framework"; path = "System/Library/Frameworks/SystemConfiguration.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
+		FAB27CEA1A39161B0080A42F /* BradleyWoods.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = BradleyWoods.gpx; sourceTree = "<group>"; };
+		FAB27CEC1A3916210080A42F /* BrooksideZoo.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = BrooksideZoo.gpx; sourceTree = "<group>"; };
+		FAB27CEE1A3916290080A42F /* MillStreamRunSouth.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = MillStreamRunSouth.gpx; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +179,9 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				FAB27CEE1A3916290080A42F /* MillStreamRunSouth.gpx */,
+				FAB27CEC1A3916210080A42F /* BrooksideZoo.gpx */,
+				FAB27CEA1A39161B0080A42F /* BradleyWoods.gpx */,
 				EB87FDF41871DAF40020F90C /* config.xml */,
 				EB87FDF31871DA8E0020F90C /* www */,
 				EB87FDF21871DA7A0020F90C /* merges */,
@@ -381,9 +390,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E7966E41810823500FA85AD /* icon-76.png in Resources */,
+				FAB27CEF1A3916290080A42F /* MillStreamRunSouth.gpx in Resources */,
 				7E7966DF1810823500FA85AD /* icon-40@2x.png in Resources */,
 				308D05371370CCF300D202BF /* icon-72.png in Resources */,
 				30B4F30119D5E07200D9F7D8 /* Default-736h.png in Resources */,
+				FAB27CEB1A39161B0080A42F /* BradleyWoods.gpx in Resources */,
 				308D05381370CCF300D202BF /* icon.png in Resources */,
 				308D05391370CCF300D202BF /* icon@2x.png in Resources */,
 				302D95F214D2391D003F00A1 /* MainViewController.xib in Resources */,
@@ -394,6 +405,7 @@
 				3088BBBE154F3926009F9C59 /* Default-Landscape~ipad.png in Resources */,
 				3088BBBF154F3926009F9C59 /* Default-Portrait@2x~ipad.png in Resources */,
 				7E7966E71810823500FA85AD /* icon-small@2x.png in Resources */,
+				FAB27CED1A3916210080A42F /* BrooksideZoo.gpx in Resources */,
 				3088BBC0154F3926009F9C59 /* Default-Portrait~ipad.png in Resources */,
 				30B4F30019D5E07200D9F7D8 /* Default-667h.png in Resources */,
 				7E7966DE1810823500FA85AD /* icon-40.png in Resources */,
