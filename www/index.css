@@ -364,9 +364,13 @@ div.fakeinput {
     text-align:center;
 }
 .sortpicker a {
+    font-weight:normal;
+    text-decoration:underline;
 }
 .sortpicker a.active {
     font-weight:bold;
+    color:black !important;
+    text-decoration:none;
 }
 
 

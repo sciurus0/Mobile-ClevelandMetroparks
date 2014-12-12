@@ -885,7 +885,7 @@ function searchProcessResults(resultlist,title,from) {
         // the result entry has a copy of the raw data in it, so it can do intelligent things when the need arises
         // it also has the distance in meters (well, a 0 for now), which is used for sorting the results list by distance
         // and has the title/name of the place as a datum, which is used for sorting the results list by name
-        var li = $('<li></li>').addClass('zoom').appendTo(target).data('raw',result).data('title',raw.name).data('meters',0);
+        var li = $('<li></li>').addClass('zoom').appendTo(target).data('raw',result).data('title',result.name).data('meters',0);
         li.click(function () {
             var info = $(this).data('raw');
             showInfoPanel(info);
@@ -905,19 +905,19 @@ function searchProcessResults(resultlist,title,from) {
     calculateDistancesAndSortSearchResultsList();
 }
 
-//gda
 // note: this is for Search Results, which is not the same as Near You Now aka Radar
 function calculateDistancesAndSortSearchResultsList() {
-    var sortby = $('#page-find-results div.sortpicker a').attr('data-sortby');
+    var sortby = $('#page-find-results div.sortpicker a.active').attr('data-sortby');
     var target = $('#search_results');
+    var here   = MARKER_GPS.getLatLng();
 
     // step 1: recalculate the distance
     // seems wasteful if we're gonna sort by name anyway, but it's not: we still need to update distance readouts even if we're not sorting by distance
     target.children().each(function () {
         var raw     = $(this).data('raw');
         var point   = L.latLng(raw.lat,raw.lng);
-        var meters  = Math.round( MARKER_GPS.getLatLng().distanceTo(destpoint) );
-        var bearing = MARKER_GPS.getLatLng().bearingWordTo(destpoint);
+        var meters  = Math.round( MARKER_GPS.getLatLng().distanceTo(point) );
+        var bearing = here.bearingWordTo(point);
 
         // save the distance in meters, for possible distance sorting
         $(this).data('meters',meters);
@@ -930,18 +930,21 @@ function calculateDistancesAndSortSearchResultsList() {
     });
 
     // step 2: perform the sort
-    switch (DEFAULT_SORT) {
+    switch (sortby) {
         case 'distance':
-            target.children('li').sort(function (p,q) {
-                return ( $(p).data('meters') > $(q).data('meters') ) ? 1 : -1;
-            });
+            target.children('li').sort(_sortResultsByDistance);
             break;
         case 'alphabetical':
-            target.children('li').sort(function (p,q) {
-                return ( $(p).data('title') > $(q).data('title') ) ? 1 : -1;
-            });
+            target.children('li').sort(_sortResultsByName);
             break;
     }
+    target.listview('refresh',true);
+}
+function _sortResultsByDistance(p,q) {
+    return ( $(p).data('meters') > $(q).data('meters') ) ? 1 : -1;
+}
+function _sortResultsByName(p,q) {
+    return ( $(p).data('title') > $(q).data('title') ) ? 1 : -1;
 }
 
 //gda
