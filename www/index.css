@@ -361,12 +361,12 @@ div.fakeinput {
 /* toggle for sorting alphabetically or by distance, hidden by default but added as searches happen */
 
 .sortpicker {
-    display:none;
     text-align:center;
 }
-
-#page-find-results .sortpicker {
-    display:block;
+.sortpicker a {
+}
+.sortpicker a.active {
+    font-weight:bold;
 }
 
 

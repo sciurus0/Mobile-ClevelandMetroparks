@@ -221,6 +221,7 @@ function init() {
     initFindTrails();
     initFindLoops();
     initFindKeyword();
+    initResultsPanel();
 
     // ready!
     // look at the Skip Welcome setting and see whether we should go there, or to the map
@@ -481,6 +482,16 @@ function initFindKeyword() {
         var keyword = $(this).closest('fieldset').find('input[type="text"]').val().trim();
         if (! keyword ) return false;
         searchKeyword(keyword);
+    });
+}
+
+function initResultsPanel() {
+    // the Results can be sorted alphabetically, or by their distance from you
+    // enable the buttons which switch this: they toggle which one is "active" and then do a sort immediately
+    // see also the calculateDistancesAndSortSearchResultsList() function; it examines these sortpicker buttons to determine which one is active
+    $('#page-find-results div.sortpicker a').click(function () {
+        $(this).addClass('active').siblings().removeClass('active');
+        calculateDistancesAndSortSearchResultsList();
     });
 }
 
@@ -872,7 +883,9 @@ function searchProcessResults(resultlist,title,from) {
         var result = resultlist[i];
 
         // the result entry has a copy of the raw data in it, so it can do intelligent things when the need arises
-        var li = $('<li></li>').addClass('zoom').appendTo(target).data('raw',result);
+        // it also has the distance in meters (well, a 0 for now), which is used for sorting the results list by distance
+        // and has the title/name of the place as a datum, which is used for sorting the results list by name
+        var li = $('<li></li>').addClass('zoom').appendTo(target).data('raw',result).data('title',raw.name).data('meters',0);
         li.click(function () {
             var info = $(this).data('raw');
             showInfoPanel(info);
@@ -892,8 +905,43 @@ function searchProcessResults(resultlist,title,from) {
     calculateDistancesAndSortSearchResultsList();
 }
 
+//gda
+// note: this is for Search Results, which is not the same as Near You Now aka Radar
 function calculateDistancesAndSortSearchResultsList() {
-    //gda   aka sortLists()
+    var sortby = $('#page-find-results div.sortpicker a').attr('data-sortby');
+    var target = $('#search_results');
+
+    // step 1: recalculate the distance
+    // seems wasteful if we're gonna sort by name anyway, but it's not: we still need to update distance readouts even if we're not sorting by distance
+    target.children().each(function () {
+        var raw     = $(this).data('raw');
+        var point   = L.latLng(raw.lat,raw.lng);
+        var meters  = Math.round( MARKER_GPS.getLatLng().distanceTo(destpoint) );
+        var bearing = MARKER_GPS.getLatLng().bearingWordTo(destpoint);
+
+        // save the distance in meters, for possible distance sorting
+        $(this).data('meters',meters);
+
+        // make up the text:  12.3 mi NE   then fill it in
+        var miles = (meters / 1609.344).toFixed(1);
+        var feet  = Math.round( meters * 3.2808399 );
+        var text  = ( (feet > 900) ? miles + ' mi' : feet + ' ft' ) + ' ' + bearing;
+        $(this).find('span.zoom_distance').text(text);
+    });
+
+    // step 2: perform the sort
+    switch (DEFAULT_SORT) {
+        case 'distance':
+            target.children('li').sort(function (p,q) {
+                return ( $(p).data('meters') > $(q).data('meters') ) ? 1 : -1;
+            });
+            break;
+        case 'alphabetical':
+            target.children('li').sort(function (p,q) {
+                return ( $(p).data('title') > $(q).data('title') ) ? 1 : -1;
+            });
+            break;
+    }
 }
 
 //gda

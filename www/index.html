@@ -259,13 +259,13 @@
     <div data-role="content">
 
         <div class="sortpicker">
-            <span class="fakelink" value="distance">Sort by distance</span>
+            <a href="javascript:void(0);" class="active" data-sortby="distance">Sort by distance</span>
             &bull;
-            <span class="fakelink" value="alphabetical">Sort alphabetically</span>
+            <a href="javascript:void(0);" data-sortby="alphabetical">Sort alphabetically</span>
         </div>
 
         <!-- populated by searchProcessResults() -->
-        <ul id="search_results" data-role="listview" data-inset="true" class="distance_sortable">
+        <ul id="search_results" data-role="listview" data-inset="true">
         </ul>
 
     </div>
