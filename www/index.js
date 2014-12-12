@@ -222,7 +222,6 @@ function init() {
     initFindLoops();
     initFindKeyword();
 
-
     // ready!
     // look at the Welcome panel and see whether we should go there, or to the map
     var welcome = $('#page-welcome input[name="skip_welcome"]').not(':checked');
