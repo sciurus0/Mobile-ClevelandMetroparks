@@ -223,8 +223,8 @@ function init() {
     initFindKeyword();
 
     // ready!
-    // look at the Welcome panel and see whether we should go there, or to the map
-    var welcome = $('#page-welcome input[name="skip_welcome"]').not(':checked');
+    // look at the Skip Welcome setting and see whether we should go there, or to the map
+    var welcome = ! window.localStorage.getItem('skip_welcome');
     if (! welcome) $.mobile.changePage('#page-map');
 }
 
@@ -291,10 +291,13 @@ function initWelcomePanel() {
         window.localStorage.setItem('skip_welcome',checked);
     });
 
-    // load up the current checkbox setting, or else default to false (do not skip welcome)
-    // and trigger the checkbox from it
+    // load up the current checkbox setting, or else set it to false ("do not skip welcome") if not yet defined
+    // trigger the checkbox from it so there's the visual indicator
     var setting = window.localStorage.getItem('skip_welcome');
-    if (typeof setting === 'undefined') setting = false;
+    if (typeof setting === 'undefined') {
+        setting = false;
+        window.localStorage.setItem('skip_welcome',false);
+    }
     if (setting) {
         $('#page-welcome input[name="skip_welcome"]').prop('checked','checked').checkboxradio('refresh');
     } else {
