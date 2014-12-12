@@ -354,9 +354,10 @@ function initFindTrails() {
         $('<option></option>').text(LIST_RESERVATIONS[i]).prop('value',LIST_RESERVATIONS[i]).appendTo(target);
     }
 
-    // the icons for selecting the trail type; not as clean as using real stateful form elements, but it can work
+    // the icons for selecting the trail use type; not as clean as using real stateful form elements, but it can work
     // especially not "clean" in that client wants to swap images, not a CSS highlight
-    // then select the first one
+    // then select the first one, so it's highlighted and a value exists
+    // see also initFindLoops() for something quite similar (two of them!)
     $('#page-find-trails img[data-field="activity"]').click(function () {
         // tag this one AND ONLY THIS ONE as being the data-selected element
         //      this also means some URL wapping to switch out icons
@@ -383,7 +384,6 @@ function initFindTrails() {
     });
 }
 
-//gda
 function initFindLoops() {
     // start by populating the selector for which Reservation they want (including a blank/ALL option)
     var target = $('#page-find-loops select[name="reservation"]').empty();
@@ -391,6 +391,55 @@ function initFindLoops() {
     for (var i=0, l=LIST_RESERVATIONS.length; i<l; i++) {
         $('<option></option>').text(LIST_RESERVATIONS[i]).prop('value',LIST_RESERVATIONS[i]).appendTo(target);
     }
+
+    // the icons for selecting the loops' use type; not as clean as using real stateful form elements, but it can work
+    // especially not "clean" in that client wants to swap images, not a CSS highlight
+    // then select the first one, so it's highlighted and a value exists
+    // see also initFindTrails() for something quite similar
+    $('#page-find-loops img[data-field="activity"]').click(function () {
+        // tag this one AND ONLY THIS ONE as being the data-selected element
+        //      this also means some URL wapping to switch out icons
+        // data endpoint was specifically meant to accept multiple use types, but later they decided that they prefer to use only one
+        var src = $(this).prop('src').replace('_off.png', '_on.png');
+        $(this).attr('data-selected','true').prop('src', src);
+
+        $(this).siblings('img[data-field="activity"]').each(function () {
+            var src = $(this).prop('src').replace('_on.png', '_off.png');
+            $(this).removeAttr('data-selected').prop('src',src);
+        })
+    }).first().click();
+
+    // distance filter: also tapping icons and also only one choice allowed, structurally identical to the use type filter above
+    // again, select the first one, so it's highlighted and a value exists
+    $('#page-find-loops img[data-field="length"]').click(function () {
+        // tag this one AND ONLY THIS ONE as being the data-selected element
+        //      this also means some URL wapping to switch out icons
+        // data endpoint was specifically meant to accept multiple use types, but later they decided that they prefer to use only one
+        var src = $(this).prop('src').replace('_off.png', '_on.png');
+        $(this).attr('data-selected','true').prop('src', src);
+
+        $(this).siblings('img[data-field="activity"]').each(function () {
+            var src = $(this).prop('src').replace('_on.png', '_off.png');
+            $(this).removeAttr('data-selected').prop('src',src);
+        })
+    }).first().click();
+
+    // the Go button
+    // collect the form elements and pass them to the searchificator-inator
+    // but wait! there's not just form elements, but weirdness like icons with a data-selected= attribute
+    // and converting units: length & duration filters are in miles and minutes but endpoint wants feet and seconds
+    $('#page-find-trails input[type="button"]').click(function () {
+        var params = {};
+        params.paved       = $('#page-find-loops select[name="paved"]').val();
+        params.reservation = $('#page-find-loops select[name="reservation"]').val();
+        params.uses        = $('#page-find-loops img[data-field="activity"][data-selected]').attr('data-value');
+        params.minfeet     = 5280 * $('#page-find-loops img[data-field="length"][data-selected]').attr('data-min');
+        params.maxfeet     = 5280 * $('#page-find-loops img[data-field="length"][data-selected]').attr('data-max');
+        params.minseconds  = 3600 * $('#page-find-loops input[name="duration_min"]').val();
+        params.maxseconds  = 3600 * $('#page-find-loops input[name="duration_max"]').val();
+
+        searchLoops(params);
+    });
 }
 
 function initFindKeyword() {
@@ -747,6 +796,11 @@ function searchTrails(options) {
     }, 'json').error(function (error) {
         searchProcessError(error);
     });
+}
+
+function searchLoops(options) {
+    //gda
+    for (var i in options) alert(i + ' = ' + options[i] );
 }
 
 function searchProcessError(error) {

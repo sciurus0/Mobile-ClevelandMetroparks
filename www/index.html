@@ -157,40 +157,34 @@
         <h1>Trail Finder</h1>
     </div>
     <div data-role="content">
-
-        <div>
-            <!-- UI is tapping icons, not a SELECT element; see initFindTrails() and searchTrails() -->
-            <div style="text-align:center;">
-                <b>Select Activity</b><br/>
-                <img data-field="activity" data-value="Hiking & Walking"  src="images/trailfinder_hike_off.png" />
-                <img data-field="activity" data-value="Biking"            src="images/trailfinder_bike_off.png" />
-                <img data-field="activity" data-value="Horseback Riding"  src="images/trailfinder_horse_off.png" />
-                <img data-field="activity" data-value="Mountain Biking"   src="images/trailfinder_mtnbike_off.png" />
-            </div>
-
-            <!-- Pavement selector: they want it hidden but endpoint needs it, and they will likely want it back anyway -->
-            <div style="text-align:center; display:none;">
-            <b>Pavement:</b><br/>
-                <select name="paved">
-                <option value="">No preference</option>
-                <option value="Yes">Paved</option>
-                <option value="No">Unpaved</option>
-            </select>
-            </div>
-
-            <!-- Reservation filter: populated from a list, see initFindTrails() -->
-            <div style="text-align:center; margin-top:1em;">
-                <b>Select Location</b><br/>
-                <select name="reservation">
-                <option value="">(any reservation)</option>
-                </select>
-            </div>
-
-            <div style="text-align:center; margin-top:1em;">
-                <input type="button" data-icon="search" data-iconpos="right" value="Search" />
-            </div>
+       <!-- UI is tapping icons, not a SELECT element; see initFindTrails() and searchTrails() -->
+        <div style="text-align:center;">
+            <b>Select Activity</b><br/>
+            <img data-field="activity" data-value="Hiking & Walking"  src="images/trailfinder_hike_off.png" />
+            <img data-field="activity" data-value="Biking"            src="images/trailfinder_bike_off.png" />
+            <img data-field="activity" data-value="Horseback Riding"  src="images/trailfinder_horse_off.png" />
+            <img data-field="activity" data-value="Mountain Biking"   src="images/trailfinder_mtnbike_off.png" />
         </div>
 
+        <!-- Pavement selector: they want it hidden but endpoint needs it, and they will likely want it back anyway -->
+        <div style="text-align:center; display:none;">
+        <b>Pavement:</b><br/>
+            <select name="paved">
+            <option value="">No preference</option>
+            <option value="Yes">Paved</option>
+            <option value="No">Unpaved</option>
+        </select>
+        </div>
+
+        <!-- Reservation filter: populated from a list, see initFindTrails() -->
+        <div style="text-align:center; margin-top:1em;">
+            <b>Select Location</b><br/>
+            <select name="reservation"></select>
+        </div>
+
+        <div style="text-align:center; margin-top:1em;">
+            <input type="button" data-icon="search" data-iconpos="right" value="Search" />
+        </div>
     </div>
 </div>
 
@@ -202,63 +196,46 @@
         <h1>Loops &amp; Routes</h1>
     </div>
     <div data-role="content">
+        <!-- UI changed to tapping icons; see initFindLoops() and searchLoops() -->
+        <div style="text-align:center;">
+            <b>Select Activity</b><br/>
+            <img data-field="activity" data-value="hike"          src="images/trailfinder_hike_off.png" />
+            <img data-field="activity" data-value="bike_Advanced" src="images/trailfinder_bike_off.png" />
+            <img data-field="activity" data-value="bridle"        src="images/trailfinder_horse_off.png" />
+            <img data-field="activity" data-value="mountainbike"  src="images/trailfinder_mtnbike_off.png" />
+        </div>
 
-        <fieldset data=role="controlgroup">
-            <!-- specification and data endpoint, require this select element: but UI changed to tapping icons; see initFindLoops() and searchLoops() -->
-            <select name="type" data-mini="true" style="display:none;">
-            <option value="hike">Hiking / Walking</option>
-            <option value="bike_Novice">Bicycle, Novice</option>
-            <option value="bike_Beginner">Bicycle, Beginner</option>
-            <option value="bike_Intermediate">Bicycle, Intermediate</option>
-            <option value="bike_Advanced">Bicycle, Advanced</option>
-            <option value="bridle">Equestrian</option>
-            <option value="exercise">Exercise Trail</option>
-            <option value="mountainbike">Mountain Biking Trail</option>
-            </select>
-            <div id="loops_typeicons">
-                <img data-value="hike" src="images/trailfinder_hike_off.png" />
-                <img data-value="bike_Advanced" src="images/trailfinder_bike_off.png" />
-                <img data-value="bridle" src="images/trailfinder_horse_off.png" />
-                <img data-value="mountainbike" src="images/trailfinder_mtnbike_off.png" />
-            </div>
-
-            <!-- Pavement selector: they want it hidden but endpoint needs it, and they will likely want it back anyway -->
-            <select name ="paved" data-mini="true" style="display:none;">
+        <!-- Pavement selector: they want it hidden but endpoint needs it, and they will likely want it back anyway -->
+        <div style="text-align:center; display:none;">
+            <select name ="paved" data-mini="true">
             <option value="">Paved or unpaved</option>
             <option value="Yes">Paved</option>
             <option value="No">Unpaved</option>
             </select>
-
-            <!-- Reservation filter: populated from a list, see initFindTrails() -->
-            <select name="reservation" data-mini="true">
-            </select>
-        </fieldset>
-
-        <!-- GDA revisit this, May 2014, they want this hidden in favor of icons below, but still need the form controls internally -->
-        <div data-role="fieldcontain" style="display:none;">
-            <b>Length</b>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <span id="loops_filter_distance_min_text"></span> - <span id="loops_filter_distance_max_text"></span>
-            <br/>
-            Min: <input type="range" id="loops_filter_distance_min" min="0" max="100" value="0" />
-            <br/>
-            Max: <input type="range" id="loops_filter_distance_max" min="0" max="50" value="50" />
-        </div>
-        <div id="loops_filter_distancepicker">
-            <img data-min="0" data-max="2" src="images/trailfinder_distance1_off.png" />
-            <img data-min="2" data-max="5" src="images/trailfinder_distance2_off.png" />
-            <img data-min="5" data-max="10" src="images/trailfinder_distance3_off.png" />
-            <img data-min="10" data-max="100" src="images/trailfinder_distance4_off.png" />
         </div>
 
-        <div data-role="fieldcontain" id="loops_filter_duration" style="display:none;">
-            <b>Duration</b>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <span id="loops_filter_duration_min_text"></span> - <span id="loops_filter_duration_max_text"></span>
-            <br/>
-            Min: <input type="range" id="loops_filter_duration_min" min="0" max="300" value="0" />
-            <br/>
-            Max: <input type="range" id="loops_filter_duration_max" min="0" max="300" value="300" />
+        <!-- Reservation filter: populated from a list, see initFindTrails() -->
+        <div style="text-align:center; margin-top:1em;">
+            <b>Select Location</b><br/>
+            <select name="reservation"></select>
+        </div>
+
+        <!-- Length filter: featured loops have a known length and estimated durations, used for filtering -->
+        <!-- UI is tapping icons; see initFindLoops() and searchLoops() -->
+        <div style="text-align:center;  margin-top:1em;">
+            <b>Select Length</b><br/>
+            <img data-field="length" data-min="0"   data-max="2"    src="images/trailfinder_distance1_off.png" />
+            <img data-field="length" data-min="2"   data-max="5"    src="images/trailfinder_distance2_off.png" />
+            <img data-field="length" data-min="5"   data-max="10"   src="images/trailfinder_distance3_off.png" />
+            <img data-field="length" data-min="10"  data-max="100"  src="images/trailfinder_distance4_off.png" />
+        </div>
+
+        <!-- Duration filter: featured loops have a known length and estimated durations, used for filtering -->
+        <!-- the endpoint requires this, but this field is now shown to the user -->
+        <div style="text-align:center; display:none;">
+            <b>Select Duration</b><br/>
+            <input type="hidden" name="duration_min" value="0" />
+            <input type="hidden" name="duration_max" value="300" />
         </div>
 
         <div style="text-align:center; margin-top:1em;">
