@@ -77,6 +77,8 @@
         <h1>Near You</h1>
     </div>
     <div data-role="content">
+
+        <!-- Part 1: Enable Alerts and the (hidden) list of activities which will give an alert when seen within a given radius  -->
         <label><input type="checkbox" id="radar_enabled" /> Enable alerts</label>
         <br/>
         <div id="radar_config" style="display:none;">
@@ -94,15 +96,13 @@
             </select>
             <br/>
             <strong>Watch for these types of features:</strong>
-            <fieldset data-role="controlgroup">
+            <fieldset data-role="controlgroup" data-type="activities">
             <label><input type="checkbox" name="radar_category" value="Health Tips" checked="checked">Health Tips</label>
-<!--gda not implemented yet, see a future initRadar() function perhaps? -->
             </fieldset>
         </div>
 
-        <br/>
-
-        <ul id="alerts" data-role="listview">
+        <!-- the Radar listing, the closest X things to our current location -->
+        <ul id="nearby_listing" data-role="listview" style="margin-top:2em;">
         </ul>
     </div>
 </div>

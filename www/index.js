@@ -47,7 +47,7 @@ var MARKER_TO = L.marker(L.latLng(0,0), {
 
 // this Circle is used to show your radar on the screen
 // when radar is enabled, this updates to move with you and keep the selected radius
-var RADAR_CIRCLE = new L.Circle(L.latLng(0,0), 1);
+var RADAR_CIRCLE = new L.Circle(L.latLng(0,0), 1, { color:'0000FF', weight:1.5, fill:false });
 
 // bad hack
 // the More Info buttons call zoomElementClick() to show the panel with place info
@@ -79,6 +79,7 @@ var ALL_POIS = [];
 var AUTO_CENTER_ON_LOCATION = false;
 var AUTO_CENTER_ZOOMLEVEL   = 16;
 
+//gda remove this
 // sorting by distance, isn't always by distance
 // what type of sorting do they prefer?
 var DEFAULT_SORT = 'distance';
@@ -214,6 +215,7 @@ function init() {
     initCacheThenMap();
     initWelcomePanel();
     initSettingsPanel();
+    initNearbyPanel();
 
     // the various Find subtypes, which have surprisingly little in common
     // except that the results all go to a common results panel
@@ -354,6 +356,36 @@ function initSettingsPanel() {
             $('#cachestatus_storage').val(megabytes + ' ' + 'MB');
         });
     });
+}
+
+function initNearbyPanel() {
+    // populate the Alert Activities listview, with a list of activities
+    var target = $('#radar_config fieldset[data-role="controlgroup"][data-type="activities"]');
+    for (var i=0, l=LIST_ACTIVITIES.length; i<l; i++) {
+        var activity = LIST_ACTIVITIES[i];
+
+        // add the checkbox to the DOM and decorate it
+        var wrap     = $('<label></label>').appendTo(target);
+        var checkbox = $('<input></input>').prop('type','checkbox').prop('name','activity').prop('value',activity).text(activity);
+        checkbox.appendTo(wrap).checkboxradio('refresh')
+    }
+    target.listview('refresh',true);
+
+    // when the Enable Radar checkbox is toggled, toggle the #radar_config items below it
+    // and if we're turning it on, then perform a nearby search right now
+    // tip: the checked status of #radar_enabled is used by the onLocationFound handler, to determine whether to call searchNearby()
+    $('#radar_enabled').change(function () {
+        var viz = $(this).is(':checked');
+        if (viz) {
+            $('#radar_config').show();
+            $('#nearby_listing').show().listview('refresh');
+            searchNearby();
+        } else {
+            $('#radar_config').hide();
+            $('#nearby_listing').ty().hide();
+        }
+    });
+
 }
 
 function initFindPOIs() {
@@ -642,11 +674,10 @@ function handleLocationFound(event) {
     // sort any visible distance-sorted lists on the Results page
     calculateDistancesAndSortSearchResultsList();
 
-//gda
-/*
-    // adjust the Near You Now listing
-    updateNearYouNow();
-*/
+    // adjust the Nearby listing aka Radar
+    if ( $('#radar_enabled').is(':checked') ) {
+        searchNearby();
+    }
 
 //gda
 /*
@@ -857,6 +888,11 @@ function searchLoops(options) {
     }, 'json').error(function (error) {
         searchProcessError(error);
     });
+}
+
+//gda
+function searchNearby() {
+    var target = $('#nearby_listing').empty().listview('refresh');
 }
 
 function searchProcessError(error) {
