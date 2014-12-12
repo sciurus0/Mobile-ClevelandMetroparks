@@ -212,6 +212,7 @@ function init() {
 
     // now the rest of event handlers, map setup, etc. in stages
     initCacheThenMap();
+    initWelcomePanel();
     initSettingsPanel();
 
     // the various Find subtypes, which have surprisingly little in common
@@ -220,6 +221,12 @@ function init() {
     initFindTrails();
     initFindLoops();
     initFindKeyword();
+
+
+    // ready!
+    // look at the Welcome panel and see whether we should go there, or to the map
+    var welcome = $('#page-welcome input[name="skip_welcome"]').not(':checked');
+    if (! welcome) $.mobile.changePage('#page-map');
 }
 
 function initCacheThenMap() {
@@ -277,6 +284,24 @@ function initMap() {
     MAP.locate({ watch: true, enableHighAccuracy: true });
 }
 
+function initWelcomePanel() {
+    // the Welcome panel has a checkbox to skip the welcome panel when the app starts up
+    // when the checkbox changes state, save that preference into LocalStorage
+    $('#page-welcome input[name="skip_welcome"]').change(function () {
+        var checked = $(this).is(':checked');
+        window.localStorage.setItem('skip_welcome',checked);
+    });
+
+    // load up the current checkbox setting, or else default to false (do not skip welcome)
+    // and trigger the checkbox from it
+    var setting = window.localStorage.getItem('skip_welcome');
+    if (typeof setting === 'undefined') setting = false;
+    if (setting) {
+        $('#page-welcome input[name="skip_welcome"]').prop('checked','checked').checkboxradio('refresh');
+    } else {
+        $('#page-welcome input[name="skip_welcome"]').removeAttr('checked').checkboxradio('refresh');
+    }
+}
 
 function initSettingsPanel() {
     // basemap picker
