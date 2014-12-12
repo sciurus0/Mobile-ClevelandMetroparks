@@ -224,8 +224,8 @@ function init() {
 
     // ready!
     // look at the Skip Welcome setting and see whether we should go there, or to the map
-    var welcome = ! window.localStorage.getItem('skip_welcome');
-    if (! welcome) $.mobile.changePage('#page-map');
+    var welcome = window.localStorage.getItem('skip_welcome');
+    if (welcome == 'show') $.mobile.changePage('#page-welcome');
 }
 
 function initCacheThenMap() {
@@ -286,22 +286,21 @@ function initMap() {
 function initWelcomePanel() {
     // the Welcome panel has a checkbox to skip the welcome panel when the app starts up
     // when the checkbox changes state, save that preference into LocalStorage
-    $('#page-welcome input[name="skip_welcome"]').change(function () {
-        var checked = $(this).is(':checked');
-        window.localStorage.setItem('skip_welcome',checked);
+    // tip: don't try true and false, they get turned into strings and "false" ain't false!
+    var checkbox = $('#page-welcome input[name="skip_welcome"]').change(function () {
+        var skip_welcome = $(this).is(':checked') ? 'skip' : 'show';
+        window.localStorage.setItem('skip_welcome', skip_welcome);
     });
 
-    // load up the current checkbox setting, or else set it to false ("do not skip welcome") if not yet defined
-    // trigger the checkbox from it so there's the visual indicator
+    // load up the current checkbox setting, and express it visually
     var setting = window.localStorage.getItem('skip_welcome');
-    if (typeof setting === 'undefined') {
-        setting = false;
-        window.localStorage.setItem('skip_welcome',false);
-    }
-    if (setting) {
-        $('#page-welcome input[name="skip_welcome"]').prop('checked','checked').checkboxradio('refresh');
-    } else {
-        $('#page-welcome input[name="skip_welcome"]').removeAttr('checked').checkboxradio('refresh');
+    switch (setting) {
+        case 'skip':
+            checkbox.prop('checked','checked').checkboxradio('refresh');
+            break;
+        default:
+            checkbox.removeAttr('checked').checkboxradio('refresh');
+            break;
     }
 }
 
