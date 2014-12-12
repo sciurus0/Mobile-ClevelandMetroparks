@@ -228,6 +228,7 @@ function initCacheThenMap() {
     CACHE.init(function () {
         for (var which in BASEMAPS) CACHE.registerLayer( BASEMAPS[which] );
         initMap();
+        toggleGPSOn();
     }, function () {
         alert('Could not load the local filesystem. Exiting.');
         return;
