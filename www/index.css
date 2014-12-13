@@ -358,6 +358,13 @@ div.fakeinput {
 }
 
 
+/*
+ * Nearby page: the checkboxes take on a margin and mess up the fieldset, for some reason
+ */
+#radar_config .ui-checkbox {
+    margin:0;
+}
+
 /* toggle for sorting alphabetically or by distance, hidden by default but added as searches happen */
 
 .sortpicker {

@@ -359,18 +359,6 @@ function initSettingsPanel() {
 }
 
 function initNearbyPanel() {
-    // populate the Alert Activities listview, with a list of activities
-    var target = $('#radar_config fieldset[data-role="controlgroup"][data-type="activities"]');
-    for (var i=0, l=LIST_ACTIVITIES.length; i<l; i++) {
-        var activity = LIST_ACTIVITIES[i];
-
-        // add the checkbox to the DOM and decorate it
-        var wrap     = $('<label></label>').appendTo(target);
-        var checkbox = $('<input></input>').prop('type','checkbox').prop('name','activity').prop('value',activity).text(activity);
-        checkbox.appendTo(wrap).checkboxradio('refresh')
-    }
-    target.listview('refresh',true);
-
     // when the Enable Radar checkbox is toggled, toggle the #radar_config items below it
     // and if we're turning it on, then perform a nearby search right now
     // tip: the checked status of #radar_enabled is used by the onLocationFound handler, to determine whether to call searchNearby()
@@ -379,6 +367,7 @@ function initNearbyPanel() {
         if (viz) {
             $('#radar_config').show();
             $('#nearby_listing').show().listview('refresh');
+            $('#radar_config fieldset[data-role="controlgroup"]').controlgroup('refresh'); // hack: only refreshes if visible, and was dynamically created in initNearbyPanel()
             searchNearby();
         } else {
             $('#radar_config').hide();
@@ -386,6 +375,18 @@ function initNearbyPanel() {
         }
     });
 
+    // populate the Alert Activities listview, with a list of activities
+    // but prepend to it, the Health Tips; they're not an activity but client wans them to show up anyway
+    var target = $('#radar_config fieldset[data-role="controlgroup"][data-type="activities"]');
+    var activities = LIST_ACTIVITIES.slice(0);
+    activities.unshift("Health Tips");
+    for (var i=0, l=activities.length; i<l; i++) {
+        var activity = activities[i];
+        var wrap     = $('<label></label>');
+        var checkbox = $('<input></input>').prop('type','checkbox').prop('name','activity').prop('value',activity).prop('checked',true);
+        wrap.text(activity).prepend(checkbox).appendTo(target);
+    }
+    target.trigger('create');
 }
 
 function initFindPOIs() {
