@@ -174,7 +174,6 @@ li.directions_functions {
     background-color:black;
 
     text-align:center;
-
 }
 
 #toolbar table {
@@ -326,7 +325,7 @@ div.ui-slider {
 */
 
 div.fakeinput {
-    text-align: left;
+   text-align: left;
     background: none repeat scroll 0 0 #F9F9F9;
     font-size: 16px;
     line-height: 1.4;

@@ -376,7 +376,7 @@ function initNearbyPanel() {
     });
 
     // populate the Alert Activities listview, with a list of activities
-    // but prepend to it, the Health Tips; they're not an activity but client wans them to show up anyway
+    // but prepend to it, the Health Tips; they're not an activity but client wants them to show up anyway
     var target = $('#radar_config fieldset[data-role="controlgroup"][data-type="activities"]');
     var activities = LIST_ACTIVITIES.slice(0);
     activities.unshift("Health Tips");
@@ -506,16 +506,39 @@ function initFindLoops() {
 }
 
 function initFindKeyword() {
-    var form = $('#page-find fieldset[data-type="geocode"]');
-    form.find('input[type="text"]').keydown(function (key) {
+    // set up the form: on submit, Enter, button, etc. submit a keyword seaech to the server
+    var form     = $('#page-find fieldset[data-type="keyword"]');
+    var field    = form.find('input[type="text"]');
+    var button   = form.find('input[type="button"]');
+    var listview = form.find('ul[data-role="listview"][data-type="autocomplete"]');
+    field.keydown(function (key) {
         if(key.keyCode != 13) return;
         $(this).closest('fieldset').find('input[type="button"]').click();
     });
-    form.find('input[type="button"]').click(function () {
+    button.click(function () {
         var keyword = $(this).closest('fieldset').find('input[type="text"]').val().trim();
         if (! keyword ) return false;
         searchKeyword(keyword);
     });
+
+    // set up an autocomplete on the keyword search text field
+    // getting back results, populates a listview
+    $.get( BASE_URL + '/ajax/autocomplete_keywords', {}, function (words) {
+        field.autocomplete({
+            target: listview,
+            source: words,
+            callback: function(e) {
+                    // click handler on an autocomplete item
+                    // find the value of the selected item, stick it into the text box, hide the autocomplete
+                    // and click the button to perform the search, using the text that is now filled in
+                    var $a = $(e.currentTarget);
+                    field.val( $a.text() ).autocomplete('clear');
+                    button.click();
+            },
+            minLength: 3,
+            matchFromStart: false
+        });
+    },'json');
 }
 
 function initResultsPanel() {
