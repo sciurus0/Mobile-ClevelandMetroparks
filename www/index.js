@@ -45,9 +45,9 @@ var MARKER_TO = L.marker(L.latLng(0,0), {
     icon:L.icon({ iconUrl:'images/marker-gps.png', iconSize:[20,34], iconAnchor:[10,34] })
 });
 
-// this Circle is used to show your radar on the screen
-// when radar is enabled, this updates to move with you and keep the selected radius
-var RADAR_CIRCLE = new L.Circle(L.latLng(0,0), 1, { color:'0000FF', weight:1.5, fill:false });
+// this Circle is used to show your Nearby Alerts radius on the screen
+// when Nearby Alerting is enabled, this updates to move with you and keep the selected radius
+var NEARBY_ALERT_CIRCLE = new L.Circle(L.latLng(0,0), 1, { color:'0000FF', weight:1.5, fill:false });
 
 // bad hack
 // the More Info buttons call zoomElementClick() to show the panel with place info
@@ -67,12 +67,9 @@ var DIRECTIONS_LINE_STYLE = { color:"#0000FF", weight:5, opacity:1.00, clickable
 var HIGHLIGHT_LINE       = null;
 var HIGHLIGHT_LINE_STYLE = { color:"#FF00FF", weight:3, opacity:0.75, clickable:false, smoothFactor:0.25 };
 
-// used by the radar: sound an alert only if the list has in fact changed
-var LAST_BEEP_IDS = [];
-
-// used by Near You Now and then later by Radar, a structure of all POIs
-// we cannot render them all into the Radar page at the same time, but we can store them in memory
-var ALL_POIS = [];
+// used by the Nearby Alert: sound an alert only if the list of Things Nearby has in fact changed
+// so we don't nd up alerting multiple times as our location updates and we're seeing the exact same thing!
+var NEARBY_LAST_ALERT_IDS = [];
 
 // should we auto-center the map on location updates? don't toggle this directly, see toggleGPS()
 // when we zoom to our own location, to what zoom level?
@@ -264,7 +261,7 @@ function initMap() {
         wmsGetFeatureInfoByPoint(event.layerPoint);
     });
 
-    // whenever we get a location event, we have a lot of work to do: GPS readout, radar and perhaps playing an alert sound, updating the marker-and-circle on the map, ...
+    // whenever we get a location event, we have a lot of work to do: GPS readout, Nearby and perhaps playing an alert sound, updating the marker-and-circle on the map, ...
     // if we get a location error, it affirms that we do not have a location; we need to show certain "Uhm, FYI!" notes around the app, hide the marker-and-circle, ...
     MAP.on('locationfound', function(event) {
         handleLocationFound(event);
@@ -359,25 +356,25 @@ function initSettingsPanel() {
 }
 
 function initNearbyPanel() {
-    // when the Enable Radar checkbox is toggled, toggle the #radar_config items below it
+    // when the Enable Alerts checkbox is toggled, toggle the #nearby_config items below it
     // and if we're turning it on, then perform a nearby search right now
-    // tip: the checked status of #radar_enabled is used by the onLocationFound handler, to determine whether to call searchNearby()
-    $('#radar_enabled').change(function () {
+    // tip: the checked status of #nearby_enabled is used by the onLocationFound handler, to determine whether to call searchNearby()
+    $('#nearby_enabled').change(function () {
         var viz = $(this).is(':checked');
         if (viz) {
-            $('#radar_config').show();
+            $('#nearby_config').show();
             $('#nearby_listing').show().listview('refresh');
-            $('#radar_config fieldset[data-role="controlgroup"]').controlgroup('refresh'); // hack: only refreshes if visible, and was dynamically created in initNearbyPanel()
+            $('#nearby_config fieldset[data-role="controlgroup"]').controlgroup('refresh'); // hack: only refreshes if visible, and was dynamically created in initNearbyPanel()
             searchNearby();
         } else {
-            $('#radar_config').hide();
+            $('#nearby_config').hide();
             $('#nearby_listing').ty().hide();
         }
     });
 
     // populate the Alert Activities listview, with a list of activities
     // but prepend to it, the Health Tips; they're not an activity but client wants them to show up anyway
-    var target = $('#radar_config fieldset[data-role="controlgroup"][data-type="activities"]');
+    var target = $('#nearby_config fieldset[data-role="controlgroup"][data-type="activities"]');
     var activities = LIST_ACTIVITIES.slice(0);
     activities.unshift("Health Tips");
     for (var i=0, l=activities.length; i<l; i++) {
@@ -698,23 +695,11 @@ function handleLocationFound(event) {
     // sort any visible distance-sorted lists on the Results page
     calculateDistancesAndSortSearchResultsList();
 
-    // adjust the Nearby listing aka Radar
-    if ( $('#radar_enabled').is(':checked') ) {
+    // adjust the Nearby listing by performing a new search
+    // this actually does more than the name implies: fetches results, sees if you have alerting enabled, sounds an alarm, ...
+    if ( $('#nearby_enabled').is(':checked') ) {
         searchNearby();
     }
-
-//gda
-/*
-    // check the Radar alerts to see if anything relevant is within range
-    if ( $('#radar_enabled').is(':checked') ) {
-        var meters = $('#radar_radius').val();
-        var categories = [];
-        $('input[name="radar_category"]:checked').each(function () { categories[categories.length] = $(this).val() });
-        placeRADAR_CIRCLE(event.latlng.lat,event.latlng.lng,meters);
-        checkRadar(event.latlng,meters,categories);
-    }
-*/
-
 }
 
 function handleLocationError(event) {
@@ -965,7 +950,7 @@ function searchProcessResults(resultlist,title,from) {
     calculateDistancesAndSortSearchResultsList();
 }
 
-// note: this is for Search Results, which is not the same as Near You Now aka Radar
+// note: this is for Search Results, which is not the same as Nearby
 function calculateDistancesAndSortSearchResultsList() {
     var sortby = $('#page-find-results div.sortpicker a.active').attr('data-sortby');
     var target = $('#search_results');

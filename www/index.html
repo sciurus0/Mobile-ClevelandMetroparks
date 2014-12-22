@@ -29,7 +29,7 @@
             <table>
             <tr>
                 <td><a class="button" href="#page-find"><img src="images/button_find.png" /></a></td>
-                <td><a class="button" href="#page-radar"><img src="images/button_radar.png" /></a></td>
+                <td><a class="button" href="#page-nearby"><img src="images/button_nearby.png" /></a></td>
                 <td><a class="button" href="#page-getdirections"><img src="images/button_directions.png" /></a></td>
             </tr>
             </table>
@@ -71,7 +71,7 @@
 
 
 
-<div data-role="page" id="page-radar">
+<div data-role="page" id="page-nearby">
     <div data-role="header">
         <a href="#page-map" data-icon="back">Back</a>
         <h1>Near You</h1>
@@ -79,11 +79,11 @@
     <div data-role="content">
 
         <!-- Part 1: Enable Alerts and the (hidden) list of activities which will give an alert when seen within a given radius  -->
-        <label><input type="checkbox" id="radar_enabled" /> Enable alerts</label>
+        <label><input type="checkbox" id="nearby_enabled" /> Enable alerts</label>
         <br/>
-        <div id="radar_config" style="display:none;">
+        <div id="nearby_config" style="display:none;">
             <strong>Alert me when I am within:</strong>
-            <select id="radar_radius">
+            <select id="nearby_radius">
             <option value="6.10">20 feet</option>
             <option value="15.24">50 feet</option>
             <option value="30.48">100 feet</option>
@@ -101,7 +101,7 @@
             </fieldset>
         </div>
 
-        <!-- the Radar listing, the closest X things to our current location -->
+        <!-- the Nearby results listing, the closest X things to our current location -->
         <ul id="nearby_listing" data-role="listview" style="margin-top:2em;">
         </ul>
     </div>
