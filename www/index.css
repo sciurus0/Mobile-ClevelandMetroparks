@@ -192,17 +192,9 @@ li.directions_functions {
     border-right:0 none transparent;
 }
 
-#alerts .zoom_distance {
-    text-align:right;
-    min-width:50px;
-}
-
 .ui-li-has-count .ui-li-count {
-    top:85%;
-}
-
-.ui-li-divider .ui-li-count, .ui-li-static .ui-li-count {
-    right: 0;
+    top:50%;
+    right: -25px;
 }
 
 #change_directions_target {
