@@ -178,11 +178,6 @@ L.LatLng.prototype.bearingWordTo = function(other) {
  ******************************************************************************/
 
 $(window).bind('orientationchange pageshow resize', function() {
-    // scrolling the window is supposed to remove the address bar,
-    // but it rarely works, often lags out the page as it slowly hides half of the address bar,
-    // and creates bugs when we want to operate a picklist that's longer than a page (the page scrolls, THEN gets tapped)
-    //window.scroll(0, 1);
-
     var page    = $(":jqmData(role='page'):visible");
     var header  = $(":jqmData(role='header'):visible");
     var content = $(":jqmData(role='content'):visible");
