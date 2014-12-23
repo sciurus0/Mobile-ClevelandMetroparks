@@ -77,11 +77,6 @@ var NEARBY_LAST_ALERT_IDS = [];
 var AUTO_CENTER_ON_LOCATION = false;
 var AUTO_CENTER_ZOOMLEVEL   = 16;
 
-//gda remove this
-// sorting by distance, isn't always by distance
-// what type of sorting do they prefer?
-var DEFAULT_SORT = 'distance';
-
 // for tile caching, the name of a subdirectory where this app will store its content
 // this is particularly important on Android where filesystem is not a sandbox but your SD card
 var STORAGE_SUBDIR = "ClevelandMetroparks";
