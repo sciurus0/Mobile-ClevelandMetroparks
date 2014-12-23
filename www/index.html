@@ -29,7 +29,7 @@
             <table>
             <tr>
                 <td><a class="button" href="#page-find"><img src="images/button_find.png" /></a></td>
-                <td><a class="button" href="#page-nearby"><img src="images/button_nearby.png" /></a></td>
+                <td><a class="button" href="#page-find-nearby"><img src="images/button_nearby.png" /></a></td>
                 <td><a class="button" href="#page-getdirections"><img src="images/button_directions.png" /></a></td>
             </tr>
             </table>
@@ -67,46 +67,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-<div data-role="page" id="page-nearby">
-    <div data-role="header">
-        <a href="#page-map" data-icon="back">Back</a>
-        <h1>Near You</h1>
-    </div>
-    <div data-role="content">
-
-        <!-- Part 1: Enable Alerts and the (hidden) list of activities which will give an alert when seen within a given radius  -->
-        <label><input type="checkbox" id="nearby_enabled" /> Enable alerts</label>
-        <br/>
-        <div id="nearby_config" style="display:none;">
-            <strong>Alert me when I am within:</strong>
-            <select id="nearby_radius">
-            <option value="6.10">20 feet</option>
-            <option value="15.24">50 feet</option>
-            <option value="30.48">100 feet</option>
-            <option value="76.2">250 feet</option>
-            <option value="152.4" selected="true">500 feet</option>
-            <option value="402.336">&frac14; mile</option>
-            <option value="804.672">&frac12; mile</option>
-            <option value="1207.08">&frac34; mile</option>
-            <option value="1609.344">1 mile</option>
-            </select>
-            <br/>
-            <strong>Watch for these types of features:</strong>
-            <fieldset data-role="controlgroup" data-type="activities">
-                <!-- populated by initNearbyPanel() -->
-            </fieldset>
-        </div>
-
-        <!-- the Nearby results listing, the closest X things to our current location -->
-        <ul id="nearby_listing" data-role="listview" style="margin-top:2em;">
-        </ul>
-    </div>
-</div>
-
 
 
 
@@ -246,6 +206,49 @@
 
     </div>
 </div>
+
+
+
+
+<div data-role="page" id="page-find-nearby">
+    <div data-role="header">
+        <a href="#page-map" data-icon="back">Back</a>
+        <h1>Near You</h1>
+        <a href="#page-find-results" data-icon="search">Results</a>
+    </div>
+    <div data-role="content">
+
+        <p>Get alerts when you're near activities and places of interest. Enable alerts to get started.</p>
+
+        <!-- the Nearby results listing, the closest X things to our current location -->
+        <ul id="nearby_listing" data-role="listview" style="margin-bottom:2em;">
+        </ul>
+
+        <!-- Enable Alerts and the (hidden) list of activity categories which will give an alert when seen within a given radius  -->
+        <label><input type="checkbox" id="nearby_enabled" /> Enable alerts</label>
+        <br/>
+        <div id="nearby_config" style="display:none;">
+            <strong>Alert me when I am within:</strong>
+            <select id="nearby_radius">
+                <option value="30">100 feet</option>
+                <option value="76">250 feet</option>
+                <option value="152" selected="true">500 feet</option>
+                <option value="402">&frac14; mile</option>
+                <option value="804>&frac12; mile</option>
+                <option value="1207">&frac34; mile</option>
+                <option value="1609">1 mile</option>
+                <option value="3218">2 miles</option>
+                <option value="8045">5 miles</option>
+            </select>
+            <br/>
+            <strong>Watch for these types of features:</strong>
+            <fieldset data-role="controlgroup" data-type="activities">
+                <!-- populated by initNearbyPanel() -->
+            </fieldset>
+        </div>
+    </div>
+</div>
+
 
 
 
@@ -405,8 +408,8 @@
 
 <!-- scripts and stuff at the bottom, seems top solve some timing issue on iPad -->
     <!-- weinre debugging for development; replace with your own IP address and your own weinre server -->
-    <!--
     <script src="http://weinre.greeninfo.org:8080/target/target-script-min.js#clemet"></script>
+    <!--gda
     -->
 
     <!-- jQuery et al -->

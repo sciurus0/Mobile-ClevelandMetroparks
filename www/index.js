@@ -3,7 +3,7 @@
  ******************************************************************************/
 
 // the base URL where all data endpoints reside: the CMP website
-var BASE_URL = "http://maps.clevelandmetroparks.com/";
+var BASE_URL = "http://maps-dev.clevelandmetroparks.com/";
 
 // the big MAP object, the starting view
 var MAP;
@@ -45,10 +45,6 @@ var MARKER_TO = L.marker(L.latLng(0,0), {
     icon:L.icon({ iconUrl:'images/marker-gps.png', iconSize:[20,34], iconAnchor:[10,34] })
 });
 
-// this Circle is used to show your Nearby Alerts radius on the screen
-// when Nearby Alerting is enabled, this updates to move with you and keep the selected radius
-var NEARBY_ALERT_CIRCLE = new L.Circle(L.latLng(0,0), 1, { color:'0000FF', weight:1.5, fill:false });
-
 // bad hack
 // the More Info buttons call zoomElementClick() to show the panel with place info
 // if this flag is true, zoomElementClick() will then click for car directions after the place info is loaded
@@ -66,6 +62,11 @@ var DIRECTIONS_LINE       = null;
 var DIRECTIONS_LINE_STYLE = { color:"#0000FF", weight:5, opacity:1.00, clickable:false, smoothFactor:0.25 };
 var HIGHLIGHT_LINE       = null;
 var HIGHLIGHT_LINE_STYLE = { color:"#FF00FF", weight:3, opacity:0.75, clickable:false, smoothFactor:0.25 };
+
+// this Circle is used to show your Nearby Alerts radius on the screen
+// when Nearby Alerting is enabled, this updates to move with you and keep the selected radius
+var NEARBY_ALERT_CIRCLE_STYLE = { color:'#0000FF', weight:2, fill:false };
+var NEARBY_ALERT_CIRCLE;
 
 // used by the Nearby Alert: sound an alert only if the list of Things Nearby has in fact changed
 // so we don't nd up alerting multiple times as our location updates and we're seeing the exact same thing!
@@ -212,7 +213,7 @@ function init() {
     initCacheThenMap();
     initWelcomePanel();
     initSettingsPanel();
-    initNearbyPanel();
+    initFindNearby();
 
     // the various Find subtypes, which have surprisingly little in common
     // except that the results all go to a common results panel
@@ -277,6 +278,11 @@ function initMap() {
     $('#mapbutton_settings').click(function (event) {
         event.stopPropagation();
     });
+
+    // the scannig circle for Nearby
+    // do not add this to the MAP yet, refreshNearbyAndAlertIfAppropriate() will do that for you
+    // as well as setting the latlng and radius to match the Nearby settings
+    NEARBY_ALERT_CIRCLE = L.circle([0,0], 1, NEARBY_ALERT_CIRCLE_STYLE );
 
     // ready! set! action!
     // start constant geolocation, which triggers the 'locationfound' event handlers defined above
@@ -355,7 +361,29 @@ function initSettingsPanel() {
     });
 }
 
-function initNearbyPanel() {
+function initFindNearby() {
+    // Nearby (formerly also called Radar) is a pretty odd critter
+    // it is not a flat search but an Alert capability: a clause in handleLocationFound() will see if this is checked,
+    // and if so will call refreshNearbyAndAlertIfAppropriate() to search the nearby area for alert-worthy items
+    // so everything below is merely prep work on the UI
+
+    //  populate the Alert Activities listview, with a list of activities
+    // but prepend to it, the Health Tips; they're not an activity but client wants them to show up anyway
+    // why not hardcode it in HTML? cuz there're multiple places where The List Of Activities is used, so a global LIST_ACTIVITIES keeps it consistent
+    var target = $('#page-find-nearby fieldset[data-role="controlgroup"][data-type="activities"]');
+    var activities = LIST_ACTIVITIES.slice(0);
+    activities.unshift("Health Tips");
+    for (var i=0, l=activities.length; i<l; i++) {
+        var activity = activities[i];
+        var wrap     = $('<label></label>');
+        var checkbox = $('<input></input>').prop('type','checkbox').prop('name','activity').prop('value',activity).prop('checked',true).change(function () {
+            setTimeout(refreshNearbyAndAlertIfAppropriate,1);
+        });
+
+        wrap.text(activity).prepend(checkbox).appendTo(target);
+    }
+    target.trigger('create');
+
     // when the Enable Alerts checkbox is toggled, toggle the #nearby_config items below it
     // and if we're turning it on, then perform a nearby search right now
     // tip: the checked status of #nearby_enabled is used by the onLocationFound handler, to determine whether to call searchNearby()
@@ -364,26 +392,23 @@ function initNearbyPanel() {
         if (viz) {
             $('#nearby_config').show();
             $('#nearby_listing').show().listview('refresh');
-            $('#nearby_config fieldset[data-role="controlgroup"]').controlgroup('refresh'); // hack: only refreshes if visible, and was dynamically created in initNearbyPanel()
-            searchNearby();
+            $('#nearby_config fieldset[data-role="controlgroup"]').controlgroup('refresh');
+
+            // and trigger a Nearby search right now
+            // use a timeout so it very explicitly does so asynchonously
+            setTimeout(refreshNearbyAndAlertIfAppropriate,1);
         } else {
+            // too bad we can't just remove it from the map or set it to 0,0; must actually destroy it in order for it to show up; very weird
+            MAP.removeLayer(NEARBY_ALERT_CIRCLE);
             $('#nearby_config').hide();
-            $('#nearby_listing').ty().hide();
+            $('#nearby_listing').empty().hide();
         }
     });
 
-    // populate the Alert Activities listview, with a list of activities
-    // but prepend to it, the Health Tips; they're not an activity but client wants them to show up anyway
-    var target = $('#nearby_config fieldset[data-role="controlgroup"][data-type="activities"]');
-    var activities = LIST_ACTIVITIES.slice(0);
-    activities.unshift("Health Tips");
-    for (var i=0, l=activities.length; i<l; i++) {
-        var activity = activities[i];
-        var wrap     = $('<label></label>');
-        var checkbox = $('<input></input>').prop('type','checkbox').prop('name','activity').prop('value',activity).prop('checked',true);
-        wrap.text(activity).prepend(checkbox).appendTo(target);
-    }
-    target.trigger('create');
+    // when the distance/radius changes, refresh the Nearby readout as well, including redrawing the cirlcle
+    $('#nearby_radius').change(function () {
+        refreshNearbyAndAlertIfAppropriate();
+    });
 }
 
 function initFindPOIs() {
@@ -698,7 +723,7 @@ function handleLocationFound(event) {
     // adjust the Nearby listing by performing a new search
     // this actually does more than the name implies: fetches results, sees if you have alerting enabled, sounds an alarm, ...
     if ( $('#nearby_enabled').is(':checked') ) {
-        searchNearby();
+        refreshNearbyAndAlertIfAppropriate();
     }
 }
 
@@ -899,32 +924,31 @@ function searchLoops(options) {
     });
 }
 
-//gda
-function searchNearby() {
-    var target = $('#nearby_listing').empty().listview('refresh');
-}
-
 function searchProcessError(error) {
     // hide any loading spinner, set the results title to clearly indicate a problem
     $.mobile.hidePageLoadingMsg();
     mobilealert("Check that you have data service, then try again.", "No connection?");
 }
 
-function searchProcessResults(resultlist,title,from) {
+function searchProcessResults(resultlist,title,from,options) {
+    // set up the default set of options, if none were given
+    if (typeof options == 'undefined') options = {};
+    if (typeof options.showerror   == 'undefined') options.showerror = true;
+    if (typeof options.showresults == 'undefined') options.showresults = true;
+
     // hide the spinner, if the caller forgot (or so we can funnel responsibility for it here)
     // then bail if there are 0 results, so the caller doesn't need that responsibility either
     $.mobile.hidePageLoadingMsg();
-    if (! resultlist.length) return mobilealert("Try a different keyword, location, or other filters.", "No Results");
+    if (options.showerror && ! resultlist.length) return mobilealert("Try a different keyword, location, or other filters.", "No Results");
 
     // set the Results panel's Back button to go to the indicated search page, head over to the Results page
     // set the Results title to whatever title was given by the search endpoint (we can trust it)
-    $.mobile.changePage('#page-find-results');
+    if (options.showresults) $.mobile.changePage('#page-find-results');
     $('#page-find-results div[data-role="header"] a[data-icon="back"]').prop('href',from);
     $('#page-find-results div[data-role="header"] h1').text(title);
 
     // empty the results list and repopulate it
-    var target = $('#search_results').empty();
-    for (var i=0, l=resultlist.length; i<l; i++) {
+    var target = $('#search_results').empty();    for (var i=0, l=resultlist.length; i<l; i++) {
         var result = resultlist[i];
 
         // the result entry has a copy of the raw data in it, so it can do intelligent things when the need arises
@@ -990,6 +1014,51 @@ function _sortResultsByDistance(p,q) {
 }
 function _sortResultsByName(p,q) {
     return ( $(p).data('title') > $(q).data('title') ) ? 1 : -1;
+}
+
+function refreshNearbyAndAlertIfAppropriate() {
+    // compose the params and query the service: lat, lng, meters, list of category IDs
+    // tip: use POST so we don't overflow the max URL length: 20 checkboxes can get lengthy
+    var latlng = MARKER_GPS.getLatLng();
+    var meters = parseFloat( $('#nearby_radius').val() );
+    var params = { lat: latlng.lat, lng: latlng.lng, meters: meters, categories: [] };
+    $('#page-find-nearby fieldset[data-role="controlgroup"][data-type="activities"] input:checked').each(function () {
+        params.categories.push( $(this).prop('value') );
+    });
+    params.categories = params.categories.join(';');
+
+    $.post( BASE_URL + '/ajax/search_nearby', params, function (results) {
+        searchProcessResults(results,"Near You",'#page-find-nearby', { showerror:false, showresults:false });
+
+        // special handling for the Nearby: the Results link in the top right, should show only if there are >0 results
+        // this gives them a visual indicator whether there are any results, without them switching pages
+        var button = $('#page-find-nearby > div[data-role="header"] a[href="#page-find-results"]');
+        var title  = $('#page-find-nearby > div[data-role="header"] h1');
+        if (results.length) {
+            title.text("Near You" + " (" + results.length + ")");
+            button.show();
+        } else {
+            title.text("Near You");
+            button.hide();
+        }
+
+        // more special handling for Nearby: if their list has changed at all, then we should make an alert
+        // cuz they're now found something within range that wasn't there last time we alerted them
+        if (results.length) {
+            var ids = [];
+            $.each(results, function () { ids.push(this.gid); });
+            ids.sort();
+            if (ids.toString() !== NEARBY_LAST_ALERT_IDS.toString()) {
+               $('#alert_beep').get(0).play();
+                NEARBY_LAST_ALERT_IDS = ids;
+            }
+        }
+    },'json').error(function (error) {
+        searchProcessError(error);
+    });
+
+    // update the scanning circle, while that AJAX call loads
+    NEARBY_ALERT_CIRCLE.setRadius(meters).setLatLng(latlng).addTo(MAP);
 }
 
 //gda
