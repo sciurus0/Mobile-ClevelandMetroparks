@@ -745,6 +745,26 @@ function mobilealert(message,header) {
 
 
 /*
+ * Play an MP3 file bundled into this app, using Cordova Media Plugin
+ * Filenames are relative to the bundle's "www" folder, e.g. sounds/beep.mp3
+ * This wrapper handles both iOS and Android, figuring out the platform and thus the pathnames to use.
+ * Too bad Android desn't support HTML5 <AUDIO> tags reliably.
+ */
+function playSound(filename) {
+    if (is_android()) {
+        var media = new Media('file:///android_asset/www/' + filename, function () { true; });
+        media.play();
+    } else if (is_ios()) {
+        var media = new Media(filename, function () { true; });
+        media.play();
+    } else {
+        false;
+    }
+}
+
+
+
+/*
  * Switch over to the given basemap
  * refactored from the original CMP website code, to use a proper structure
  */
@@ -1044,7 +1064,7 @@ function refreshNearbyAndAlertIfAppropriate() {
             $.each(results, function () { ids.push(this.gid); });
             ids.sort();
             if (ids.toString() !== NEARBY_LAST_ALERT_IDS.toString()) {
-                $('#alert_beep').get(0).play();
+                playSound('sounds/alert.mp3');
                 navigator.vibrate(1000);
                 NEARBY_LAST_ALERT_IDS = ids;
             }

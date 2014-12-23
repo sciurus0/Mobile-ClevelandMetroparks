@@ -217,6 +217,20 @@ module.exports = [
             "navigator.notification",
             "navigator"
         ]
+    },
+    {
+        "file": "plugins/org.apache.cordova.media/www/MediaError.js",
+        "id": "org.apache.cordova.media.MediaError",
+        "clobbers": [
+            "window.MediaError"
+        ]
+    },
+    {
+        "file": "plugins/org.apache.cordova.media/www/Media.js",
+        "id": "org.apache.cordova.media.Media",
+        "clobbers": [
+            "window.Media"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -227,7 +241,8 @@ module.exports.metadata =
     "org.apache.cordova.file": "1.3.1",
     "org.apache.cordova.file-transfer": "0.4.7",
     "org.apache.cordova.network-information": "0.2.14",
-    "org.apache.cordova.vibration": "0.3.12"
+    "org.apache.cordova.vibration": "0.3.12",
+    "org.apache.cordova.media": "0.2.15"
 }
 // BOTTOM OF METADATA
 });

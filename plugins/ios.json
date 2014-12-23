@@ -31,6 +31,10 @@
                         {
                             "xml": "<feature name=\"Vibration\"><param name=\"ios-package\" value=\"CDVVibration\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Media\"><param name=\"ios-package\" value=\"CDVSound\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -98,6 +102,9 @@
             "PACKAGE_NAME": "com.clevelandmetroparks.mobile"
         },
         "org.apache.cordova.vibration": {
+            "PACKAGE_NAME": "com.clevelandmetroparks.mobile"
+        },
+        "org.apache.cordova.media": {
             "PACKAGE_NAME": "com.clevelandmetroparks.mobile"
         }
     },
