@@ -14,6 +14,9 @@
     <feature name="NetworkStatus">
         <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
     </feature>
+    <feature name="Vibration">
+        <param name="android-package" value="org.apache.cordova.vibration.Vibration" />
+    </feature>
     <name>Cleveland Metroparks</name>
     <description>
         Find parks, trails, and amenities in Cleveland with Cleveland Metropark's mobile app.

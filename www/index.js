@@ -1044,7 +1044,8 @@ function refreshNearbyAndAlertIfAppropriate() {
             $.each(results, function () { ids.push(this.gid); });
             ids.sort();
             if (ids.toString() !== NEARBY_LAST_ALERT_IDS.toString()) {
-               $('#alert_beep').get(0).play();
+                $('#alert_beep').get(0).play();
+                navigator.vibrate(1000);
                 NEARBY_LAST_ALERT_IDS = ids;
             }
         }
