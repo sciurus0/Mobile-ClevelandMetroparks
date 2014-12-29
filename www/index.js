@@ -374,6 +374,7 @@ function initFindNearby() {
     // when the Enable Alerts checkbox is toggled, toggle the #nearby_config items below it
     // and if we're turning it on, then perform a nearby search right now
     // tip: the checked status of #nearby_enabled is used by the onLocationFound handler, to determine whether to call searchNearby()
+    // see also the nearby*() family of functions to get/set the status of this checkbox in other parts of the code
     $('#nearby_enabled').change(function () {
         var viz = $(this).is(':checked');
         if (viz) {
@@ -709,7 +710,7 @@ function handleLocationFound(event) {
 
     // adjust the Nearby listing by performing a new search
     // this actually does more than the name implies: fetches results, sees if you have alerting enabled, sounds an alarm, ...
-    if ( $('#nearby_enabled').is(':checked') ) {
+    if ( nearbyStatus() ) {
         refreshNearbyAndAlertIfAppropriate();
     }
 }
@@ -767,6 +768,21 @@ function selectBasemap(which) {
     }
 }
 
+
+/*
+ * Some wrapper functions regarding the nearby alerts
+ * the "alerts enabled" checkbox is THE way to know whether alerting is enabled or disabled,
+ * but let's make some wrappers to abstract that out a bit, in case we make changes
+ */
+function nearbyOn() {
+    $('#nearby_enabled').prop('checked',true).checkboxradio('refresh').trigger('change');
+}
+function nearbyOff() {
+    $('#nearby_enabled').removeAttr('checked').checkboxradio('refresh').trigger('change');
+}
+function nearbyStatus() {
+    return $('#nearby_enabled').is(':checked');
+}
 
 
 /*
@@ -877,6 +893,9 @@ function searchPOIs(category) {
     var params = {};
     params.category = 'pois_usetype_' + category;
 
+    // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
+    nearbyOff();
+
     $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/browse_items', params, function (reply) {
         $.mobile.hidePageLoadingMsg();
@@ -888,6 +907,9 @@ function searchPOIs(category) {
 
 function searchKeyword(keyword) {
     var params = { keyword:keyword, limit:100 };
+
+    // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
+    nearbyOff();
 
     $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/keyword', params, function (results) {
@@ -901,6 +923,9 @@ function searchKeyword(keyword) {
 function searchTrails(options) {
     var params = options;
 
+    // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
+    nearbyOff();
+
     $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/search_trails', params, function (results) {
         $.mobile.hidePageLoadingMsg();
@@ -912,6 +937,9 @@ function searchTrails(options) {
 
 function searchLoops(options) {
     var params = options;
+
+    // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
+    nearbyOff();
 
     $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/search_loops', params, function (results) {
