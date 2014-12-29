@@ -115,6 +115,7 @@ li.directions_functions {
     z-index:1000;
 
     text-align:right;
+    max-width:75%; /* keep it from running into left-side controls on small displays */
 
     color:red;
     font-weight:bold;
