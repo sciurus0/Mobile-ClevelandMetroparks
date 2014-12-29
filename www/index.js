@@ -576,7 +576,7 @@ function initDetailsPanel() {
     // it should call switchToMap() to do the map changeover, since that introduces a delay to work around animation issues
     // what should it zoom to? whatever feature was assigned to its data('raw') which itself is populated by showDetailsPanel() when a feature is selected
     $('#page-details div[data-role="header"] a[href="#page-map"]').click(function () {
-        var info = $(this).data('raw');
+        var info = $('#page-details').data('raw');
         if (! info) { alert("No result loaded into the Map button. That should be impossible."); return false; }
 
         switchToMap(function () {
@@ -584,15 +584,29 @@ function initDetailsPanel() {
             var bbox = L.latLngBounds([[info.s,info.w],[info.n,info.e]]).pad(0.15);
             MAP.fitBounds(bbox);
 
-            // lay down a marker and/or the trail' WKT-encoded geometry
-            //GDA support trails
+            // lay down a marker and/or the trail's WKT-encoded geometry
             switch (info.type) {
                 case 'poi':
-                case 'loop':
+                    // POIs have a simple latlng point location
                     MARKER_TARGET.setLatLng([info.lat,info.lng]);
                     break;
                 case 'trail':
+                    // Trails have no point, but do have a linstring geometry
+                    var parser = new Wkt.Wkt();
+                    parser.read(info.wkt);
+                    if (HIGHLIGHT_LINE) MAP.removeLayer(HIGHLIGHT_LINE);
+                    HIGHLIGHT_LINE = parser.toObject(HIGHLIGHT_LINE_STYLE);
+                    MAP.addLayer(HIGHLIGHT_LINE);
                     break;
+                case 'loop':
+                    // Loops have a latlng starting point, and a linestring geometry
+                    MARKER_TARGET.setLatLng([info.lat,info.lng]);
+
+                    var parser = new Wkt.Wkt();
+                    parser.read(info.wkt);
+                    if (HIGHLIGHT_LINE) MAP.removeLayer(HIGHLIGHT_LINE);
+                    HIGHLIGHT_LINE = parser.toObject(HIGHLIGHT_LINE_STYLE);
+                    MAP.addLayer(HIGHLIGHT_LINE);
             }
         });
         return false;
@@ -1028,11 +1042,8 @@ function searchProcessResults(resultlist,title,from,options) {
         // and has the title/name of the place as a datum, which is used for sorting the results list by name
         var li = $('<li></li>').appendTo(target).data('raw',result).data('title',result.name).data('meters',0);
         li.click(function () {
-//GDA to-do
-// we only have minimal info here to zoom the map, but not lengthy content such as description text, WKT for trails, elevation info for trails, ...
-// do an AJAX call to ajax/moreinfo and have THAT call showDetailsPanel()
             var info = $(this).data('raw');
-            showDetailsPanel(info);
+            loadAndShowDetailsPanel(info);
         });
 
         // the title and perhaps a footnote; that's really up to the very intelligent query endpoint
@@ -1142,16 +1153,41 @@ function refreshNearbyAndAlertIfAppropriate() {
 // tip: timeout needs to be long enough to account for transitions on slow devices, but fast enough not to be annoying
 function switchToMap(callback) {
     $.mobile.changePage('#page-map');
-    setTimeout(callback,250);
+    setTimeout(callback,500);
 }
 
-function showDetailsPanel(feature) {
-    // switch to the panel
-    $.mobile.changePage('#page-details');
+// switch over to the Details panel and AJAX-load full info for the given feature
+// only caller is a click handler on searchresults
+function loadAndShowDetailsPanel(feature) {
+    // hit up the endpoint and get the HTML description
+    var latlng = MARKER_GPS.getLatLng();
+    var params = { gid:feature.gid, type:feature.type, lat:latlng.lat, lng:latlng.lng };
+    $.mobile.showPageLoadingMsg("a", "Loading", false);
+    $.get(BASE_URL + '/ajax/moreinfo', params, function (html) {
+        $.mobile.hidePageLoadingMsg();
 
-    // update the Map button with sufficient feature info to assist the map: WSEN bbox, LatLng location
-    // then intercept the #page-map click to call the switchToMap() timing function to help get around race conditions
-    // see initDetailsPanel() where the data('raw') is defined as a trigger for the map behavior
-    $('#page-details div[data-role="header"] a[href="#page-map"]').data('raw',feature);
+        // grab and display the plain HTML into the info panel, and switch over to it
+        // the HTML is already ready to display, including title, hyperlinks, etc. managed by Cleveland
+        $.mobile.changePage('#page-details');
+        var target = $('#page-details div.description').html(html);
+//GDA  make this work for loops and trails, which lack description field
+
+        // WKT geometry is in a hidden DIV
+        // kinda a hack since the change was a surprise after months of other development
+        var wkt = $('#page-details div.wkt').text();
+        feature.wkt = wkt;
+
+        // assign the raw feature to the Map button
+        // see initDetailsPanel() where the data('raw') is defined as a trigger for the map behavior
+        $('#page-details').data('raw',feature);
+
+        //GDA
+        // Directions button
+
+        //GDA
+        // Elevation profile if trail
+    },'html').error(function (error) {
+        $.mobile.hidePageLoadingMsg();
+        mobilealert("Check that you have data service, then try again.", "No connection?");
+    });
 }
-
