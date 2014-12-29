@@ -27,23 +27,13 @@ var BASEMAPS = {};
 BASEMAPS['terrain'] = new L.TileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/basemap_mobilestack/{z}/{x}/{y}.jpg", { name:'terrain', subdomains:'123', updateWhenIdle:true });
 BASEMAPS['photo']   = new L.TileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/satphoto_mobilestack/{z}/{x}/{y}.jpg", { name:'photo', subdomains:'123', updateWhenIdle:true });
 
-// a whole bunch of markers
-var MARKER_TARGET = L.marker(L.latLng(0,0), {
-    clickable:false,
-    icon:L.icon({ iconUrl:'images/marker-target.png', iconSize:[25,41], iconAnchor:[13,41] })
-});
-var MARKER_GPS = L.marker(L.latLng(0,0), {
-    clickable:false,
-    icon:L.icon({ iconUrl:'images/marker-gps.png', iconSize:[25,41], iconAnchor:[13,41] })
-});
-var MARKER_FROM = L.marker(L.latLng(0,0), {
-    clickable:false,
-    icon:L.icon({ iconUrl:'images/marker-gps.png', iconSize:[20,34], iconAnchor:[10,34] })
-});
-var MARKER_TO = L.marker(L.latLng(0,0), {
-    clickable:false,
-    icon:L.icon({ iconUrl:'images/marker-gps.png', iconSize:[20,34], iconAnchor:[10,34] })
-});
+// a whole bunch of markers for various purposes
+// in initMap() they are created and are added to the MAP
+// they are at 0,0 so are not visible until we use a setLatLng() on them to bring them into view
+var MARKER_GPS;     // your current location, per handleLocationFound()
+var MARKER_TARGET;  // a target location, notably a POI on which you clicked to show no map; see showDetailsPanel()
+var MARKER_FROM;    // for directions, the markers on the endpoints of your route
+var MARKER_TO;      // for directions, the markers on the endpoints of your route
 
 // bad hack
 // the More Info buttons call zoomElementClick() to show the panel with place info
@@ -209,6 +199,7 @@ function init() {
     initFindLoops();
     initFindKeyword();
     initResultsPanel();
+    initDetailsPanel();
 
     // ready!
     // look at the Skip Welcome setting and see whether we should go there, or to the map
@@ -270,6 +261,26 @@ function initMap() {
     // do not add this to the MAP yet, refreshNearbyAndAlertIfAppropriate() will do that for you
     // as well as setting the latlng and radius to match the Nearby settings
     NEARBY_ALERT_CIRCLE = L.circle([0,0], 1, NEARBY_ALERT_CIRCLE_STYLE );
+
+    // add the various markers for various purposes
+    // being at 0,0 they aren't visible until something sets their LatLng
+    //GDA to-do: new marker icons? having To and From the same as your GPS, is a bit odd
+    MARKER_TARGET = L.marker(L.latLng(0,0), {
+        clickable:false,
+        icon:L.icon({ iconUrl:'images/marker-target.png', iconSize:[25,41], iconAnchor:[13,41] })
+    }).addTo(MAP);
+    MARKER_GPS = L.marker(L.latLng(0,0), {
+        clickable:false,
+        icon:L.icon({ iconUrl:'images/marker-gps.png', iconSize:[25,41], iconAnchor:[13,41] })
+    }).addTo(MAP);
+    MARKER_FROM = L.marker(L.latLng(0,0), {
+        clickable:false,
+        icon:L.icon({ iconUrl:'images/marker-gps.png', iconSize:[20,34], iconAnchor:[10,34] })
+    }).addTo(MAP);
+    MARKER_TO = L.marker(L.latLng(0,0), {
+        clickable:false,
+        icon:L.icon({ iconUrl:'images/marker-gps.png', iconSize:[20,34], iconAnchor:[10,34] })
+    }).addTo(MAP);
 
     // ready! set! action!
     // start constant geolocation, which triggers the 'locationfound' event handlers defined above
@@ -559,6 +570,35 @@ function initResultsPanel() {
         $(this).addClass('active').siblings().removeClass('active');
         calculateDistancesAndSortSearchResultsList();
     });
+}
+
+function initDetailsPanel() {
+    // intercept a click on the Map button on the results panel
+    // it should call switchToMap() to do the map changeover, since that introduces a delay to work around animation issues
+    // what should it zoom to? whatever feature was assigned to its data('raw') which itself is populated by showDetailsPanel() when a feature is selected
+    $('#page-details div[data-role="header"] a[href="#page-map"]').click(function () {
+        var info = $(this).data('raw');
+        if (! info) { alert("No result loaded into the Map button. That should be impossible."); return false; }
+
+        switchToMap(function () {
+            // zoom the the feature's bounding box
+            var bbox = L.latLngBounds([[info.s,info.w],[info.n,info.e]]).pad(0.15);
+            MAP.fitBounds(bbox);
+
+            // lay down a marker and/or the trail' WKT-encoded geometry
+            //GDA support trails
+            switch (info.type) {
+                case 'poi':
+                case 'loop':
+                    MARKER_TARGET.setLatLng([info.lat,info.lng]);
+                    break;
+                case 'trail':
+                    break;
+            }
+        });
+        return false;
+    });
+
 }
 
 
@@ -894,7 +934,10 @@ function searchPOIs(category) {
     params.category = 'pois_usetype_' + category;
 
     // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
+    // and remove the Target marker to 0,0 since we're no onger showing info for a specific place
+    //GDA to-do move this into searchProcessResults() so as not to repeat it
     nearbyOff();
+    MARKER_TARGET.setLatLng([0,0]);
 
     $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/browse_items', params, function (reply) {
@@ -909,7 +952,10 @@ function searchKeyword(keyword) {
     var params = { keyword:keyword, limit:100 };
 
     // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
+    // and remove the Target marker to 0,0 since we're no onger showing info for a specific place
+    //GDA to-do move this into searchProcessResults() so as not to repeat it
     nearbyOff();
+    MARKER_TARGET.setLatLng([0,0]);
 
     $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/keyword', params, function (results) {
@@ -924,7 +970,10 @@ function searchTrails(options) {
     var params = options;
 
     // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
+    // and remove the Target marker to 0,0 since we're no onger showing info for a specific place
+    //GDA to-do move this into searchProcessResults() so as not to repeat it
     nearbyOff();
+    MARKER_TARGET.setLatLng([0,0]);
 
     $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/search_trails', params, function (results) {
@@ -939,7 +988,10 @@ function searchLoops(options) {
     var params = options;
 
     // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
+    // and remove the Target marker to 0,0 since we're no onger showing info for a specific place
+    //GDA to-do move this into searchProcessResults() so as not to repeat it
     nearbyOff();
+    MARKER_TARGET.setLatLng([0,0]);
 
     $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/search_loops', params, function (results) {
@@ -983,16 +1035,20 @@ function searchProcessResults(resultlist,title,from,options) {
     $('#page-find-results div[data-role="header"] h1').text(title);
 
     // empty the results list and repopulate it
-    var target = $('#search_results').empty();    for (var i=0, l=resultlist.length; i<l; i++) {
+    var target = $('#search_results').empty();
+    for (var i=0, l=resultlist.length; i<l; i++) {
         var result = resultlist[i];
 
         // the result entry has a copy of the raw data in it, so it can do intelligent things when the need arises
         // it also has the distance in meters (well, a 0 for now), which is used for sorting the results list by distance
         // and has the title/name of the place as a datum, which is used for sorting the results list by name
-        var li = $('<li></li>').addClass('zoom').appendTo(target).data('raw',result).data('title',result.name).data('meters',0);
+        var li = $('<li></li>').appendTo(target).data('raw',result).data('title',result.name).data('meters',0);
         li.click(function () {
+//GDA to-do
+// we only have minimal info here to zoom the map, but not lengthy content such as description text, WKT for trails, elevation info for trails, ...
+// do an AJAX call to ajax/moreinfo and have THAT call showDetailsPanel()
             var info = $(this).data('raw');
-            showInfoPanel(info);
+            showDetailsPanel(info);
         });
 
         // the title and perhaps a footnote; that's really up to the very intelligent query endpoint
@@ -1097,8 +1153,21 @@ function refreshNearbyAndAlertIfAppropriate() {
     NEARBY_ALERT_CIRCLE.setRadius(meters).setLatLng(latlng).addTo(MAP);
 }
 
-//gda
-function showInfoPanel(info) {
-    alert(info);
+// Leaflet freaks out if you try to zoom the map and the map is not in fact visible, so you must switch to the map THEN peform those map changes
+// this wrapper will do that for you, and is the recommended way to switch to the map and then zoom in, adjust markers, add vectors, ...
+// tip: timeout needs to be long enough to account for transitions on slow devices, but fast enough not to be annoying
+function switchToMap(callback) {
+    $.mobile.changePage('#page-map');
+    setTimeout(callback,250);
+}
+
+function showDetailsPanel(feature) {
+    // switch to the panel
+    $.mobile.changePage('#page-details');
+
+    // update the Map button with sufficient feature info to assist the map: WSEN bbox, LatLng location
+    // then intercept the #page-map click to call the switchToMap() timing function to help get around race conditions
+    // see initDetailsPanel() where the data('raw') is defined as a trigger for the map behavior
+    $('#page-details div[data-role="header"] a[href="#page-map"]').data('raw',feature);
 }
 
