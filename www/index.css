@@ -111,7 +111,7 @@ li.directions_functions {
 #map-location-warnings {
     position:absolute;
     top:0;
-    right:0;
+    right:0.5em;
     z-index:1000;
 
     text-align:right;
