@@ -168,6 +168,9 @@ L.LatLng.prototype.bearingWordTo = function(other) {
  ******************************************************************************/
 
 $(window).bind('orientationchange pageshow resize', function() {
+    // part 1
+    // resize the map to fit the screen, with no header, with the button bar across the bottom
+    // then notify the map that its DIV has been resized
     var page    = $(":jqmData(role='page'):visible");
     var header  = $(":jqmData(role='header'):visible");
     var content = $(":jqmData(role='content'):visible");
@@ -180,6 +183,12 @@ $(window).bind('orientationchange pageshow resize', function() {
         $("#map_canvas").height(contentHeight);
         if (MAP) MAP.invalidateSize();
     }
+
+    // part 2
+    // refresh any listviews on this pag
+    // JQM is not reliable about refreshing their styling if they were not visible at the time they were refreshed,
+    // and we need to do things like update search results, show/hide options in a anchor listview, ...
+    page.find('ul[data-role="listview"]').listview('refresh');
 });
 
 function init() {
@@ -526,6 +535,11 @@ function initFindLoops() {
 }
 
 function initFindKeyword() {
+    // not really related to the Keyword Search per se, but on the Find panel same as the keyword search
+    var listview = $('#page-find ul[data-role="listview"]').eq(1);
+    listview.find('li').first().hide();
+    listview.listview('refresh');
+
     // set up the form: on submit, Enter, button, etc. submit a keyword seaech to the server
     var form     = $('#page-find fieldset[data-type="keyword"]');
     var field    = form.find('input[type="text"]');
@@ -1058,6 +1072,12 @@ function searchProcessResults(resultlist,title,from,options) {
     }
     target.listview('refresh',true);
     calculateDistancesAndSortSearchResultsList();
+
+    // afterthoughts
+    // on the Find panel, show the Prior Results option since we now have results that can be prior
+    var listview = $('#page-find ul[data-role="listview"]').eq(1);
+    listview.find('li').first().show();
+    listview.listview('refresh');
 }
 
 // note: this is for Search Results, which is not the same as Nearby
@@ -1071,6 +1091,7 @@ function calculateDistancesAndSortSearchResultsList() {
     target.children().each(function () {
         var raw     = $(this).data('raw');
         var point   = L.latLng(raw.lat,raw.lng);
+        //GDA fix this, save a call to getLatLng on every item
         var meters  = Math.round( MARKER_GPS.getLatLng().distanceTo(point) );
         var bearing = here.bearingWordTo(point);
 
