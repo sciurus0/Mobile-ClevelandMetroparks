@@ -1197,6 +1197,14 @@ function loadAndShowDetailsPanel(feature) {
         var wkt = $('#page-details div.wkt').text();
         feature.wkt = wkt;
 
+        // intercept any hyperlinks in the HTML and force them through InAppBrowser so we can make them open in the system browser instead
+        // this became necessary in Cordova 2.9 and I'm not sure why this isn't the default behavior...
+        $('#page-details div.description a').click(function () {
+            var url = $(this).prop('href');
+            window.open(url,'_system');
+            return false;
+        });
+
         // assign the raw feature to the Map button
         // see initDetailsPanel() where the data('raw') is defined as a trigger for the map behavior
         $('#page-details').data('raw',feature);

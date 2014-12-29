@@ -41,6 +41,9 @@
     <feature name="Media">
         <param name="ios-package" value="CDVSound" />
     </feature>
+    <feature name="InAppBrowser">
+        <param name="ios-package" value="CDVInAppBrowser" />
+    </feature>
     <name>Cleveland Metroparks</name>
     <description>
         Find parks, trails, and amenities in Cleveland with Cleveland Metropark's mobile app.
