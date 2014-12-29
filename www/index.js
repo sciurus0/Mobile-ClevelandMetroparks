@@ -275,11 +275,11 @@ function initMap() {
     }).addTo(MAP);
     MARKER_FROM = L.marker(L.latLng(0,0), {
         clickable:false,
-        icon:L.icon({ iconUrl:'images/marker-gps.png', iconSize:[20,34], iconAnchor:[10,34] })
+        icon:L.icon({ iconUrl:'images/marker-start.png', iconSize:[20,34], iconAnchor:[10,34] })
     }).addTo(MAP);
     MARKER_TO = L.marker(L.latLng(0,0), {
         clickable:false,
-        icon:L.icon({ iconUrl:'images/marker-gps.png', iconSize:[20,34], iconAnchor:[10,34] })
+        icon:L.icon({ iconUrl:'images/marker-end.png', iconSize:[20,34], iconAnchor:[10,34] })
     }).addTo(MAP);
 
     // ready! set! action!
