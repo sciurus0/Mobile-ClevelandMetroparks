@@ -264,7 +264,6 @@ function initMap() {
 
     // add the various markers for various purposes
     // being at 0,0 they aren't visible until something sets their LatLng
-    //GDA to-do: new marker icons? having To and From the same as your GPS, is a bit odd
     MARKER_TARGET = L.marker(L.latLng(0,0), {
         clickable:false,
         icon:L.icon({ iconUrl:'images/marker-target.png', iconSize:[25,41], iconAnchor:[13,41] })
