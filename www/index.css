@@ -17,7 +17,8 @@ body,.ui-widget {
 }
 
 .popup_title {
-    font-size:10pt; font-weight:bold;
+    font-size:10pt;
+    font-weight:bold;
     margin-bottom:0.25em;
 }
 
@@ -45,18 +46,6 @@ div.lat_driving {
 
 div.lng_driving {
     display:none;
-}
-
-#info h2 {
-    margin-top:0;
-}
-
-#info input[type="button"] {
-    margin-top:10px;
-}
-
-#info-content {
-    margin-bottom:20px;
 }
 
 /* the legend swatches in the Layers panel */
@@ -138,6 +127,18 @@ li.directions_functions {
 .ui-header {
     font-family: Montserrat;
 }
+
+
+/* Details panel */
+
+#page-details h2 {
+    font-size:12pt;
+    margin-top:0;
+}
+#info-content {
+    margin-bottom:20px;
+}
+
 
 
 /* jQuery Mobile style overrides */
