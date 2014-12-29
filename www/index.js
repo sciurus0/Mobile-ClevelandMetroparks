@@ -932,12 +932,6 @@ function searchPOIs(category) {
     var params = {};
     params.category = 'pois_usetype_' + category;
 
-    // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
-    // and remove the Target marker to 0,0 since we're no onger showing info for a specific place
-    //GDA to-do move this into searchProcessResults() so as not to repeat it
-    nearbyOff();
-    MARKER_TARGET.setLatLng([0,0]);
-
     $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/browse_items', params, function (reply) {
         $.mobile.hidePageLoadingMsg();
@@ -949,12 +943,6 @@ function searchPOIs(category) {
 
 function searchKeyword(keyword) {
     var params = { keyword:keyword, limit:100 };
-
-    // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
-    // and remove the Target marker to 0,0 since we're no onger showing info for a specific place
-    //GDA to-do move this into searchProcessResults() so as not to repeat it
-    nearbyOff();
-    MARKER_TARGET.setLatLng([0,0]);
 
     $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/keyword', params, function (results) {
@@ -968,12 +956,6 @@ function searchKeyword(keyword) {
 function searchTrails(options) {
     var params = options;
 
-    // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
-    // and remove the Target marker to 0,0 since we're no onger showing info for a specific place
-    //GDA to-do move this into searchProcessResults() so as not to repeat it
-    nearbyOff();
-    MARKER_TARGET.setLatLng([0,0]);
-
     $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/search_trails', params, function (results) {
         $.mobile.hidePageLoadingMsg();
@@ -985,12 +967,6 @@ function searchTrails(options) {
 
 function searchLoops(options) {
     var params = options;
-
-    // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
-    // and remove the Target marker to 0,0 since we're no onger showing info for a specific place
-    //GDA to-do move this into searchProcessResults() so as not to repeat it
-    nearbyOff();
-    MARKER_TARGET.setLatLng([0,0]);
 
     $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/search_loops', params, function (results) {
@@ -1027,8 +1003,17 @@ function searchProcessResults(resultlist,title,from,options) {
     $.mobile.hidePageLoadingMsg();
     if (options.showerror && ! resultlist.length) return mobilealert("Try a different keyword, location, or other filters.", "No Results");
 
+    // pre-work cleanup
+    // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
+    nearbyOff();
+
+    // pre-work cleanup
+    // remove the Target marker to 0,0 since we're no longer showing info for a specific place
+    MARKER_TARGET.setLatLng([0,0]);
+
     // set the Results panel's Back button to go to the indicated search page, head over to the Results page
     // set the Results title to whatever title was given by the search endpoint (we can trust it)
+    // tip: why not use data-role="back" ? cuz we want to override that, potentially send the user to someplace else
     if (options.showresults) $.mobile.changePage('#page-find-results');
     $('#page-find-results div[data-role="header"] a[data-icon="back"]').prop('href',from);
     $('#page-find-results div[data-role="header"] h1').text(title);
