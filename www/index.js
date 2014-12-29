@@ -1151,7 +1151,7 @@ function refreshNearbyAndAlertIfAppropriate() {
 // Leaflet freaks out if you try to zoom the map and the map is not in fact visible, so you must switch to the map THEN peform those map changes
 // this wrapper will do that for you, and is the recommended way to switch to the map and then zoom in, adjust markers, add vectors, ...
 // tip: timeout needs to be long enough to account for transitions on slow devices, but fast enough not to be annoying
-function () and mov(callback) {
+function switchToMap(callback) {
     $.mobile.changePage('#page-map');
     setTimeout(callback,500);
 }
