@@ -1151,7 +1151,7 @@ function refreshNearbyAndAlertIfAppropriate() {
 // Leaflet freaks out if you try to zoom the map and the map is not in fact visible, so you must switch to the map THEN peform those map changes
 // this wrapper will do that for you, and is the recommended way to switch to the map and then zoom in, adjust markers, add vectors, ...
 // tip: timeout needs to be long enough to account for transitions on slow devices, but fast enough not to be annoying
-function switchToMap(callback) {
+function () and mov(callback) {
     $.mobile.changePage('#page-map');
     setTimeout(callback,500);
 }
@@ -1170,7 +1170,6 @@ function loadAndShowDetailsPanel(feature) {
         // the HTML is already ready to display, including title, hyperlinks, etc. managed by Cleveland
         $.mobile.changePage('#page-details');
         var target = $('#page-details div.description').html(html);
-//GDA  make this work for loops and trails, which lack description field
 
         // WKT geometry is in a hidden DIV
         // kinda a hack since the change was a surprise after months of other development
