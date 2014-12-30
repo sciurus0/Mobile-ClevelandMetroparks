@@ -124,6 +124,10 @@ li.directions_functions {
 
 /* global font stuff */
 
+input[type="text"] {
+    text-align:center;
+}
+
 .ui-header {
     font-family: Montserrat;
 }
@@ -134,11 +138,17 @@ li.directions_functions {
 #page-details h2 {
     font-size:14pt;
     margin-top:0;
+    text-align:center;
 }
-#info-content {
-    margin-bottom:20px;
+#page-details div.description {
+    margin-bottom:2em;
 }
-
+#page-details div.directions_buttons {
+    text-align:center;
+}
+#page-directions h2 {
+    text-align:center;
+}
 
 
 /* jQuery Mobile style overrides */
