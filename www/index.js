@@ -1356,7 +1356,20 @@ function directionsParseAddressAndValidate() {
     form.find('input[name="feature_gid"]').val('');
     form.find('input[name="feature_type"]').val('');
 
-    // part 1 - figure out the origin
+    // part 1 - simple params we can extract now
+    // we use these to fine-tune some of the routing params, e.g. re-geocoding opints to their nearest parking lot; see part 3
+
+    // override the transportation mode with a new mode, e.g. Bike -> BikeAdvanced
+    // originally this was more expansive, with Hike having subtypes; some day they'll likely drop Bike Difficulty but we need to leave possibilities open
+    var tofrom  = form.find('select[name="tofrom"]').val();
+    var via     = form.find('select[name="mode"]').val();
+    switch (via) {
+        case 'bike':
+            via = form.find('select[name="difficulty"]').val();
+            break;
+    }
+
+    // part 2 - figure out the origin
 
     // can be any of address geocode, latlon already properly formatted, current GPS location, etc.
     // this must be done before the target is resolved (below) because resolving the target can mean weighting based on the starting point
@@ -1368,12 +1381,12 @@ function directionsParseAddressAndValidate() {
     var addresstype = form.find('select[name="origin"]').val();
     var address     = form.find('input[name="address"]').val();
     switch (addresstype) {
-        // GPS target: simplest possible case: lat and lng are already had
+        // GPS origin: simplest possible case: lat and lng are already had
         case 'gps':
             sourcelat = MARKER_GPS.getLatLng().lat;
             sourcelng = MARKER_GPS.getLatLng().lng;
             break;
-        // GEOCODE target: but a hack (of course), that it can be either an address or else GPS coordinates in either of 2 formats
+        // GEOCODE origin: but a hack (of course), that it can be either an address or else GPS coordinates in either of 2 formats
         case 'geocode':
             if (! address) return mobilealert("Please enter an address, city, or landmark.","Address");
             var is_decdeg = /^\s*(\d+\.\d+)\s*\,\s*(\-\d+\.\d+)\s*$/.exec(address); // regional assumption in this regular expression: negative lng, positive lat
@@ -1411,9 +1424,77 @@ function directionsParseAddressAndValidate() {
                 });
             }
             break;
-    }
-    // if we got here then we successfully loaded sourcelat and sourcelng
+        // FEATURES origin: use a variant of the keyword autocomplete concept, to provide a list of names as they type
+        // having exactly one result, or the first result matching your search exactly, fills in the Feature Type and GID for later, as well as grabbing its latlng
+        // to clarify: submitting the form
+        case 'features':
+            var params = {};
+            params.keyword = address;
+            params.limit   = 10;
+            params.lat     = MARKER_GPS.getLatLng().lat;
+            params.lng     = MARKER_GPS.getLatLng().lng;
+            params.via     = via;
 
+//GDA global fix: replace these showPageLoadingMsg and hidePageLoadingMsg with ajaxStart and ajaxStop globals
+// so we don't have to call them before and after every single call, success, and error
+            $.mobile.showPageLoadingMsg("a", "Loading", false);
+            $.ajaxSetup({ async:false });
+            $.get(BASE_URL + '/ajax/keyword', params, function (candidates) {
+                $.mobile.hidePageLoadingMsg();
+                $.ajaxSetup({ async:true });
+
+                // we got back a list of autocomplete candidates
+                // see if any of them are an exact match for what we typed, if so then truncate the list to that 1 perfect item
+                // see if there's only 1 autocomplete candidate (perhaps the one we picked above), in which case we call that a match
+                var matchme = address.replace(/\W/g,'').toLowerCase();
+                for (var i=0, l=candidates.length; i<l; i++) {
+                    var stripped = candidates[i].name.replace(/\W/g,'').toLowerCase();
+                    if (stripped == matchme) { candidates = [ candidates[i] ]; break; }
+                }
+
+                if (candidates.length == 1) {
+                    // only 1 autocomplete candidate
+                    // save the lat/lng and the type/gid
+                    // and fill in the name so it's all spelled nicely, instead of the user's presumably-partial wording
+                    // then empty the autocomplete candidate listing, cuz we only had 1 and it's now in effect
+                    form.find('input[name="feature_gid"]').val(candidates[0].gid);
+                    form.find('input[name="feature_type"]').val(candidates[0].type);
+                    sourcelat = candidates[0].lat;
+                    sourcelng = candidates[0].lng;
+                    form.find('input[name="address"]').val( candidates[0].name );
+                    $('#directions_autocomplete').empty();
+                } else {
+                    // okay, there's more than 1 candidate for this autocomplete, so fill in that listview of options
+                    // each option has a click handler to basically do what the "length == 1" option did above: fill it in, empty listing, ...
+                    // note: item 0 is not a result, but the words "Did you mean..." and has no click behavior
+                    var listing = $('#directions_autocomplete').empty();
+                    $('<li></li>').append( $('<span></span>').addClass('ui-li-heading').text("Did you mean one of these?") ).appendTo(listing);
+                    for (var i=0, l=candidates.length; i<l; i++) {
+                            var name = candidates[i].name.replace(/^\s*/,'').replace(/\s*$/,'');
+                            var item = $('<li></li>').data('raw',candidates[i]).appendTo(listing);
+                            $('<span></span>').addClass('ui-li-heading').text(name).appendTo(item);
+                            item.click(function () {
+                                // click this item: fill in the name, gid and type, lat and lng, ... empty the listing cuz we made a choice
+                                var info = $(this).data('raw');
+                                form.find('input[name="feature_gid"]').val(info.gid);
+                                form.find('input[name="feature_type"]').val(info.type);
+                                sourcelat = info.lat;
+                                sourcelng = info.lng;
+                                form.find('input[name="address"]').val( info.name );
+                                $('#directions_autocomplete').empty();
+                            });
+                    }
+                    listing.listview('refresh');
+                }
+            },'json').error(function (error) {
+                $.mobile.hidePageLoadingMsg();
+                $.ajaxSetup({ async:true });
+
+                return mobilealert("Could fetch any locations. Check that you have data service turned on and a good signal.","No connection?");
+            });
+            break;
+    }
+    // if we got here then we either loaded sourcelat and sourcelng, or else bailed with an error or some other task completed
 
     // part 3 - figure out the target location
 

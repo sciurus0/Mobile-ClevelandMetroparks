@@ -136,7 +136,7 @@ input[type="text"] {
 /* Details panel */
 
 #page-details h2 {
-    font-size:14pt;
+    font-size:13pt;
     margin-top:0;
     text-align:center;
 }
@@ -147,6 +147,8 @@ input[type="text"] {
     text-align:center;
 }
 #page-directions h2 {
+    font-size:13pt;
+    margin-top:0;
     text-align:center;
 }
 
