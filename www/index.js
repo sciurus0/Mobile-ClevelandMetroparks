@@ -191,6 +191,13 @@ $(window).bind('orientationchange pageshow resize', function() {
     page.find('ul[data-role="listview"]').listview('refresh');
 });
 
+$(document).ajaxStart(function() {
+    $.mobile.showPageLoadingMsg("a", "Loading", false);
+});
+$(document).ajaxStop(function() {
+    $.mobile.hidePageLoadingMsg();
+});
+
 function init() {
     // pre-render the pages so we don't have that damnable lazy rendering thing messing with it
     $('div[data-role="page"]').page();
@@ -1021,9 +1028,7 @@ function searchPOIs(category) {
     var params = {};
     params.category = 'pois_usetype_' + category;
 
-    $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/browse_items', params, function (reply) {
-        $.mobile.hidePageLoadingMsg();
           searchProcessResults(reply.results, reply.title, '#page-find-pois');
     },'json').error(function (error) {
         searchProcessError(error);
@@ -1033,10 +1038,8 @@ function searchPOIs(category) {
 function searchKeyword(keyword) {
     var params = { keyword:keyword, limit:100 };
 
-    $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/keyword', params, function (results) {
-        $.mobile.hidePageLoadingMsg();
-          searchProcessResults(results, "Keyword: " + keyword , '#page-find');
+        searchProcessResults(results, "Keyword: " + keyword , '#page-find');
     },'json').error(function (error) {
         searchProcessError(error);
     });
@@ -1045,9 +1048,7 @@ function searchKeyword(keyword) {
 function searchTrails(options) {
     var params = options;
 
-    $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/search_trails', params, function (results) {
-        $.mobile.hidePageLoadingMsg();
         searchProcessResults(results, 'Trail Finder', '#page-find-trails');
     }, 'json').error(function (error) {
         searchProcessError(error);
@@ -1057,9 +1058,7 @@ function searchTrails(options) {
 function searchLoops(options) {
     var params = options;
 
-    $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get( BASE_URL + '/ajax/search_loops', params, function (results) {
-        $.mobile.hidePageLoadingMsg();
           // this endpoint is a little unusual
           // we compose the note attribute from the duration and distance fields
           // and the 'name' field is misnamed 'title'
@@ -1077,7 +1076,6 @@ function searchLoops(options) {
 
 function searchProcessError(error) {
     // hide any loading spinner, set the results title to clearly indicate a problem
-    $.mobile.hidePageLoadingMsg();
     mobilealert("Check that you have data service, then try again.", "No connection?");
 }
 
@@ -1089,7 +1087,6 @@ function searchProcessResults(resultlist,title,from,options) {
 
     // hide the spinner, if the caller forgot (or so we can funnel responsibility for it here)
     // then bail if there are 0 results, so the caller doesn't need that responsibility either
-    $.mobile.hidePageLoadingMsg();
     if (options.showerror && ! resultlist.length) return mobilealert("Try a different keyword, location, or other filters.", "No Results");
 
     // pre-work cleanup
@@ -1257,10 +1254,7 @@ function loadAndShowDetailsPanel(feature) {
     // hit up the endpoint and get the HTML description
     var latlng = MARKER_GPS.getLatLng();
     var params = { gid:feature.gid, type:feature.type, lat:latlng.lat, lng:latlng.lng };
-    $.mobile.showPageLoadingMsg("a", "Loading", false);
     $.get(BASE_URL + '/ajax/moreinfo', params, function (html) {
-        $.mobile.hidePageLoadingMsg();
-
         // grab and display the plain HTML into the info panel, and switch over to it
         // the HTML is already ready to display, including title, hyperlinks, etc. managed by Cleveland
         $.mobile.changePage('#page-details');
@@ -1283,7 +1277,6 @@ function loadAndShowDetailsPanel(feature) {
         // see initDetailsAndDirectionsPanels() where the data('raw') is defined as a trigger for the map behavior
         $('#page-details').data('raw',feature);
     },'html').error(function (error) {
-        $.mobile.hidePageLoadingMsg();
         mobilealert("Check that you have data service, then try again.", "No connection?");
     });
 }
@@ -1406,17 +1399,14 @@ function directionsParseAddressAndValidate() {
                 params.bing_key = BING_API_KEY;
                 params.bbox     = GEOCODE_BIAS_BOX;
 
-                $.mobile.showPageLoadingMsg("a", "Loading", false);
                 $.ajaxSetup({ async:false });
                 $.get(BASE_URL + '/ajax/geocode', params, function (result) {
-                    $.mobile.hidePageLoadingMsg();
                     $.ajaxSetup({ async:true });
 
                     if (! result) return mobilealert("Could not find that address.","Address Not Found");
                     sourcelat = result.lat;
                     sourcelng = result.lng;
                 },'json').error(function (error) {
-                    $.mobile.hidePageLoadingMsg();
                     $.ajaxSetup({ async:true });
 
                     return mobilealert("Could not find that address. Check the address, and that you have data service turned on and a good signal.","No connection?");
@@ -1434,12 +1424,8 @@ function directionsParseAddressAndValidate() {
             params.lng     = MARKER_GPS.getLatLng().lng;
             params.via     = via;
 
-//GDA global fix: replace these showPageLoadingMsg and hidePageLoadingMsg with ajaxStart and ajaxStop globals
-// so we don't have to call them before and after every single call, success, and error
-            $.mobile.showPageLoadingMsg("a", "Loading", false);
             $.ajaxSetup({ async:false });
             $.get(BASE_URL + '/ajax/keyword', params, function (candidates) {
-                $.mobile.hidePageLoadingMsg();
                 $.ajaxSetup({ async:true });
 
                 // we got back a list of autocomplete candidates
@@ -1486,7 +1472,6 @@ function directionsParseAddressAndValidate() {
                     listing.listview('refresh');
                 }
             },'json').error(function (error) {
-                $.mobile.hidePageLoadingMsg();
                 $.ajaxSetup({ async:true });
 
                 return mobilealert("Could fetch any locations. Check that you have data service turned on and a good signal.","No connection?");
