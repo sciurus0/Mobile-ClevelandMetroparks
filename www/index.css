@@ -173,7 +173,7 @@ input[type="text"] {
 }
 
 
-/* Page elements */
+/* Map panel */
 
 #map_canvas {
     position:absolute; top:0; left:0;
@@ -189,12 +189,12 @@ input[type="text"] {
 
     text-align:center;
 }
-
 #toolbar table {
     width:100%;
     border-collapse:collapse;
 }
 
+/* supressed cuz we want to hide Directions button and that doesn't work well with last-child and cells having borders (CSS3 doesn't have :visible)
 #toolbar table td {
     border-right:1px solid silver;
     border-left:1px solid silver;
@@ -205,6 +205,7 @@ input[type="text"] {
 #toolbar table td:last-child {
     border-right:0 none transparent;
 }
+*/
 
 .ui-li-has-count .ui-li-count {
     top:50%;
