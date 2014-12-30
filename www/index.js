@@ -208,7 +208,7 @@ function init() {
     initFindLoops();
     initFindKeyword();
     initResultsPanel();
-    initDetailsPanel();
+    initDetailsAndDirectionsPanels();
 
     // ready!
     // look at the Skip Welcome setting and see whether we should go there, or to the map
@@ -585,7 +585,7 @@ function initResultsPanel() {
     });
 }
 
-function initDetailsPanel() {
+function initDetailsAndDirectionsPanels() {
     // intercept a click on the Map button on the results panel
     // it should call switchToMap() to do the map changeover, since that introduces a delay to work around animation issues
     // what should it zoom to? whatever feature was assigned to its data('raw') which itself is populated by showDetailsPanel() when a feature is selected
@@ -626,6 +626,64 @@ function initDetailsPanel() {
         return false;
     });
 
+    // intercept clicks on the Directions buttons on the Details panel
+    // to make some UI changes to the Directions panel on our way there (we do allow it to click through and arrive on the panel)
+    $('#page-details div.directions_buttons a').click(function () {
+        // set the Foot, Car, Bus, ... picker to whichever they picked
+        // this is the only role of these buttons
+        var mode = $(this).attr('data-mode');
+        $('#page-directions select[name="mode"]').val(mode).selectmenu('refresh').trigger('change');
+
+        // fill in some details from the feature we're coming from
+        // again #page-details.data('raw') is THE go-to place to find out what we're focusing
+        var info = $('#page-details').data('raw');
+        $('#page-directions h2.name').text(info.name);
+    });
+
+    // Directions panel
+    // some changes cause elements to show and hide: address is only if navigating to/from an address or location name, for example
+    $('#page-directions select[name="origin"]').change(function () {
+        var show     = $(this).val() != 'gps';
+        var fieldset = $(this).closest('div[data-role="fieldcontain"]');
+        var target   = fieldset.find('input[name="address"]').closest('span.togglewrapper');
+        show ? target.show() : target.hide();
+        fieldset.trigger('create');
+    }).trigger('change');
+    $('#page-directions select[name="mode"]').change(function () {
+        var show     = $(this).val() == 'bike';
+        var fieldset = $(this).closest('div[data-role="fieldcontain"]');
+        var target   = fieldset.find('select[name="difficulty"]').closest('span.togglewrapper');
+        show ? target.show() : target.hide();
+        fieldset.trigger('create');
+    }).trigger('change');
+    $('#page-directions select[name="tofrom"]').change(function () {
+        var selector = $('#page-directions select[name="origin"]');
+        var options  = selector.children();
+        switch ( $(this).val() ) {
+            case 'to':
+                options.each(function () {
+                    $(this).text( $(this).text().replace(/^To/, 'From') );
+                });
+                break;
+            case 'from':
+                options.each(function () {
+                    $(this).text( $(this).text().replace(/^From/, 'To') );
+                });
+                break;
+        }
+        selector.selectmenu('refresh');
+    });
+
+    // Directions panel
+    // submit handler (sorta) to compile params and fetch directions
+    $('#page-directions input[name="address"]').keydown(function (event) {
+        if (event.keyCode != 13) return;
+        $(this).blur();
+        $('#page-directions input[type="button"]').trigger('click');
+    });
+    $('#page-directions input[type="button"]').click(function () {
+        //GDA get directions, or compile them and hand off
+    });
 }
 
 
@@ -1039,6 +1097,10 @@ function searchProcessResults(resultlist,title,from,options) {
     // remove the Target marker to 0,0 since we're no longer showing info for a specific place
     MARKER_TARGET.setLatLng([0,0]);
 
+    // pre-work cleanup
+    // any directions (both text listing, and the line on the map) need to be cleaned up
+    directionsClear();
+
     // set the Results panel's Back button to go to the indicated search page, head over to the Results page
     // set the Results title to whatever title was given by the search endpoint (we can trust it)
     // tip: why not use data-role="back" ? cuz we want to override that, potentially send the user to someplace else
@@ -1206,16 +1268,22 @@ function loadAndShowDetailsPanel(feature) {
         });
 
         // assign the raw feature to the Map button
-        // see initDetailsPanel() where the data('raw') is defined as a trigger for the map behavior
+        // see initDetailsAndDirectionsPanels() where the data('raw') is defined as a trigger for the map behavior
         $('#page-details').data('raw',feature);
-
-        //GDA
-        // Directions button
-
-        //GDA
-        // Elevation profile if trail
     },'html').error(function (error) {
         $.mobile.hidePageLoadingMsg();
         mobilealert("Check that you have data service, then try again.", "No connection?");
     });
 }
+
+
+//gda
+function directionsClear() {
+    // remove the line from the map
+    // clear the directions text from the Directions panel
+}
+
+//gda
+function directionsRender(directions) {
+}
+

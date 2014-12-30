@@ -400,8 +400,64 @@
         <!-- description HTML -->
         <div class="description"></div>
 
-<!-- elevation profile chart -->
-<p>GDA</p>
+        <!-- directions buttons -->
+        <div class="directions_buttons">
+            <h2>Directions:</h2>
+            <a href="#page-directions" data-mode="hike"><img src="images/directions_hike.svg" /></a>
+            <a href="#page-directions" data-mode="bike"><img src="images/directions_bike.svg" /></a>
+            <a href="#page-directions" data-mode="car"><img src="images/directions_car.svg" /></a>
+            <a href="#page-directions" data-mode="bus"><img src="images/directions_bus.svg" /></a>
+        </div>
+
+    </div>
+</div>
+
+
+
+<div data-role="page" id="page-directions">
+    <div data-role="header">
+        <a href="#" data-icon="back" data-rel="back">Back</a>
+        <h1>Directions</h1>
+    </div>
+    <div data-role="content">
+
+        <h2 class="name">Place Name Here</h2>
+
+        <!-- a simple form, but complicated by elements showing and hiding... and thus parent wrappers necessary to also toggle the JQM decor -->
+        <!-- see initDirectionsPanel() -->
+        <div data-role="fieldcontain">
+            <select name="tofrom">
+                <option value="to">To here</option>
+                <option value="from">From here</option>
+            </select>
+            <select name="origin">
+                <option value="gps">From your current location</option>
+                <option value="geocode">From an address</option>
+                <option value="features">From a park feature or point of interest</option>
+            </select>
+            <span class="togglewrapper">
+                <lAbel><input type="text" name="address" placeholder="place name or address" /></label>
+            </span>
+            <select name="mode">
+                <option value="bike">On bike</option>
+                <option value="car">By car</option>
+                <option value="hike">On foot</option>
+                <option value="bus">By bus</option>
+            </select>
+            <span class="togglewrapper">
+                <select name="difficulty">
+                    <option value="bike_advanced">Advanced</option>
+                    <option value="bike_intermediate">Intermediate</option>
+                    <option value="bike_beginner">Beginner</option>
+                    <option value="bike_novice">Novice</option>
+                </select>
+            </span>
+            <select name="preference">
+                <option value="recommmended">Recommended route</option>
+                <option value="shortest">Shortest route</option>
+            </select>
+            <input type="button" value="Get Directions" />
+        </div>
 
     </div>
 </div>
