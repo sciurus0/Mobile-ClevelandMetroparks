@@ -1159,8 +1159,7 @@ function calculateDistancesAndSortSearchResultsList() {
     target.children().each(function () {
         var raw     = $(this).data('raw');
         var point   = L.latLng(raw.lat,raw.lng);
-        //GDA fix this, save a call to getLatLng on every item
-        var meters  = Math.round( MARKER_GPS.getLatLng().distanceTo(point) );
+        var meters  = Math.round( here.distanceTo(point) );
         var bearing = here.bearingWordTo(point);
 
         // save the distance in meters, for possible distance sorting
