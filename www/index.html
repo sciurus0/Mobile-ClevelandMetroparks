@@ -30,7 +30,7 @@
             <tr>
                 <td><a class="button" href="#page-find"><img src="images/button_find.png" /></a></td>
                 <td><a class="button" href="#page-find-nearby"><img src="images/button_nearby.png" /></a></td>
-                <td><a class="button" href="#page-getdirections"><img src="images/button_directions.png" /></a></td>
+                <td><a class="button" href="#page-directions"><img src="images/button_directions.png" /></a></td>
             </tr>
             </table>
         </div>
@@ -425,6 +425,9 @@
 
         <!-- a simple form, but complicated by elements showing and hiding... and thus parent wrappers necessary to also toggle the JQM decor -->
         <!-- see initDirectionsPanel() -->
+        <input type="hidden" name="origlat" /> <input type="hidden" name="origlng" /> <!-- origin latitude and longitude -->
+        <input type="hidden" name="destlat" /> <input type="hidden" name="destlng" /> <!-- destination latitude & longitude-->
+        <input type="hidden" name="feature_type" /> <input type="hidden" name="feature_gid" />  <!-- if routing to a Feature, the Type and GID -->
         <div data-role="fieldcontain">
             <select name="tofrom">
                 <option value="to">To here</option>
@@ -459,6 +462,10 @@
             <input type="button" value="Get Directions" />
         </div>
 
+        <!-- the listing for the text of the directions -->
+        <ul data-role="listview" id="directions_list">
+        </ul>
+
     </div>
 </div>
 
@@ -487,6 +494,9 @@
     <script type="text/javascript" src="libs/jquery.sort.js"></script>
     <script type="text/javascript" src="libs/jquery.purl.js"></script>
     <script type="text/javascript" src="libs/jqm.autoComplete-1.5.1.js"></script>
+
+    <!-- PhoneNavigator plugin so Android can open the native Navigator in case we can't get directions they need -->
+    <script type="text/javascript" src="phonenavigator.js"></script>
 
     <!-- Leaflet map API and Wicket plugin for parsing WKT -->
     <link rel="stylesheet" type="text/css" href="libs/leaflet-0.7.1/leaflet.css" />

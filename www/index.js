@@ -682,7 +682,10 @@ function initDetailsAndDirectionsPanels() {
         $('#page-directions input[type="button"]').trigger('click');
     });
     $('#page-directions input[type="button"]').click(function () {
-        //GDA get directions, or compile them and hand off
+        // clear current directions
+        // parse the form to validate everything AND to populate the lat/lng coordinates of the endpoints as required
+        directionsClear();
+        directionsParseAddressAndValidate();
     });
 }
 
@@ -1142,7 +1145,10 @@ function searchProcessResults(resultlist,title,from,options) {
     listview.listview('refresh');
 }
 
-// note: this is for Search Results, which is not the same as Nearby
+/*
+ * Called by the handleLocationFound() event periodically, this sorts the Search Results list
+ * by distance from your current GPS location
+ */
 function calculateDistancesAndSortSearchResultsList() {
     var sortby = $('#page-find-results div.sortpicker a.active').attr('data-sortby');
     var target = $('#search_results');
@@ -1185,6 +1191,9 @@ function _sortResultsByName(p,q) {
     return ( $(p).data('title') > $(q).data('title') ) ? 1 : -1;
 }
 
+/*
+ * Query for new Nearby results, and populate them into the Search Results list
+ */
 function refreshNearbyAndAlertIfAppropriate() {
     // compose the params and query the service: lat, lng, meters, list of category IDs
     // tip: use POST so we don't overflow the max URL length: 20 checkboxes can get lengthy
@@ -1231,16 +1240,20 @@ function refreshNearbyAndAlertIfAppropriate() {
     NEARBY_ALERT_CIRCLE.setRadius(meters).setLatLng(latlng).addTo(MAP);
 }
 
-// Leaflet freaks out if you try to zoom the map and the map is not in fact visible, so you must switch to the map THEN peform those map changes
-// this wrapper will do that for you, and is the recommended way to switch to the map and then zoom in, adjust markers, add vectors, ...
-// tip: timeout needs to be long enough to account for transitions on slow devices, but fast enough not to be annoying
+/*
+ * Leaflet freaks out if you try to zoom the map and the map is not in fact visible, so you must switch to the map THEN peform those map changes
+ * this wrapper will do that for you, and is the recommended way to switch to the map and then zoom in, adjust markers, add vectors, ...
+ * tip: timeout needs to be long enough to account for transitions on slow devices, but fast enough not to be annoying
+ */
 function switchToMap(callback) {
     $.mobile.changePage('#page-map');
     setTimeout(callback,500);
 }
 
-// switch over to the Details panel and AJAX-load full info for the given feature
-// only caller is a click handler on searchresults
+/*
+ * switch over to the Details panel and AJAX-load full info for the given feature
+ * only caller is a click handler on searchresults
+ */
 function loadAndShowDetailsPanel(feature) {
     // hit up the endpoint and get the HTML description
     var latlng = MARKER_GPS.getLatLng();
@@ -1277,10 +1290,169 @@ function loadAndShowDetailsPanel(feature) {
 }
 
 
-//gda
+/*
+ * a set of functions to open up directions to a give latlng
+ * thank you Viktor for the phonenavigator plugin
+ */
+function openDirections(sourcelat,sourcelng,targetlat,targetlng) {
+    if ( is_ios() ) {
+        _openDirections_iOS(sourcelat,sourcelng,targetlat,targetlng);
+    } else if ( is_android() ) {
+        _openDirections_Android(sourcelat,sourcelng,targetlat,targetlng);
+    } else {
+        _openDirections_Chrome(sourcelat,sourcelng,targetlat,targetlng);
+    }
+}
+function _openDirections_iOS(sourcelat,sourcelng,targetlat,targetlng) {
+    // iOS handles maps: as an URL protocol and automagically opens navigation
+    var url = "maps://?" + "daddr="+targetlat+","+targetlng + "&saddr="+sourcelat+","+sourcelng;
+    window.location = url;
+}
+function _openDirections_Android(sourcelat,sourcelng,targetlat,targetlng) {
+    // Android needs a plugin to call the onboard Navigation app
+    // aos, it doesn't handle the source location, only a destination
+    cordova.require('cordova/plugin/phonenavigator').doNavigate(targetlat, targetlng, null, function () {
+        mobilealert("Could not find a navigation app installed on your device.", "Error");
+    });
+}
+function _openDirections_Chrome(sourcelat,sourcelng,targetlat,targetlng) {
+    // non-Cordova the best we can do for Directions is compose a pair of loc: for Google Maps
+    var params = {};
+    params.saddr = 'loc:' + sourcelat + ',' + sourcelng;
+    params.daddr = 'loc:' + targetlat + ',' + targetlng;
+    var url = 'http://maps.google.com/?' + $.param(params);
+    window.open(url);
+}
+
+
+// erase all Directions-related components from the UI: map line, directions words, ...
 function directionsClear() {
     // remove the line from the map
+    // and reposition the start and end markers to nowhere
+    if (DIRECTIONS_LINE) MAP.removeLayer(DIRECTIONS_LINE);
+    MARKER_FROM.setLatLng([0,0]);
+    MARKER_TO.setLatLng([0,0]);
+
     // clear the directions text from the Directions panel
+    $('#directions_list').empty().listview('refresh');
+}
+
+// parse the Directions form and pass off to geocoders, Did You Mean autocompletes, etc.
+//      in order to populate the sourcelat/sourcelng and destlat/destlng fields so it's ready for a routing request
+// this is also validation, since that's quite intricate and tends to change and have deep interactions
+//      e.g. address can be a geocode-able address, or GPS or DD coordinates
+// ultimately this populates the fields as a side effect, then returns true/false indicating whether it's ready to proceed
+//      other side effects would include opening mobile alerts
+// a big question you'll likely be wondering: if this is a mobile app, why not use native routing?
+// answer: cuz we want to route over our own trails network in 2 of the 4 cases, and to allow directions from park points,
+//          AND to keep it branded as CMP in all 4 routing modes and all 4 target types
+//          it would be neither consistent nor functional to, in 2 of 4 cases, send them to a mobile app which has no idea where the ABC Picnic Area is located
+function directionsParseAddressAndValidate() {
+    // part 0 - cleanup
+
+    // clear the Feature identification, as they likely did not use a Feature search and will likely need to go through a Did You Mean autocomplete sorta thing
+    // if they did mean it, this gets populated in the "features" switch case below
+    var form = $('#page-directions');
+    form.find('input[name="feature_gid"]').val('');
+    form.find('input[name="feature_type"]').val('');
+
+    // part 1 - figure out the origin
+
+    // can be any of address geocode, latlon already properly formatted, current GPS location, etc.
+    // this must be done before the target is resolved (below) because resolving the target can mean weighting based on the starting point
+    // e.g. directions to parks/reservations pick the closest gate or parking lot to our starting location
+    // this also has our bail conditions, e.g. an address search that cannot be resolved, a feature name that is ambiguous, ... look for "return" statements below
+
+    // we must do some AJAX for the target location and the origin location, but it must be done precisely in this sequence
+    var sourcelat, sourcelng;
+    var addresstype = form.find('select[name="origin"]').val();
+    var address     = form.find('input[name="address"]').val();
+    switch (addresstype) {
+        // GPS target: simplest possible case: lat and lng are already had
+        case 'gps':
+            sourcelat = MARKER_GPS.getLatLng().lat;
+            sourcelng = MARKER_GPS.getLatLng().lng;
+            break;
+        // GEOCODE target: but a hack (of course), that it can be either an address or else GPS coordinates in either of 2 formats
+        case 'geocode':
+            if (! address) return mobilealert("Please enter an address, city, or landmark.","Address");
+            var is_decdeg = /^\s*(\d+\.\d+)\s*\,\s*(\-\d+\.\d+)\s*$/.exec(address); // regional assumption in this regular expression: negative lng, positive lat
+            var is_gps    = /^\s*N\s+(\d+)\s+(\d+\.\d+)\s+W\s+(\d+)\s+(\d+\.\d+)\s*$/.exec(address); // again, regional assumption that we're North and West
+            if (is_decdeg) {
+                sourcelat = parseFloat( is_decdeg[1] );
+                sourcelng = parseFloat( is_decdeg[2] );
+            } else if (is_gps) {
+                var latd = parseFloat( is_gps[1] );
+                var latm = parseFloat( is_gps[2] );
+                var lngd = parseFloat( is_gps[3] );
+                var lngm = parseFloat( is_gps[4] );
+                sourcelat = latd + (latm/60);   // regional assumption; lat increases as magnitude increases cuz we're North
+                sourcelng = -lngd - (lngm/60);  // regional assumption; lng dereases as magnitude increases cuz we're West
+            } else {
+                var params = {};
+                params.address  = address;
+                params.bing_key = BING_API_KEY;
+                params.bbox     = GEOCODE_BIAS_BOX;
+
+                $.mobile.showPageLoadingMsg("a", "Loading", false);
+                $.ajaxSetup({ async:false });
+                $.get(BASE_URL + '/ajax/geocode', params, function (result) {
+                    $.mobile.hidePageLoadingMsg();
+                    $.ajaxSetup({ async:true });
+
+                    if (! result) return mobilealert("Could not find that address.","Address Not Found");
+                    sourcelat = result.lat;
+                    sourcelng = result.lng;
+                },'json').error(function (error) {
+                    $.mobile.hidePageLoadingMsg();
+                    $.ajaxSetup({ async:true });
+
+                    return mobilealert("Could not find that address. Check the address, and that you have data service turned on and a good signal.","No connection?");
+                });
+            }
+            break;
+    }
+    // if we got here then we successfully loaded sourcelat and sourcelng
+
+
+    // part 3 - figure out the target location
+
+    // dead simple since we get here from the Details Panel
+    // just kidding: some routing types actually use an alternate destination point e.g. the entrance gate or parking lot closest to our current location
+    // so we may need to do a second geocode specific to this target point relative to our own starting location, now that we know our starting location from above
+
+    //gda
+    var targetlat = $('#page-details').data('raw').lat;
+    var targetlng = $('#page-details').data('raw').lng;
+
+    // if we got here then we successfully loaded targetlat and targetlng
+
+
+    // part 99 - bail condition for a SUCCESSFUL set of lookups
+    // if the starting location is outside our supported area, it wouldn't make sense to draw it onto the map
+    // so we punt, and hand off to the native mapping app so they can figure it out themselves
+    if (! MAX_BOUNDS.contains([sourcelat,sourcelng]) ) {
+        mobilealert("That is outside the supported area, so we'll open your native routing app so you get better results.","Outside Area");
+        openDirections(sourcelat,sourcelng,targetlat,targetlng);
+        return false;
+    }
+
+    // part 100 - done and ready!
+    // slot the numbers into the form, and the form is now ready for processing
+
+    form.find('input[name="origlat"]').val(sourcelat);
+    form.find('input[name="origlng"]').val(sourcelng);
+    form.find('input[name="destlat"]').val(targetlat);
+    form.find('input[name="destlng"]').val(targetlng);
+    directionsprocessPopulatedForm();
+}
+
+//gda
+function directionsprocessPopulatedForm() {
+    console.log( $('input[name="origlat"]').val()  );
+    console.log( $('input[name="origlng"]').val()  );
+    console.log( $('input[name="destlat"]').val()  );
+    console.log( $('input[name="destlng"]').val()  );
 }
 
 //gda

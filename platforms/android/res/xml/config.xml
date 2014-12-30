@@ -23,6 +23,9 @@
     <feature name="InAppBrowser">
         <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser" />
     </feature>
+    <feature name="PhoneNavigator">
+        <param name="android-package" value="org.apache.cordova.plugin.PhoneNavigator" />
+    </feature>
     <name>Cleveland Metroparks</name>
     <description>
         Find parks, trails, and amenities in Cleveland with Cleveland Metropark's mobile app.

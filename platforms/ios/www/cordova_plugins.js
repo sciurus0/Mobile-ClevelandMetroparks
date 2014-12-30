@@ -238,6 +238,13 @@ module.exports = [
         "clobbers": [
             "window.open"
         ]
+    },
+    {
+        "file": "plugins/org.apache.cordova.plugin/www/phonenavigator.js",
+        "id": "org.apache.cordova.plugin.PhoneNavigator",
+        "clobbers": [
+            "window.PhoneNavigator"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -250,7 +257,8 @@ module.exports.metadata =
     "org.apache.cordova.network-information": "0.2.14",
     "org.apache.cordova.vibration": "0.3.12",
     "org.apache.cordova.media": "0.2.15",
-    "org.apache.cordova.inappbrowser": "0.5.4"
+    "org.apache.cordova.inappbrowser": "0.5.4",
+    "org.apache.cordova.plugin": "0.1.0"
 }
 // BOTTOM OF METADATA
 });
