@@ -593,6 +593,9 @@ function initResultsPanel() {
 }
 
 function initDetailsAndDirectionsPanels() {
+    // related to Directions... the Directions button on the map should only show if we in fact have directions
+    $('#toolbar a[href="#page-directions"]').closest('td').hide();
+
     // intercept a click on the Map button on the results panel
     // it should call switchToMap() to do the map changeover, since that introduces a delay to work around animation issues
     // what should it zoom to? whatever feature was assigned to its data('raw') which itself is populated by showDetailsPanel() when a feature is selected
@@ -694,6 +697,12 @@ function initDetailsAndDirectionsPanels() {
         directionsClear();
         directionsParseAddressAndValidate();
     });
+
+    //gda
+    // Directions panel
+    // the Map button needs to introduce a time delay before rendering the Directions content onto the map
+    //$('#page-directions div[data-role="header"] a[href="#page-map"]').click(function () {
+    //});
 }
 
 
@@ -1327,6 +1336,12 @@ function directionsClear() {
 
     // clear the directions text from the Directions panel
     $('#directions_list').empty().listview('refresh');
+
+    // on the map panel, hide the Directions button since there are none
+    $('#toolbar a[href="#page-directions"]').closest('td').hide();
+
+    // on the Directions panel, show the Map button since we in fact have a line to show
+    $('#page-directions div[data-role="header"] a[href="#page-map"]').hide();
 }
 
 // parse the Directions form and pass off to geocoders, Did You Mean autocompletes, etc.
@@ -1478,20 +1493,82 @@ function directionsParseAddressAndValidate() {
             });
             break;
     }
+    if (! sourcelat || ! sourcelng) return; // if this failed, do nothing; likely indicates that an AJAX call was used to do something other than bail or get coordinates, e.g. Features search
     // if we got here then we either loaded sourcelat and sourcelng, or else bailed with an error or some other task completed
 
-    // part 3 - figure out the target location
+    // part 3 - figure out the target location and perhaps re-figure-out the starting location as well
+    // seems dead simple at first: we got here from the Details Panel and it has data('raw') with lat and lng
+    // but some routing scenarios actually use alternate points e.g. the entrance gate or parking lot closest to each other
+    // so we likely will do a re-geocode for target AND source to find their closest geocoding-target-points
 
-    // dead simple since we get here from the Details Panel
-    // just kidding: some routing types actually use an alternate destination point e.g. the entrance gate or parking lot closest to our current location
-    // so we may need to do a second geocode specific to this target point relative to our own starting location, now that we know our starting location from above
+    // 3a: start with the default points for the target location
+    var targetlat  = $('#page-details').data('raw').lat;
+    var targetlng  = $('#page-details').data('raw').lng;
+    var targettype = $('#page-details').data('raw').type;
+    var targetgid  = $('#page-details').data('raw').gid;
 
-    //gda
-    var targetlat = $('#page-details').data('raw').lat;
-    var targetlng = $('#page-details').data('raw').lng;
+    var origtype = form.find('input[name="feature_type"]').val();
+    var origgid  = form.find('input[name="feature_gid"]').val();
 
+    // 3b: if the origin is a Feature AND it's a type that supports alternate destinations
+    // then do some AJAX and replace sourcelat and sourcelng with the version that's closest to our target location
+    if (origtype && origgid) {
+        switch (origtype) {
+            case 'poi':
+            case 'reservation':
+            case 'building':
+            case 'trail':
+                var params = {};
+                params.type = origtype;
+                params.gid  = origgid;
+                params.lat  = targetlat;
+                params.lng  = targetlng;
+                params.via  = via;
+
+                $.ajaxSetup({ async:false });
+                $.get(BASE_URL + '/ajax/geocode_for_directions', params, function (reply) {
+                    $.ajaxSetup({ async:true });
+                    sourcelat = reply.lat;
+                    sourcelng = reply.lng;
+                }, 'json').error(function (error) {
+                    $.ajaxSetup({ async:true });
+                    // error handling here, would be simply to leave sourcelat and sourcelng alone
+                    // rather than bug the uer that we couldn't find an even-better location than the ones they already picked
+                });
+                break;
+        }
+    }
+
+    // 3c: if the target is a Feature and it's a type that supports alternate destinations
+    // then do some AJAX and replace sourcelat and sourcelng with the version that's closest to our origin location
+    // yes, we potentially revised the origin above; now we potentially adjust the target as well
+    // hypothetically this could have a situation where we now route to a point further away, shuffling both points back and forth
+    //      but that's not a realistic problem; parking lots aren't on the far side of town from their facility, for example
+    switch (targettype) {
+        case 'poi':
+        case 'reservation':
+        case 'building':
+        case 'trail':
+            var params = {};
+            params.type = targettype;
+            params.gid  = targetgid;
+            params.lat  = sourcelat;
+            params.lng  = sourcelng;
+            params.via  = via;
+
+            $.ajaxSetup({ async:false });
+            $.get(BASE_URL + '/ajax/geocode_for_directions', params, function (reply) {
+                $.ajaxSetup({ async:true });
+                targetlat = reply.lat;
+                targetlng = reply.lng;
+            }, 'json').error(function (error) {
+                $.ajaxSetup({ async:true });
+                // error handling here, would be simply to leave targetlat and targetlng alone
+                // rather than bug the uer that we couldn't find an even-better location than the ones they already picked
+            });
+            break;
+    }
     // if we got here then we successfully loaded targetlat and targetlng
-
 
     // part 99 - bail condition for a SUCCESSFUL set of lookups
     // if the starting location is outside our supported area, it wouldn't make sense to draw it onto the map
@@ -1521,6 +1598,13 @@ function directionsprocessPopulatedForm() {
 }
 
 //gda
+//maybe break this into Text and Map subsections, so Map can be handled by the Map button click
+// so as to prevent timing issues via switchToMap()
 function directionsRender(directions) {
+    // on the Directions panel, show the Map button since we in fact have a line to show
+    $('#page-directions div[data-role="header"] a[href="#page-map"]').show();
+
+    // on the map panel, show the Directions button since there are directions to revisit
+    $('#toolbar a[href="#page-directions"]').closest('td').show();
 }
 
