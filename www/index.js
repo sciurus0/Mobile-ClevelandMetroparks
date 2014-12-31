@@ -594,7 +594,12 @@ function initResultsPanel() {
 
 function initDetailsAndDirectionsPanels() {
     // related to Directions... the Directions button on the map should only show if we in fact have directions
+    // and we do not at this time
     $('#toolbar a[href="#page-directions"]').closest('td').hide();
+
+    // likewise, the autocomplete for findig a Feature for your routing, should only show when needed
+    // and it is not needed yet   see directionsParseAddressAndValidate()
+    $('#directions_autocomplete').hide();
 
     // intercept a click on the Map button on the results panel
     // it should call switchToMap() to do the map changeover, since that introduces a delay to work around animation issues

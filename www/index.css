@@ -72,6 +72,9 @@ div.lng_driving {
 
 #page-directions {
 }
+#page-directions div[data-role="fieldcontain"] {
+    border-bottom:0 none transparent;
+}
 #directions_list {
     margin-top:1em;
 }
