@@ -1119,8 +1119,9 @@ function searchProcessError(error) {
 function searchProcessResults(resultlist,title,from,options) {
     // set up the default set of options, if none were given
     if (typeof options == 'undefined') options = {};
-    if (typeof options.showerror   == 'undefined') options.showerror = true;
+    if (typeof options.showerror   == 'undefined') options.showerror   = true;
     if (typeof options.showresults == 'undefined') options.showresults = true;
+    if (typeof options.nearby      == 'undefined') options.nearby      = false;
 
     // hide the spinner, if the caller forgot (or so we can funnel responsibility for it here)
     // then bail if there are 0 results, so the caller doesn't need that responsibility either
@@ -1128,7 +1129,7 @@ function searchProcessResults(resultlist,title,from,options) {
 
     // pre-work cleanup
     // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
-    nearbyOff();
+    if (! options.nearby) nearbyOff();
 
     // pre-work cleanup
     // remove the Target marker to 0,0 since we're no longer showing info for a specific place
@@ -1239,7 +1240,7 @@ function refreshNearbyAndAlertIfAppropriate() {
     params.categories = params.categories.join(';');
 
     $.post( BASE_URL + '/ajax/search_nearby', params, function (results) {
-        searchProcessResults(results,"Near You",'#page-find-nearby', { showerror:false, showresults:false });
+        searchProcessResults(results,"Near You",'#page-find-nearby', { showerror:false, showresults:false, nearby:true });
 
         // special handling for the Nearby: the Results link in the top right, should show only if there are >0 results
         // this gives them a visual indicator whether there are any results, without them switching pages
