@@ -1063,7 +1063,7 @@ function searchPOIs(category) {
 }
 
 function searchKeyword(keyword) {
-    var params = { keyword:keyword, limit:100 };
+    var params = { keyword:keyword, limit:25 };
 
     $.get( BASE_URL + '/ajax/keyword', params, function (results) {
         searchProcessResults(results, "Keyword: " + keyword , '#page-find');
@@ -1458,7 +1458,7 @@ function directionsParseAddressAndValidate() {
         case 'features':
             var params = {};
             params.keyword = address;
-            params.limit   = 10;
+            params.limit   = 25;
             params.lat     = MARKER_GPS.getLatLng().lat;
             params.lng     = MARKER_GPS.getLatLng().lng;
             params.via     = via;
