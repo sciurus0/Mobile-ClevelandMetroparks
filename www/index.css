@@ -75,13 +75,6 @@ div.lng_driving {
     display:none;
 }
 
-/* the legend swatches in the Layers panel */
-
-.legend {
-    display:none;
-    margin-left:30px;
-}
-
 
 /* Leaflet Zoom panel, allow buttons to be disabled */
 
@@ -367,6 +360,20 @@ div.fakeinput {
     text-shadow: 0 1px 0 #FFFFFF;
     border-radius: 0.6em 0.6em 0.6em 0.6em;
     height:1.4em;
+}
+
+#page-settings div.legend {
+}
+#page-settings div.legend div {
+    margin-left:1em;
+    line-height:25px; /* same as icon height below */
+    margin-bottom:3px;
+}
+#page-settings div.legend img {
+    width:25px;
+    height:25px;
+    vertical-align:top;
+    margin-right:0.5em;
 }
 
 

@@ -293,18 +293,21 @@
         </fieldset>
 
         <h3 class="center">Legend</h3>
-        <fieldset data-role="controlgroup" style="margin-left:25px;">
+        <div>
+            <b>Areas &amp; Activities</b>
+            <div class="legend" data-legend="pois">
+                <!-- populated in code, initSettingsPanel() -->
+            </div>
 
-            <b>POIs / Use Areas</b><br/>
-            <img class="legend" value="useareapois" style="display:block;" src="images/legend_useareapois.png" />
-
-            <b>Reservations</b><br/>
-            <img class="legend" value="reservations" style="display:block;" src="images/legend_parks.png" />
-
-            <b>Trail Tips</b><br/>
-            <img class="legend" value="markers_swgh" style="display:block;" src="images/legend_markers.png" />
-
-        </fieldset>
+            <b>Trail Tips</b>
+            <div class="legend" "data-legend="contributions">
+                <div><img src="images/tips/health.svg" />Health Tips from Southwest general</div>
+                <div><img src="images/tips/closure.svg" />Closure Alert</div>
+                <div><img src="images/tips/nature.svg" />Natural Feature</div>
+                <div><img src="images/tips/naturealert.svg" />Nature Alert</div>
+                <div><img src="images/tips/event.svg" />Event</div>
+            </div>
+        </div>
 
         <h3 class="center">GPS Location</h3>
         <div class="fakeinput center" id="gps_location">N 00 00.000 W 000 00.000</div>
