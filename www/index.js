@@ -49,9 +49,9 @@ var ELEVATION_PROFILE     = null;
 // styles of lines and then the Linestring objects themselves
 // used for drawing highlight borders on things, and for drawing the path of directions onto the map
 var DIRECTIONS_LINE       = null;
-var DIRECTIONS_LINE_STYLE = { color:"#0000FF", weight:5, opacity:1.00, clickable:false, smoothFactor:0.25 };
+var DIRECTIONS_LINE_STYLE = { color:"#0000FF", weight:5, opacity:1.00, clickable:false, smoothFactor:5 };
 var HIGHLIGHT_LINE       = null;
-var HIGHLIGHT_LINE_STYLE = { color:"#FF00FF", weight:3, opacity:0.75, clickable:false, smoothFactor:0.25 };
+var HIGHLIGHT_LINE_STYLE = { color:"#FF00FF", weight:3, opacity:0.75, clickable:false, smoothFactor:5 };
 
 // this Circle is used to show your Nearby Alerts radius on the screen
 // when Nearby Alerting is enabled, this updates to move with you and keep the selected radius
@@ -698,11 +698,24 @@ function initDetailsAndDirectionsPanels() {
         directionsParseAddressAndValidate();
     });
 
-    //gda
     // Directions panel
-    // the Map button needs to introduce a time delay before rendering the Directions content onto the map
-    //$('#page-directions div[data-role="header"] a[href="#page-map"]').click(function () {
-    //});
+    // the Map button will switch to the Map, then zoom to the extent of the directions
+    $('#page-directions div[data-role="header"] a[href="#page-map"]').click(function () {
+        switchToMap(function () {
+            var directions = $('#page-directions').data('directions');
+            var parser     = new Wkt.Wkt();
+            parser.read(directions.wkt);
+            if (DIRECTIONS_LINE) MAP.removeLayer(DIRECTIONS_LINE);
+            DIRECTIONS_LINE = parser.toObject(DIRECTIONS_LINE_STYLE);
+            MAP.addLayer(DIRECTIONS_LINE);
+
+            MARKER_FROM.setLatLng([directions.start.lat,directions.start.lng]);
+            MARKER_TO.setLatLng([directions.end.lat,directions.end.lng]);
+
+            var bbox = DIRECTIONS_LINE.getBounds().pad(0.25);
+            MAP.fitBounds(bbox);
+        });
+    });
 }
 
 
@@ -1363,6 +1376,9 @@ function directionsParseAddressAndValidate() {
     form.find('input[name="feature_gid"]').val('');
     form.find('input[name="feature_type"]').val('');
 
+    // clear any prior directions text, map lines, etc.
+    directionsClear();
+
     // part 1 - simple params we can extract now
     // we use these to fine-tune some of the routing params, e.g. re-geocoding opints to their nearest parking lot; see part 3
 
@@ -1370,6 +1386,7 @@ function directionsParseAddressAndValidate() {
     // originally this was more expansive, with Hike having subtypes; some day they'll likely drop Bike Difficulty but we need to leave possibilities open
     var tofrom  = form.find('select[name="tofrom"]').val();
     var via     = form.find('select[name="mode"]').val();
+    var prefer  = form.find('select[name="preference"]').val();
     switch (via) {
         case 'bike':
             via = form.find('select[name="difficulty"]').val();
@@ -1580,31 +1597,68 @@ function directionsParseAddressAndValidate() {
     }
 
     // part 100 - done and ready!
-    // slot the numbers into the form, and the form is now ready for processing
+    // slot the numbers into the form, really for debugging
+    // then do the directions-getting from all those params we fetched and calculated above
 
     form.find('input[name="origlat"]').val(sourcelat);
     form.find('input[name="origlng"]').val(sourcelng);
     form.find('input[name="destlat"]').val(targetlat);
     form.find('input[name="destlng"]').val(targetlng);
-    directionsprocessPopulatedForm();
+
+    directionsFetch(sourcelat,sourcelng,targetlat,targetlng,tofrom,via,prefer);
 }
 
-//gda
-function directionsprocessPopulatedForm() {
-    console.log( $('input[name="origlat"]').val()  );
-    console.log( $('input[name="origlng"]').val()  );
-    console.log( $('input[name="destlat"]').val()  );
-    console.log( $('input[name="destlng"]').val()  );
+function directionsFetch(sourcelat,sourcelng,targetlat,targetlng,tofrom,via,prefer) {
+    // clear any prior directions text, map lines, etc.
+    directionsClear();
+
+    // make up the request and run it
+    var params = {
+        sourcelat:sourcelat, sourcelng:sourcelng,
+        targetlat:targetlat, targetlng:targetlng,
+        tofrom:tofrom, via:via, prefer:prefer,
+        bing_key: BING_API_KEY
+    };
+
+    $.get(BASE_URL + '/ajax/directions', params, function (reply) {
+        if (! reply) return mobilealert("Could not find directions. Try a different travel mode.","No Route");
+        directionsRender(reply);
+    }, 'json').error(function (error) {
+        mobilealert("Could not ask for directions. Check that you have data service turned on and a good signal.","No connection?");
+    });
 }
 
-//gda
-//maybe break this into Text and Map subsections, so Map can be handled by the Map button click
-// so as to prevent timing issues via switchToMap()
 function directionsRender(directions) {
-    // on the Directions panel, show the Map button since we in fact have a line to show
-    $('#page-directions div[data-role="header"] a[href="#page-map"]').show();
+    // stow the raw result into the Directions panel metadata
+    $('#page-directions').data('directions',directions);
 
-    // on the map panel, show the Directions button since there are directions to revisit
+    // on the Directions panel, show the Map button since we in fact have a line to show
+    // on the Map panel, show the Directions button since there are directions to revisit
+    $('#page-directions div[data-role="header"] a[href="#page-map"]').show();
     $('#toolbar a[href="#page-directions"]').closest('td').show();
+
+    // the listing of steps/instructions
+    var listing = $('#directions_list');
+    for (var i=0, l=directions.steps.length; i<l; i++) {
+        var step     = directions.steps[i];
+        var title    = step.stepnumber ? step.stepnumber + '. ' + ( step.turnword ? step.turnword : '') + ' ' + step.text : step.turnword + ' ' + step.text;
+        var li       = $('<li></li>').appendTo(listing);
+
+        $('<span></span>').addClass('ui-li-heading').text(title).appendTo(li);
+        if (step.distance && step.duration && step.distance.substr(0,1)!='0') {
+            var subtitle = step.distance + ', ' + step.duration;
+            $('<span></span>').addClass('ui-li-desc').text(subtitle).appendTo(li);
+        }
+    }
+
+    // final entry in the listing: the total distance, time, etc.
+    var li = $('<li></li>').appendTo(listing);
+    if (directions.retries && directions.retries > 3) {
+        $('<span></span>').addClass('ui-li-desc').html("Route may be approximated.").appendTo(li);
+    }
+    $('<span></span>').addClass('ui-li-heading').html('<b>Total:</b> ' + directions.totals.distance + ', ' + directions.totals.duration).appendTo(li);
+
+    // and done wth the listing
+    listing.listview('refresh');
 }
 

@@ -68,21 +68,14 @@ div.lng_driving {
 
 
 
-/* for Directions, the last line has links to the Elevation profile, etc. */
+/* Directions panel */
 
-li.directions_functions {
+#page-directions {
+}
+#directions_list {
     margin-top:1em;
-    font-weight:bold;
-    font-size:10pt;
 }
 
-
-
-/* for the Gallery popup */
-
-#gallery {
-    text-align:center;
-}
 
 
 
