@@ -14,6 +14,11 @@ body,.ui-widget {
 
 
 
+/*jqm override */
+.ui-checkbox .ui-btn, .ui-radio .ui-btn {
+    text-align:center;
+}
+
 
 /* JQM fix: new data-icon="xxx" icons */
 
