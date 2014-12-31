@@ -13,6 +13,17 @@ body,.ui-widget {
 }
 
 
+
+
+/* JQM fix: new data-icon="xxx" icons */
+
+.ui-icon-map {
+    background-image: url("images/map.svg");
+    background-size:14px 14px;
+    background-position:2px 2px;
+}
+
+
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
     font-family: Verdana,Arial,sans-serif;
 }
