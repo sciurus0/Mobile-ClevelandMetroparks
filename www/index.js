@@ -1479,12 +1479,12 @@ function directionsParseAddressAndValidate() {
                     sourcelat = candidates[0].lat;
                     sourcelng = candidates[0].lng;
                     form.find('input[name="address"]').val( candidates[0].name );
-                    $('#directions_autocomplete').empty();
+                    $('#directions_autocomplete').empty().hide();
                 } else {
                     // okay, there's more than 1 candidate for this autocomplete, so fill in that listview of options
                     // each option has a click handler to basically do what the "length == 1" option did above: fill it in, empty listing, ...
                     // note: item 0 is not a result, but the words "Did you mean..." and has no click behavior
-                    var listing = $('#directions_autocomplete').empty();
+                    var listing = $('#directions_autocomplete').empty().show();
                     $('<li></li>').append( $('<span></span>').addClass('ui-li-heading').text("Did you mean one of these?") ).appendTo(listing);
                     for (var i=0, l=candidates.length; i<l; i++) {
                             var name = candidates[i].name.replace(/^\s*/,'').replace(/\s*$/,'');
@@ -1498,7 +1498,7 @@ function directionsParseAddressAndValidate() {
                                 sourcelat = info.lat;
                                 sourcelng = info.lng;
                                 form.find('input[name="address"]').val( info.name );
-                                $('#directions_autocomplete').empty();
+                                $('#directions_autocomplete').empty().hide();
                             });
                     }
                     listing.listview('refresh');
@@ -1621,7 +1621,7 @@ function directionsFetch(sourcelat,sourcelng,targetlat,targetlng,tofrom,via,pref
     };
 
     $.get(BASE_URL + '/ajax/directions', params, function (reply) {
-        if (! reply) return mobilealert("Could not find directions. Try a different travel mode.","No Route");
+        if (! reply || ! reply.steps) return mobilealert("Could not find directions. Try a different travel mode.","No Route");
         directionsRender(reply);
     }, 'json').error(function (error) {
         mobilealert("Could not ask for directions. Check that you have data service turned on and a good signal.","No connection?");
