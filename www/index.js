@@ -1353,7 +1353,9 @@ function directionsClear() {
     MARKER_TO.setLatLng([0,0]);
 
     // clear the directions text from the Directions panel
+    // and clear/hide the elevation profile image
     $('#directions_list').empty().listview('refresh');
+    var epimage = $('#directions_elevationprofile').prop('src','about:blank').hide();
 
     // on the map panel, hide the Directions button since there are none
     $('#toolbar a[href="#page-directions"]').closest('td').hide();
@@ -1665,5 +1667,29 @@ function directionsRender(directions) {
 
     // and done wth the listing
     listing.listview('refresh');
+
+    // elevation profile
+    // it was already hidden and blanked by the directions-clearing process
+    // submit the new EP to the server, and when it comes back that's the URL to use for the image
+    if (directions.elevationprofile) {
+        // the vertices have horizontal and vertical info (feet for both distance and elevation). make a pair of arrays
+        var x = [];
+        var y = [];
+        for (var i=0, l=directions.elevationprofile.length; i<l; i++) {
+            x[x.length] = directions.elevationprofile[i].x;
+            y[y.length] = directions.elevationprofile[i].y;
+        }
+
+        var params = {};
+        params.x = x.join(',');
+        params.y = y.join(',');
+        $.post(BASE_URL + '/ajax/elevationprofilebysegments', params, function (url) {
+            if (url.indexOf('http') != 0) {
+                // not an URL, so something went wrong; just quietly bail and let the EP image remain hidden and blanked
+                return
+            }
+            $('#directions_elevationprofile').prop('src',url).show();
+        });
+    }
 }
 
