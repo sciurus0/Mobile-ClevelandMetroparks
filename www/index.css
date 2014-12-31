@@ -404,10 +404,15 @@ div.elevationprofileimage img {
 
 
 
-/* icons in the Find menu */
+/* Find panel, including keyword search, keyword autocomplete, and the listview of search options */
 
 #page-find ul[data-role="listview"] li img {
     margin-top: -5px; /* hack to make the icons align to the text */
+}
+
+#page-find ul[data-type="autocomplete"] {
+    margin-top:0;
+    margin-bottom:0;
 }
 
 

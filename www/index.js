@@ -547,16 +547,25 @@ function initFindKeyword() {
     listview.find('li').first().hide();
     listview.listview('refresh');
 
-    // set up the form: on submit, Enter, button, etc. submit a keyword seaech to the server
+    // set up the form: on submit, Enter, button, etc. submit a keyword search to the server
+    // also some hacks to interact with the autocomplete listview defined next: we want the autocomplete listviw to be visible only when it's being used
     var form     = $('#page-find fieldset[data-type="keyword"]');
     var field    = form.find('input[type="text"]');
     var button   = form.find('input[type="button"]');
     var listview = form.find('ul[data-role="listview"][data-type="autocomplete"]');
     field.keydown(function (key) {
-        if(key.keyCode != 13) return;
-        $(this).closest('fieldset').find('input[type="button"]').click();
+        if(key.keyCode == 13) {
+            $(this).closest('fieldset').find('input[type="button"]').click();
+        } else {
+            if ( $(this).val() ) {
+                listview.show();
+            } else {
+                listview.hide();
+            }
+        }
     });
     button.click(function () {
+        listview.hide();
         var keyword = $(this).closest('fieldset').find('input[type="text"]').val().trim();
         if (! keyword ) return false;
         searchKeyword(keyword);
@@ -564,17 +573,18 @@ function initFindKeyword() {
 
     // set up an autocomplete on the keyword search text field
     // getting back results, populates a listview
+    listview.hide();
     $.get( BASE_URL + '/ajax/autocomplete_keywords', {}, function (words) {
         field.autocomplete({
             target: listview,
             source: words,
             callback: function(e) {
-                    // click handler on an autocomplete item
-                    // find the value of the selected item, stick it into the text box, hide the autocomplete
-                    // and click the button to perform the search, using the text that is now filled in
-                    var $a = $(e.currentTarget);
-                    field.val( $a.text() ).autocomplete('clear');
-                    button.click();
+                // click handler on an autocomplete item
+                // find the value of the selected item, stick it into the text box, hide the autocomplete
+                // and click the button to perform the search, using the text that is now filled in
+                var $a = $(e.currentTarget);
+                field.val( $a.text() ).autocomplete('clear');
+                button.click();
             },
             minLength: 3,
             matchFromStart: false
