@@ -678,7 +678,7 @@ function initDetailsAndDirectionsPanels() {
     // some changes cause elements to show and hide: address is only if navigating to/from an address or location name, for example
     $('#page-directions select[name="origin"]').change(function () {
         var show     = $(this).val() != 'gps';
-        var fieldset = $(this).closest('div[data-role="fieldcontain"]');
+        var fieldset = $(this).closest('fieldset');
         var target   = fieldset.find('input[name="address"]').closest('span.togglewrapper');
         show ? target.show() : target.hide();
         fieldset.trigger('create');

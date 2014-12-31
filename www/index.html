@@ -432,13 +432,13 @@
         <input type="hidden" name="origlat" /> <input type="hidden" name="origlng" /> <!-- origin latitude and longitude -->
         <input type="hidden" name="destlat" /> <input type="hidden" name="destlng" /> <!-- destination latitude & longitude-->
         <input type="hidden" name="feature_type" /> <input type="hidden" name="feature_gid" />  <!-- if routing to a Feature, the Type and GID -->
-        <div data-role="fieldcontain">
+        <fieldset data-role="controlgroup">
             <select name="tofrom">
                 <option value="to">To here</option>
                 <option value="from">From here</option>
             </select>
             <select name="origin">
-                <option value="gps">From your current location</option>
+                <option value="gps">From your location</option>
                 <option value="geocode">From an address</option>
                 <option value="features">From a park feature</option>
             </select>
@@ -466,7 +466,7 @@
             </select>
             </span>
             <input type="button" value="Get Directions" />
-        </div>
+        </fieldset>
 
         <!-- Did You Mean... results -->
         <ul data-role="listview" id="directions_autocomplete">

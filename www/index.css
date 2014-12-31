@@ -88,12 +88,23 @@ div.lng_driving {
 
 
 
-/* Directions panel */
+/*
+ * Directions panel
+ * a few hacks so the fieldset looks good on varying devices
+ * JQM doesn't treat text inputs the same as checkboxes and selects, replacing them with DIVs that are of a consistent and attractive 100% width
+ */
 
 #page-directions {
 }
-#page-directions div[data-role="fieldcontain"] {
-    border-bottom:0 none transparent;
+@media (min-width:700px) {
+#page-directions fieldset input[type="text"] {
+    width:98%;
+}
+}
+@media (min-width:1000px) {
+#page-directions fieldset input[type="text"] {
+    width:98.5%;
+}
 }
 #directions_list {
     margin-top:1em;
