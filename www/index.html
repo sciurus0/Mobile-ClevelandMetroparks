@@ -80,7 +80,7 @@
     <div data-role="content">
 
         <fieldset data-role="controlgroup" data-type="keyword">
-            <b>Keyword search:</b>
+            <div class="bold center">Keyword search:</div>
             <label><input type="text" name="keyword" data-inset="true" placeholder="Enter name or keyword" /></label>
             <ul data-role="listview" data-inset="true" data-type="autocomplete"></ul>
             <input type="button" data-icon="search" data-iconpos="right" value="Search" />
@@ -120,7 +120,7 @@
     </div>
     <div data-role="content">
        <!-- UI is tapping icons, not a SELECT element; see initFindTrails() and searchTrails() -->
-        <div style="text-align:center;">
+        <div class="center">
             <b>Select Activity</b><br/>
             <img data-field="activity" data-value="Hiking & Walking"  src="images/trailfinder_hike_off.png" />
             <img data-field="activity" data-value="Biking"            src="images/trailfinder_bike_off.png" />
@@ -129,7 +129,7 @@
         </div>
 
         <!-- Pavement selector: they want it hidden but endpoint needs it, and they will likely want it back anyway -->
-        <div style="text-align:center; display:none;">
+        <div class="center hide">
         <b>Pavement:</b><br/>
             <select name="paved">
             <option value="">No preference</option>
@@ -139,12 +139,12 @@
         </div>
 
         <!-- Reservation filter: populated from a list, see initFindTrails() -->
-        <div style="text-align:center; margin-top:1em;">
+        <div class="center" style="margin-top:1em;">
             <b>Select Location</b><br/>
             <select name="reservation"></select>
         </div>
 
-        <div style="text-align:center; margin-top:1em;">
+        <div class="center" style="margin-top:1em;">
             <input type="button" data-icon="search" data-iconpos="right" value="Search" />
         </div>
     </div>
@@ -159,7 +159,7 @@
     </div>
     <div data-role="content">
         <!-- UI changed to tapping icons; see initFindLoops() and searchLoops() -->
-        <div style="text-align:center;">
+        <div class="center">
             <b>Select Activity</b><br/>
             <img data-field="activity" data-value="hike"          src="images/trailfinder_hike_off.png" />
             <img data-field="activity" data-value="bike_Advanced" src="images/trailfinder_bike_off.png" />
@@ -168,7 +168,7 @@
         </div>
 
         <!-- Pavement selector: they want it hidden but endpoint needs it, and they will likely want it back anyway -->
-        <div style="text-align:center; display:none;">
+        <div class="center hide">
             <select name ="paved" data-mini="true">
             <option value="">Paved or unpaved</option>
             <option value="Yes">Paved</option>
@@ -178,7 +178,7 @@
 
         <!-- Length filter: featured loops have a known length and estimated durations, used for filtering -->
         <!-- UI is tapping icons; see initFindLoops() and searchLoops() -->
-        <div style="text-align:center;  margin-top:1em;">
+        <div class="center" style="margin-top:1em;">
             <b>Select Length</b><br/>
             <img data-field="length" data-min="0"   data-max="2"    src="images/trailfinder_distance1_off.png" />
             <img data-field="length" data-min="2"   data-max="5"    src="images/trailfinder_distance2_off.png" />
@@ -187,20 +187,20 @@
         </div>
 
         <!-- Reservation filter: populated from a list, see initFindTrails() -->
-        <div style="text-align:center; margin-top:1em;">
+        <div class="center" style="margin-top:1em;">
             <b>Select Location</b><br/>
             <select name="reservation"></select>
         </div>
 
         <!-- Duration filter: featured loops have a known length and estimated durations, used for filtering -->
         <!-- the endpoint requires this, but this field is now shown to the user -->
-        <div style="text-align:center; display:none;">
+        <div class="center hide">
             <b>Select Duration</b><br/>
             <input type="hidden" name="duration_min" value="0" />
             <input type="hidden" name="duration_max" value="300" />
         </div>
 
-        <div style="text-align:center; margin-top:1em;">
+        <div class="center" style="margin-top:1em;">
             <input type="button" data-icon="search" data-iconpos="right" value="Search" />
         </div>
 
@@ -307,7 +307,7 @@
         </fieldset>
 
         <h3>GPS Location</h3>
-        <div class="fakeinput" id="gps_location" style="text-align:center;">N 00 00.000 W 000 00.000</div>
+        <div class="fakeinput center" id="gps_location">N 00 00.000 W 000 00.000</div>
 
         <h3>Offline Map</h3>
         <div data-role="controlgroup">
@@ -349,8 +349,8 @@
 
 
     <div data-role="content">
-        <input type="text" id="cachestatus_storage" value="Calculating" readonly="readonly" style="text-align:center;" />
-        <input type="text" id="cachestatus_files" value="Calculating" readonly="readonly" style="text-align:center;" />
+        <input type="text" id="cachestatus_storage" value="Calculating" readonly="readonly" />
+        <input type="text" id="cachestatus_files" value="Calculating" readonly="readonly" />
         <a href="#page-clearcache" data-role="button" name="clearcache">Delete offline tiles</a>
         <a href="#page-settings" data-role="button" data-rel="back" data-icon="back">Back</a>
     </div>

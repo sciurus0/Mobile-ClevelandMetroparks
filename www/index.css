@@ -2,6 +2,17 @@ body,.ui-widget {
     font-family: Verdana,Arial,sans-serif;
 }
 
+.center {
+    text-align:center;
+}
+.bold {
+    font-weight:bold;
+}
+.hide {
+    display:none;
+}
+
+
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
     font-family: Verdana,Arial,sans-serif;
 }
@@ -328,7 +339,7 @@ div.ui-slider {
 */
 
 div.fakeinput {
-   text-align: left;
+    text-align: center;
     background: none repeat scroll 0 0 #F9F9F9;
     font-size: 16px;
     line-height: 1.4;
