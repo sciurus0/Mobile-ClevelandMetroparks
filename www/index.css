@@ -362,6 +362,21 @@ div.fakeinput {
     height:1.4em;
 }
 
+#page-settings div.legend_wrapper {
+    white-space: nowrap;
+    display:inline-block;
+}
+@media (min-width:400px) {
+#page-settings div.legend_wrapper {
+    margin-left:10%;
+}
+}
+@media (min-width:700px) {
+#page-settings div.legend_wrapper {
+    margin-left:25%;
+}
+}
+
 #page-settings div.legend {
 }
 #page-settings div.legend div {
