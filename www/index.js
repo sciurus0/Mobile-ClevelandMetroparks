@@ -1125,9 +1125,14 @@ function wmsGetFeatureInfoByLatLngBBOX(bbox,anchor) {
                         });
                     });
                 }
-//gda
                 if (feature.type == 'trailpiece' && text == 'Directions here') {
-                    oldlink.remove();
+                    oldlink.replaceWith(newlink);
+
+                    newlink.click(function () {
+                        loadAndShowDetailsPanel( $(this).data('feature') , function () {
+                            $('#page-details div.directions_buttons a').first().click();
+                        });
+                    });
                 }
             });
         }, 150);
@@ -1672,29 +1677,31 @@ function directionsParseAddressAndValidate() {
     // yes, we potentially revised the origin above; now we potentially adjust the target as well
     // hypothetically this could have a situation where we now route to a point further away, shuffling both points back and forth
     //      but that's not a realistic problem; parking lots aren't on the far side of town from their facility, for example
-    switch (targettype) {
-        case 'poi':
-        case 'reservation':
-        case 'building':
-        case 'trail':
-            var params = {};
-            params.type = targettype;
-            params.gid  = targetgid;
-            params.lat  = sourcelat;
-            params.lng  = sourcelng;
-            params.via  = via;
+    if (targettype && targetgid) {
+        switch (targettype) {
+            case 'poi':
+            case 'reservation':
+            case 'building':
+            case 'trail':
+                var params = {};
+                params.type = targettype;
+                params.gid  = targetgid;
+                params.lat  = sourcelat;
+                params.lng  = sourcelng;
+                params.via  = via;
 
-            $.ajaxSetup({ async:false });
-            $.get(BASE_URL + '/ajax/geocode_for_directions', params, function (reply) {
-                $.ajaxSetup({ async:true });
-                targetlat = reply.lat;
-                targetlng = reply.lng;
-            }, 'json').error(function (error) {
-                $.ajaxSetup({ async:true });
-                // error handling here, would be simply to leave targetlat and targetlng alone
-                // rather than bug the uer that we couldn't find an even-better location than the ones they already picked
-            });
-            break;
+                $.ajaxSetup({ async:false });
+                $.get(BASE_URL + '/ajax/geocode_for_directions', params, function (reply) {
+                    $.ajaxSetup({ async:true });
+                    targetlat = reply.lat;
+                    targetlng = reply.lng;
+                }, 'json').error(function (error) {
+                    $.ajaxSetup({ async:true });
+                    // error handling here, would be simply to leave targetlat and targetlng alone
+                    // rather than bug the uer that we couldn't find an even-better location than the ones they already picked
+                });
+                break;
+        }
     }
     // if we got here then we successfully loaded targetlat and targetlng
 
