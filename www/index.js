@@ -260,9 +260,6 @@ function initMap() {
         dragging:true, scrollWheelZoom:false, tap:true, boxZoom:false, closePopupOnClick:false, keyboard:false
     }).fitBounds(MAX_BOUNDS);
 
-    // additional Controls
-    L.control.scale().addTo(MAP);
-
     // our version of a WMS GetFeatureInfo control: a map click calls query.php to get JSON info, and we construct a bubble
     // BUT, we only call this if a popup is not open: if one is open, we instead close it
     // normally we would use MAP's own closePopupOnClick but that doesn't in fact CANCEL the click-and-query event

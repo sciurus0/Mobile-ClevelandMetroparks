@@ -1,43 +1,35 @@
+/*
+ * General page elements and global font/alignment settings
+ */
+
 body,.ui-widget {
     font-family: Verdana,Arial,sans-serif;
 }
 
+td,th {
+    vertical-align:top;
+}
+
+
+
+/*
+ * Utility classes
+ */
+
 .center {
     text-align:center;
 }
+
 .bold {
     font-weight:bold;
 }
+
 .hide {
     display:none;
 }
+
 .nowrap {
     white-space:nowrap;
-}
-
-
-
-/*jqm override */
-.ui-checkbox .ui-btn, .ui-radio .ui-btn {
-    text-align:center;
-}
-
-
-/* JQM fix: new data-icon="xxx" icons */
-
-.ui-icon-map {
-    background-image: url("images/map.svg");
-    background-size:14px 14px;
-    background-position:2px 2px;
-}
-
-
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
-    font-family: Verdana,Arial,sans-serif;
-}
-
-.above_map {
-    z-index:500;
 }
 
 .fakelink {
@@ -51,70 +43,107 @@ body,.ui-widget {
     color:red;
 }
 
-td,th {
-    vertical-align:top;
+
+/*
+ * JQM overrides not specific to any one page
+ */
+
+.ui-header {
+    font-family: Montserrat;
 }
 
-div.wkt {
-    display:none;
+.ui-checkbox .ui-btn, .ui-radio .ui-btn {
+    text-align:center;
 }
 
-div.lat_driving {
-    display:none;
+input[type="text"] {
+    text-align:center;
 }
 
-div.lng_driving {
-    display:none;
+.ui-icon-map {
+    background-image: url("images/map.svg");
+    background-size:14px 14px;
+    background-position:2px 2px;
 }
 
-
-/* Leaflet Zoom panel, allow buttons to be disabled */
-
-.leaflet-control-zoom a.disabled {
-    display:none;
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+    font-family: Verdana,Arial,sans-serif;
 }
 
-.leaflet-control-zoom a.only {
-    margin:0;
+.ui-bar-a {
+    background: none repeat scroll 0 0 #0D6B51;
+    border: 1px solid #0D6B51;
 }
 
+.ui-btn-up-a {
+    background: #0C5A40;
+    border: 1px solid #111111;
+    color: #FFFFFF;
+    font-weight: bold;
+    text-shadow: none;
+}
+
+.ui-body-c, .ui-overlay-c {
+    background: #ECE4CF;
+}
+
+.ui-li-has-count .ui-li-count {
+    top:50%;
+    right: -25px;
+}
+
+.ui-content input[type="text"] {
+    background:none repeat scroll 0 0 #F9F9F9;
+}
+
+.ui-content input[type="password"] {
+    background:none repeat scroll 0 0 #F9F9F9;
+}
+
+.ui-content textarea {
+    background:none repeat scroll 0 0 #F9F9F9;
+}
+
+.ui-content select {
+    background:none repeat scroll 0 0 #F9F9F9;
+}
+
+.ui-btn-up-a {
+    background: none repeat scroll 0 0 #AB8E5A;
+    color: #333333;
+}
+.ui-btn-up-b {
+    background: none repeat scroll 0 0 #BB9E6A; /* should be color as -a immediately above... but must use a lighter RGB code, since it draws darker? */
+    color: #333333;
+}
 
 
 /*
- * Directions panel
- * a few hacks so the fieldset looks good on varying devices
- * JQM doesn't treat text inputs the same as checkboxes and selects, replacing them with DIVs that are of a consistent and attractive 100% width
+ * the Map panel, including the controls and button bar
+ * and popup styling
  */
 
-#page-directions {
-}
-@media (min-width:700px) {
-#page-directions fieldset input[type="text"] {
-    width:98%;
-}
-}
-@media (min-width:1000px) {
-#page-directions fieldset input[type="text"] {
-    width:98.5%;
-}
-}
-#directions_list {
-    margin-top:1em;
+#map_canvas {
+    position:absolute; top:0; left:0;
+    margin:0; padding:0;
+    width:100%; height:100%;
 }
 
+#page-map div.map_toolbar {
+    z-index:500;
 
+    position:absolute; left:0; bottom:0;
+    height:46px;
+    width:100%;
+    background-color:black;
 
-
-/* for the Welcome panel and the About This App panel */
-
-.disclaimer {
-    font-size:8pt;
+    text-align:center;
 }
 
-.disclaimer b {
-    font-size:10pt;
+#page-map div.map_toolbar table {
+    width:100%;
+    border-collapse:collapse;
 }
-
 
 #map-location-warnings {
     position:absolute;
@@ -138,176 +167,32 @@ div.lng_driving {
 }
 }
 
+#mapbutton_settings {
+    position:absolute;
+    bottom:52px;
+    left:5px;
+
+    cursor:pointer;
+
+    z-index:200;
+}
+#mapbutton_gps {
+    position:absolute;
+    bottom:52px;
+    right:5px;
+
+    cursor:pointer;
+
+    z-index:200;
+}
+
 #page-map > .ui-content {
     padding:0;
 }
 
-
-
-#page-find-pois ul[data-role="listview"] img.ui-li-icon {
-    width:20px;
-    height:20px;
-}
-
-/* global font stuff */
-
-input[type="text"] {
-    text-align:center;
-}
-
-.ui-header {
-    font-family: Montserrat;
-}
-
-
-/* Details panel */
-
-#page-details h2 {
-    font-size:13pt;
-    margin-top:0;
-    text-align:center;
-}
-#page-details div.description {
-    margin-bottom:2em;
-}
-#page-details div.directions_buttons {
-    text-align:center;
-}
-#page-directions h2 {
-    font-size:13pt;
-    margin-top:0;
-    text-align:center;
-}
-
-
-/* jQuery Mobile style overrides */
-
-.ui-bar-a {
-    background: none repeat scroll 0 0 #0D6B51;
-    border: 1px solid #0D6B51;
-}
-
-.ui-btn-up-a {
-    background: #0C5A40;
-    border: 1px solid #111111;
-    color: #FFFFFF;
-    font-weight: bold;
-    text-shadow: none;
-}
-
-.ui-body-c, .ui-overlay-c {
-    background: #ECE4CF;
-}
-
-
-/* Map panel */
-
-#map_canvas {
-    position:absolute; top:0; left:0;
-    margin:0; padding:0;
-    width:100%; height:100%;
-}
-
-#toolbar {
-    position:absolute; left:0; bottom:0;
-    height:46px;
-    width:100%;
-    background-color:black;
-
-    text-align:center;
-}
-#toolbar table {
-    width:100%;
-    border-collapse:collapse;
-}
-
-/* supressed cuz we want to hide Directions button and that doesn't work well with last-child and cells having borders (CSS3 doesn't have :visible)
-#toolbar table td {
-    border-right:1px solid silver;
-    border-left:1px solid silver;
-}
-#toolbar table td:first-child {
-    border-left:0 none transparent;
-}
-#toolbar table td:last-child {
-    border-right:0 none transparent;
-}
-*/
-
-.ui-li-has-count .ui-li-count {
-    top:50%;
-    right: -25px;
-}
-
-#change_directions_target {
-    float:right;
-    text-align:right;
-    font-size:8pt;
-}
-
-#directions_target_title {
-    text-align:center;
-    font-size:110%;
-    font-weight:bold;
-}
-
-#directions_getgps {
-    float:right;
-    text-align:right;
-    font-size:8pt;
-    margin-top:10px;
-}
-
-#getdirections_disabled {
-    text-align:center;
-    font-size:12pt;
-}
-
-#info-content {
-    min-height:3em;
-}
-
-
-/* input widgets inherit the background color, making them nearly invisible! */
-
-.ui-content input[type="text"] {
-    background:none repeat scroll 0 0 #F9F9F9;
-}
-
-.ui-content input[type="password"] {
-    background:none repeat scroll 0 0 #F9F9F9;
-}
-
-.ui-content textarea {
-    background:none repeat scroll 0 0 #F9F9F9;
-}
-
-.ui-content select {
-    background:none repeat scroll 0 0 #F9F9F9;
-}
-
-
-/* jQuery Mobile sliders have that text field; hide them */
-input.ui-slider-input, .ui-field-contain input.ui-slider-input {
-    display: none;
-}
-div.ui-slider {
-    height:25px;
-}
-.ui-field-contain div.ui-slider {
-    width: 75%;
-}
-
-
-
-/* the scalebar needs to clear the toolbar */
-
 .leaflet-bottom .leaflet-control-scale {
     margin-bottom: 55px;
 }
-
-
-/* Leaflet popups */
 
 .leaflet-popup-scrolled .leaflet-popup-content {
     overflow:hidden;
@@ -334,62 +219,124 @@ div.ui-slider {
 }
 
 
+/*
+ * Find panel including keyword search
+ */
 
-/* these buttons go over the map, and the Scale control is hidden (it's added in common, so can't disable it only in mobile) */
-
-#mapbutton_settings {
-    position:absolute;
-    bottom:52px;
-    left:5px;
-
-    cursor:pointer;
-
-    z-index:200;
-}
-#mapbutton_gps {
-    position:absolute;
-    bottom:52px;
-    right:5px;
-
-    cursor:pointer;
-
-    z-index:200;
+#page-find ul[data-role="listview"] li img {
+    margin-top: -5px; /* hack to make the icons align to the text */
 }
 
-.leaflet-control-scale {
+#page-find ul[data-type="autocomplete"] {
+    margin-top:0;
+    margin-bottom:0;
+}
+
+
+/*
+ * Find: POIs
+ */
+
+#page-find-pois ul[data-role="listview"] img.ui-li-icon {
+    width:20px;
+    height:20px;
+}
+
+
+/*
+ * Find: Trails and Loops
+ */
+
+#page-find-trails b,#page-find-loops b {
+    line-height:2em;
+}
+
+
+/*
+ * Nearby
+ */
+
+#nearby_config .ui-checkbox {
+    margin:0;
+}
+
+
+/*
+ * Welcome / About This App panel
+ */
+
+.disclaimer {
+    font-size:8pt;
+}
+
+.disclaimer b {
+    font-size:10pt;
+}
+
+
+/*
+ * Details and Directions panels
+ */
+
+
+#page-details div.wkt {
     display:none;
 }
 
-
-/* inside a a textnowrap do not force text inputs to wrap lines */
-
-.textnowrap input.ui-input-text,textarea.ui-input-text {
-    display:inline;
+#page-details h2 {
+    font-size:13pt;
+    margin-top:0;
+    text-align:center;
+}
+#page-details div.description {
+    margin-bottom:2em;
+}
+#page-details div.directions_buttons {
+    text-align:center;
 }
 
-.textnowrap td {
-    vertical-align:middle;
+#page-directions h2 {
+    font-size:13pt;
+    margin-top:0;
+    text-align:center;
+}
+
+@media (min-width:700px) {
+#page-directions fieldset input[type="text"] {
+    width:98%;
+}
+}
+@media (min-width:1000px) {
+#page-directions fieldset input[type="text"] {
+    width:98.5%;
+}
+}
+#directions_list {
+    margin-top:1em;
 }
 
 
-/* the Share panel and the Settings panel, have panels which need to LOOK like read-only text boxes
-  but which are really DIVs, cuz iOS forgot to add a select and copy function!
-*/
+/*
+ * Search Results panel
+ */
 
-div.fakeinput {
-    text-align: center;
-    background: none repeat scroll 0 0 #F9F9F9;
-    font-size: 16px;
-    line-height: 1.4;
-    width: 99%;
-    padding: 0.4em;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2) inset;
-    border: 1px solid #AAAAAA;
-    color: #333333;
-    text-shadow: 0 1px 0 #FFFFFF;
-    border-radius: 0.6em 0.6em 0.6em 0.6em;
-    height:1.4em;
+#page-find-results .sortpicker {
+    text-align:center;
 }
+#page-find-results .sortpicker a {
+    font-weight:normal;
+    text-decoration:underline;
+}
+#page-find-results .sortpicker a.active {
+    font-weight:bold;
+    color:black !important;
+    text-decoration:none;
+}
+
+/*
+ * Settings panel
+ * including that fake text input that shows your current GPS coordinates
+ */
 
 #page-settings div.legend_wrapper {
     white-space: nowrap;
@@ -420,71 +367,19 @@ div.fakeinput {
     margin-right:0.5em;
 }
 
-
-/* the buttons in the top Header bar, on each page; Cleveland asked for a tan brown color */
-/* and all theme-b buttons also get this; those are all submit buttons */
-/* very odd: the A and B buttons here, need different codes to come out the same color */
-
-.ui-btn-up-a {
-    background: none repeat scroll 0 0 #AB8E5A;
+div.fakeinput {
+    text-align: center;
+    background: none repeat scroll 0 0 #F9F9F9;
+    font-size: 16px;
+    line-height: 1.4;
+    width: 99%;
+    padding: 0.4em;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2) inset;
+    border: 1px solid #AAAAAA;
     color: #333333;
-}
-.ui-btn-up-b {
-    background: none repeat scroll 0 0 #BB9E6A;
-    color: #333333;
-}
-
-
-
-/*
- * Nearby page: the checkboxes take on a margin and mess up the fieldset, for some reason
- */
-#nearby_config .ui-checkbox {
-    margin:0;
-}
-
-/* toggle for sorting alphabetically or by distance, hidden by default but added as searches happen */
-
-.sortpicker {
-    text-align:center;
-}
-.sortpicker a {
-    font-weight:normal;
-    text-decoration:underline;
-}
-.sortpicker a.active {
-    font-weight:bold;
-    color:black !important;
-    text-decoration:none;
-}
-
-
-
-/* Elevation profile wrapper */
-div.elevationprofileimage {
-}
-
-div.elevationprofileimage img {
-}
-
-
-
-/* Find panel, including keyword search, keyword autocomplete, and the listview of search options */
-
-#page-find ul[data-role="listview"] li img {
-    margin-top: -5px; /* hack to make the icons align to the text */
-}
-
-#page-find ul[data-type="autocomplete"] {
-    margin-top:0;
-    margin-bottom:0;
-}
-
-
-/* Trail Finder and Featured Loops */
-
-#page-find-trails b,#page-find-loops b {
-    line-height:2em;
+    text-shadow: 0 1px 0 #FFFFFF;
+    border-radius: 0.6em 0.6em 0.6em 0.6em;
+    height:1.4em;
 }
 
 
