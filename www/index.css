@@ -422,20 +422,18 @@ div.fakeinput {
 
 
 /* the buttons in the top Header bar, on each page; Cleveland asked for a tan brown color */
+/* and all theme-b buttons also get this; those are all submit buttons */
+/* very odd: the A and B buttons here, need different codes to come out the same color */
 
 .ui-btn-up-a {
     background: none repeat scroll 0 0 #AB8E5A;
     color: #333333;
 }
-
-
-/* in the Directions panel, the buttons to finally get directions */
-
-#directions_button_wrapper .ui-btn-inner {
-    background: none repeat scroll 0 0 #AB8E5A;
-    color:#333333;
-    text-shadow:0 1px 0 #CCCCCC;
+.ui-btn-up-b {
+    background: none repeat scroll 0 0 #BB9E6A;
+    color: #333333;
 }
+
 
 
 /*
