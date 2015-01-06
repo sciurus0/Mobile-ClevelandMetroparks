@@ -133,9 +133,17 @@ div.lng_driving {
     text-align:right;
     max-width:75%; /* keep it from running into left-side controls on small displays */
 
-    color:red;
+    opacity:0.66;
+    color:rgb(60,120,174);
+    background-color:white;
+
+    font-size:9pt;
     font-weight:bold;
-    font-size:10pt;
+}
+@media (min-width:700px) {
+#map-location-warnings {
+    max-width:50%;
+}
 }
 
 #page-map > .ui-content {
