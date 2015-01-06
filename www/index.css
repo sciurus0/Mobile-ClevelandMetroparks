@@ -43,17 +43,6 @@ body,.ui-widget {
     cursor:pointer;
 }
 
-.popup_title {
-    font-size:10pt;
-    font-weight:bold;
-    margin-bottom:0.25em;
-}
-
-.popup_line {
-    clear:both;
-    margin:0;
-}
-
 .alert {
     background-color:yellow;
     color:red;
@@ -266,10 +255,6 @@ input[type="text"] {
     margin-top:10px;
 }
 
-.leaflet-popup .fakelink {
-    font-size:12pt;
-}
-
 #getdirections_disabled {
     text-align:center;
     font-size:12pt;
@@ -319,10 +304,28 @@ div.ui-slider {
 }
 
 
-/* Leaflet popups which are large enough to induce scrolling, can't really scroll */
+/* Leaflet popups */
+
 .leaflet-popup-scrolled .leaflet-popup-content {
     overflow:hidden;
 }
+
+
+.popup_title {
+    font-size:10pt;
+    font-weight:bold;
+    margin-bottom:0.25em;
+}
+
+.popup_line {
+    clear:both;
+    margin:0;
+}
+
+.leaflet-popup .fakelink {
+    font-size:10pt;
+}
+
 
 
 /* these buttons go over the map, and the Scale control is hidden (it's added in common, so can't disable it only in mobile) */
