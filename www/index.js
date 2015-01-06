@@ -641,6 +641,7 @@ function initDetailsAndDirectionsPanels() {
         var info = $('#page-details').data('raw');
         if (! info) { alert("No result loaded into the Map button. That should be impossible."); return false; }
 
+//gda
         switchToMap(function () {
             // zoom the the feature's bounding box
             var bbox = L.latLngBounds([[info.s,info.w],[info.n,info.e]]).pad(0.15);
@@ -653,7 +654,7 @@ function initDetailsAndDirectionsPanels() {
                     MARKER_TARGET.setLatLng([info.lat,info.lng]);
                     break;
                 case 'trail':
-                    // Trails have no point, but do have a linstring geometry
+                    // Trails have no point, but do have a linestring geometry
                     var parser = new Wkt.Wkt();
                     parser.read(info.wkt);
                     if (HIGHLIGHT_LINE) MAP.removeLayer(HIGHLIGHT_LINE);
@@ -1391,7 +1392,44 @@ function loadAndShowDetailsPanel(feature,callback) {
         // grab and display the plain HTML into the info panel, and switch over to it
         // the HTML is already ready to display, including title, hyperlinks, etc. managed by Cleveland
         $.mobile.changePage('#page-details');
-        var target = $('#page-details div.description').html(html);
+
+        // a hack for Loops specifically
+        // inserting the UL into the document, causes the app to crash; not a clean exit, but all DOM changes cease to function
+        // even $mobile.changePage() and switchToMap() do absolutely nothing, and the Map and back buttons fail as well
+        // the culprit is the UL element; somehow the LIs and DIVs in it cause jQuery Mobile to crash, though it's known JQM-compatible HTML...
+        if (feature.type == 'loop') {
+            var target = $('#page-details div.description').empty();
+            var $html  = $(html);
+            for (var i=0, l=$html.length; i<l; i++) {
+                switch( $html[i].nodeName ) {
+                    case 'P':
+                    case 'DIV':
+                    case 'H2':
+                        var $element = $( $html[i] );
+                        $element.appendTo(target);
+                        break;
+                    case 'UL':
+                        var $listing = $('<ul></ul>').appendTo(target).addClass('ui-li').addClass('ui-li-static').addClass('ui-body-c');
+                        $listing.css({ 'padding':'0' }); // no idea why, but need to force 0 padding to make it look right
+                        var $element = $( $html[i] );
+                        $element.children().each(function () {
+                            var li  = $('<li></li>').appendTo($listing);
+                            var div = $('<div></div>').addClass('ui-btn-text').appendTo(li);
+                            var w1  = $(this).find('span').eq(0).text(); // name
+                            var w2  = $(this).find('span').eq(1).text(); // distance
+                            var w3  = $(this).find('span').eq(2).text(); // time
+
+                            $('<span></span>').appendTo(div).addClass('ui-li-heading').text(w1);
+                            $('<span></span>').appendTo(div).addClass('ui-li-desc').text(w2 + ', ' + w3);
+                        });
+                        $listing.listview().listview('refresh');
+                        break;
+                }
+            }
+        } else {
+            // for all other content types, the HTML works as-is
+            var target = $('#page-details div.description').html(html);
+        }
 
         // WKT geometry is in a hidden DIV
         // kinda a hack since the change was a surprise after months of other development
