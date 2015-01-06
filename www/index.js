@@ -1369,7 +1369,7 @@ function refreshNearbyAndAlertIfAppropriate() {
  */
 function switchToMap(callback) {
     $.mobile.changePage('#page-map');
-    setTimeout(callback,500);
+    setTimeout(callback,750);
 }
 
 /*
