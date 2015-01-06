@@ -202,6 +202,10 @@ function init() {
     // pre-render the pages so we don't have that damnable lazy rendering thing messing with it
     $('div[data-role="page"]').page();
 
+    // test connectivity, make sure we can communicate with the server
+    // or else we should just die right now
+    initTestConnectivity();
+
     // now the rest of event handlers, map setup, etc. in stages
     initCacheThenMap();
     initWelcomePanel();
@@ -221,6 +225,17 @@ function init() {
     // look at the Skip Welcome setting and see whether we should go there, or to the map
     var welcome = window.localStorage.getItem('skip_welcome');
     if (welcome == 'show') $.mobile.changePage('#page-welcome');
+}
+
+function initTestConnectivity() {
+    // ping the server and get back anything at all; then either ignore it, or complain if we didn't get anything successfully
+    // the goal here is that on startup we can detect that the app cannot successfully load
+    // and leave them with something informative rather than a map with no tiles
+    $.get(BASE_URL, {}, function (html) {
+        false;
+    }).error(function (error) {
+        mobilealert("This app requires data service to connect to the Cleveland Metroparks server. Please check that you have service.");
+    });
 }
 
 function initCacheThenMap() {
