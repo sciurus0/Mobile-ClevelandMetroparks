@@ -11,6 +11,9 @@ body,.ui-widget {
 .hide {
     display:none;
 }
+.nowrap {
+    white-space:nowrap;
+}
 
 
 
@@ -310,20 +313,24 @@ div.ui-slider {
     overflow:hidden;
 }
 
-
-.popup_title {
+.leaflet-popup .popup_title {
     font-size:10pt;
     font-weight:bold;
     margin-bottom:0.25em;
 }
 
-.popup_line {
+.leaflet-popup .popup_line {
     clear:both;
     margin:0;
 }
 
 .leaflet-popup .fakelink {
     font-size:10pt;
+}
+
+.leaflet-popup .links {
+    white-space:nowrap;
+    margin-top:0;
 }
 
 

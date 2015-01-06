@@ -1071,6 +1071,62 @@ function wmsGetFeatureInfoByLatLngBBOX(bbox,anchor) {
 
         var popup = new L.Popup(options).setLatLng(anchor).setContent(html);
         MAP.openPopup(popup);
+
+        // a hack to get around other hacks, themselves hacked in to handle contradictions in prior specs, ...
+        // the Directions and More Info links need to be rewritten, not to have the onClick content,
+        //     and to effectively fabricate a "feature" compatible with loadAndShowDetailsPanel()
+        // the special Directions links are a real set of hacks, in that they bypass the Details panel and go straight to Directions
+        // and for trailpiece objects there was never a feature to begin with, just arbitrary latlng
+        setTimeout(function () {
+            $('.leaflet-popup .fakelink').each(function () {
+                var $link = $(this);
+                var type  = $link.attr('type');
+                var gid   = $link.attr('gid');
+                var lat   = $link.attr('lat');
+                var lng   = $link.attr('lng');
+                var text  = $link.text();
+                if (text == 'Details') text = 'More Info'; // standardize this deviant text
+
+                // swap out the link with a shiny new one
+                // Directions links are highly problematic here, since page transitions over to Details are required
+                // in order to fetch the complete Feature and load it into #page-details.data('raw')
+                // bypassing that is too rife with timing issues to work reliably, and for arbitrary latlng can't work at all anyway
+
+                if (type == 'poi' && text == 'More Info') {
+                    var good  = $('<span></span>').addClass('fakelink').text(text).attr('data-type',type).attr('data-gid',gid).attr('data-lat',lat).attr('data-lng',lng);
+                    $link.replaceWith(good);
+
+                    good.click(function () {
+                        var feature = {};
+                        feature.type = $(this).attr('data-type');
+                        feature.gid  = $(this).attr('data-gid');
+                        feature.lat  = $(this).attr('data-lat');
+                        feature.lng  = $(this).attr('data-lng');
+                        loadAndShowDetailsPanel(feature);
+                    });
+                }
+                if (type == 'trail' && text == 'More Info') {
+                    var good  = $('<span></span>').addClass('fakelink').text(text).attr('data-type',type).attr('data-gid',gid).attr('data-lat',lat).attr('data-lng',lng);
+                    $link.replaceWith(good);
+
+                    good.click(function () {
+                        var feature = {};
+                        feature.type = $(this).attr('data-type');
+                        feature.gid  = $(this).attr('data-gid');
+                        feature.lat  = $(this).attr('data-lat');
+                        feature.lng  = $(this).attr('data-lng');
+                        loadAndShowDetailsPanel(feature);
+                    });
+                }
+                if (type == 'poi' && text == 'Directions') {
+                    $link.remove();
+                }
+                if (type == 'trailpiece' && text == 'Directions here') {
+                    $link.remove();
+                }
+            });
+        }, 150);
+
     }, 'html').error(function (error) {
         // no error handling
         // if they tapped on the map and lost signal or something, don't pester them with messages, just be quiet
