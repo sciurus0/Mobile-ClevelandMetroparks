@@ -1438,10 +1438,14 @@ function loadAndShowDetailsPanel(feature,callback) {
 
         // intercept any hyperlinks in the HTML and force them through InAppBrowser so we can make them open in the system browser instead
         // this became necessary in Cordova 2.9 and I'm not sure why this isn't the default behavior...
-        $('#page-details div.description a').click(function () {
-            var url = $(this).prop('href');
-            window.open(url,'_system');
-            return false;
+        // this convolution below works on both iOS and Samsung, accounting for JQM silently replacing the A with a DIV
+        // and inAppbrowser replacing the hyperlink's href with # which of course means it points nowhere
+        $('#page-details div.description a').each(function () {
+            var url = $(this).removeAttr('target').prop('href');
+            $(this).data('url',url).click(function () {
+                window.open( $(this).data('url') ,'_system');
+                return false;
+            });
         });
 
         // assign the raw feature to the Map button
