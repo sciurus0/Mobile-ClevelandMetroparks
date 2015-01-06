@@ -481,28 +481,9 @@ div.elevationprofileimage img {
 }
 
 
-/* TRAIL FINDER and FEATURED LOOPS */
+/* Trail Finder and Featured Loops */
 
-#trailfinder_typeicons {
-    text-align:center;
-
-    margin-bottom:1em;
-}
-#trailfinder_typeicons img {
-    cursor:pointer;
+#page-find-trails b,#page-find-loops b {
+    line-height:2em;
 }
 
-#loops_typeicons {
-    text-align:center;
-}
-#loops_typeicons img {
-    cursor:pointer;
-}
-
-#loops_filter_distancepicker {
-    text-align:center;
-    margin-top:5px;
-}
-#loops_filter_distancepicker img {
-    cursor:pointer;
-}
