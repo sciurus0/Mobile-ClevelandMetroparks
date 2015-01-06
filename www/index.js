@@ -1079,50 +1079,55 @@ function wmsGetFeatureInfoByLatLngBBOX(bbox,anchor) {
         // and for trailpiece objects there was never a feature to begin with, just arbitrary latlng
         setTimeout(function () {
             $('.leaflet-popup .fakelink').each(function () {
-                var $link = $(this);
-                var type  = $link.attr('type');
-                var gid   = $link.attr('gid');
-                var lat   = $link.attr('lat');
-                var lng   = $link.attr('lng');
-                var text  = $link.text();
+                // swap out this link with a shiny new one, containing a virtual Feature compatible with loadAndShowDetailsPanel()
+                // add the link into the DOM and add an appropriate click handler to it, to show Details and/or to head over to Directions
+
+                var oldlink = $(this);
+
+                var text = oldlink.text();
                 if (text == 'Details') text = 'More Info'; // standardize this deviant text
 
-                // swap out the link with a shiny new one
-                // Directions links are highly problematic here, since page transitions over to Details are required
-                // in order to fetch the complete Feature and load it into #page-details.data('raw')
-                // bypassing that is too rife with timing issues to work reliably, and for arbitrary latlng can't work at all anyway
+                var feature = {};
+                feature.type = oldlink.attr('type');
+                feature.gid  = oldlink.attr('gid');
+                feature.name = oldlink.attr('title');
+                feature.lat  = oldlink.attr('lat');
+                feature.lng  = oldlink.attr('lng');
+                feature.w    = oldlink.attr('w');
+                feature.s    = oldlink.attr('s');
+                feature.e    = oldlink.attr('e');
+                feature.n    = oldlink.attr('n');
+                feature.wkt  = "";
 
-                if (type == 'poi' && text == 'More Info') {
-                    var good  = $('<span></span>').addClass('fakelink').text(text).attr('data-type',type).attr('data-gid',gid).attr('data-lat',lat).attr('data-lng',lng);
-                    $link.replaceWith(good);
+                var newlink = $('<span></span>').addClass('fakelink').text(text);
+                newlink.data('feature',feature);
 
-                    good.click(function () {
-                        var feature = {};
-                        feature.type = $(this).attr('data-type');
-                        feature.gid  = $(this).attr('data-gid');
-                        feature.lat  = $(this).attr('data-lat');
-                        feature.lng  = $(this).attr('data-lng');
-                        loadAndShowDetailsPanel(feature);
+                if (feature.type == 'poi' && text == 'More Info') {
+                    oldlink.replaceWith(newlink);
+
+                    newlink.click(function () {
+                        loadAndShowDetailsPanel( $(this).data('feature') );
                     });
                 }
-                if (type == 'trail' && text == 'More Info') {
-                    var good  = $('<span></span>').addClass('fakelink').text(text).attr('data-type',type).attr('data-gid',gid).attr('data-lat',lat).attr('data-lng',lng);
-                    $link.replaceWith(good);
+                if (feature.type == 'trail' && text == 'More Info') {
+                    oldlink.replaceWith(newlink);
 
-                    good.click(function () {
-                        var feature = {};
-                        feature.type = $(this).attr('data-type');
-                        feature.gid  = $(this).attr('data-gid');
-                        feature.lat  = $(this).attr('data-lat');
-                        feature.lng  = $(this).attr('data-lng');
-                        loadAndShowDetailsPanel(feature);
+                    newlink.click(function () {
+                        loadAndShowDetailsPanel( $(this).data('feature') );
                     });
                 }
-                if (type == 'poi' && text == 'Directions') {
-                    $link.remove();
+                if (feature.type == 'poi' && text == 'Directions') {
+                    oldlink.replaceWith(newlink);
+
+                    newlink.click(function () {
+                        loadAndShowDetailsPanel( $(this).data('feature') , function () {
+                            $('#page-details div.directions_buttons a').first().click();
+                        });
+                    });
                 }
-                if (type == 'trailpiece' && text == 'Directions here') {
-                    $link.remove();
+//gda
+                if (feature.type == 'trailpiece' && text == 'Directions here') {
+                    oldlink.remove();
                 }
             });
         }, 150);
@@ -1369,9 +1374,11 @@ function switchToMap(callback) {
 
 /*
  * switch over to the Details panel and AJAX-load full info for the given feature
- * only caller is a click handler on searchresults
+ * accepts an optional callback, to execute after switching page and loading info
+ * this callback is ideal for loading Details and then massaging those details, e.g. altering hyperlinks or removing text,
+ * or other actions after details are loaded, e.g. trigger a Directions click
  */
-function loadAndShowDetailsPanel(feature) {
+function loadAndShowDetailsPanel(feature,callback) {
     // hit up the endpoint and get the HTML description
     var latlng = MARKER_GPS.getLatLng();
     var params = { gid:feature.gid, type:feature.type, lat:latlng.lat, lng:latlng.lng };
@@ -1397,6 +1404,9 @@ function loadAndShowDetailsPanel(feature) {
         // assign the raw feature to the Map button
         // see initDetailsAndDirectionsPanels() where the data('raw') is defined as a trigger for the map behavior
         $('#page-details').data('raw',feature);
+
+        // and lastly: if we got a callback, go ahead and execute it
+        if (callback) callback(feature);
     },'html').error(function (error) {
         mobilealert("Check that you have data service, then try again.", "No connection?");
     });
