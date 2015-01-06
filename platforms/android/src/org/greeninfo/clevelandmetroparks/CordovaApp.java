@@ -17,7 +17,7 @@
        under the License.
  */
 
-package com.clevelandmetroparks.mobile;
+package org.greeninfo.clevelandmetroparks;
 
 import android.os.Bundle;
 import org.apache.cordova.*;
