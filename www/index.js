@@ -591,7 +591,6 @@ function initFindKeyword() {
     button.click(function () {
         listview.hide();
         var keyword = $(this).closest('fieldset').find('input[type="text"]').val().trim();
-        if (! keyword ) return false;
         searchKeyword(keyword);
     });
 
@@ -1097,6 +1096,10 @@ function searchPOIs(category) {
 }
 
 function searchKeyword(keyword) {
+    // if there's no keyword given, bail loudly
+    keyword = keyword.trim();
+    if (! keyword) return mobilealert("Enter some search terms for the keyword search, e.g. picnic, hike, fishing. If you're not sure what to type, start typing anything and see what suggestions come up.","Search Terms");
+
     var params = { keyword:keyword, limit:25 };
 
     $.get( BASE_URL + '/ajax/keyword', params, function (results) {
