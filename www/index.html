@@ -416,10 +416,6 @@
         <input type="hidden" name="destlat" /> <input type="hidden" name="destlng" /> <!-- destination latitude & longitude-->
         <input type="hidden" name="feature_type" /> <input type="hidden" name="feature_gid" />  <!-- if routing to a Feature, the Type and GID -->
         <fieldset data-role="controlgroup">
-            <select name="tofrom">
-                <option value="to">To here</option>
-                <option value="from">From here</option>
-            </select>
             <select name="origin">
                 <option value="gps">From your location</option>
                 <option value="geocode">From an address</option>
@@ -429,25 +425,11 @@
                 <lAbel><input type="text" name="address" placeholder="place name or address" /></label>
             </span>
             <select name="mode">
-                <option value="bike">On bike</option>
+                <option value="bike_advanced">On bike</option>
                 <option value="car">By car</option>
                 <option value="hike">On foot</option>
                 <option value="bus">By bus</option>
             </select>
-            <span style="display:none;">
-            <span class="togglewrapper">
-                <select name="difficulty">
-                    <option value="bike_advanced">Advanced</option>
-                    <option value="bike_intermediate">Intermediate</option>
-                    <option value="bike_beginner">Beginner</option>
-                    <option value="bike_novice">Novice</option>
-                </select>
-            </span>
-            <select name="preference">
-                <option value="recommmended">Recommended route</option>
-                <option value="shortest">Shortest route</option>
-            </select>
-            </span>
             <input type="button" value="Get directions" data-icon="search" data-iconpos="right" data-theme="b" />
         </fieldset>
 

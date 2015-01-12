@@ -686,30 +686,6 @@ function initDetailsAndDirectionsPanels() {
         show ? target.show() : target.hide();
         fieldset.trigger('create');
     }).trigger('change');
-    $('#page-directions select[name="mode"]').change(function () {
-        var show     = $(this).val() == 'bike';
-        var fieldset = $(this).closest('div[data-role="fieldcontain"]');
-        var target   = fieldset.find('select[name="difficulty"]').closest('span.togglewrapper');
-        show ? target.show() : target.hide();
-        fieldset.trigger('create');
-    }).trigger('change');
-    $('#page-directions select[name="tofrom"]').change(function () {
-        var selector = $('#page-directions select[name="origin"]');
-        var options  = selector.children();
-        switch ( $(this).val() ) {
-            case 'to':
-                options.each(function () {
-                    $(this).text( $(this).text().replace(/^To/, 'From') );
-                });
-                break;
-            case 'from':
-                options.each(function () {
-                    $(this).text( $(this).text().replace(/^From/, 'To') );
-                });
-                break;
-        }
-        selector.selectmenu('refresh');
-    });
 
     // Directions panel
     // submit handler (sorta) to compile params and fetch directions
@@ -1528,16 +1504,9 @@ function directionsParseAddressAndValidate() {
     // part 1 - simple params we can extract now
     // we use these to fine-tune some of the routing params, e.g. re-geocoding opints to their nearest parking lot; see part 3
 
-    // override the transportation mode with a new mode, e.g. Bike -> BikeAdvanced
-    // originally this was more expansive, with Hike having subtypes; some day they'll likely drop Bike Difficulty but we need to leave possibilities open
-    var tofrom  = form.find('select[name="tofrom"]').val();
+    var tofrom  = "to";
     var via     = form.find('select[name="mode"]').val();
-    var prefer  = form.find('select[name="preference"]').val();
-    switch (via) {
-        case 'bike':
-            via = form.find('select[name="difficulty"]').val();
-            break;
-    }
+    var prefer  = "recommended";
 
     // part 2 - figure out the origin
 
