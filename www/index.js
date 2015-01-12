@@ -336,15 +336,6 @@ function initWelcomePanel() {
 }
 
 function initSettingsPanel() {
-    // the legend is constructed from the ACTIVITY_ICONS which give name and icon
-    // this is similar to how the #page-find-pois panel is constructed
-    var legend = $('#page-settings div[data-legend="pois"]').empty();
-    for (var activity in ACTIVITY_ICONS) {
-        var entry = $('<div></div>').text(activity).appendTo(legend);
-        var icon  = $('<img></img>').prop('src', 'images/pois/' + ACTIVITY_ICONS[activity] );
-        entry.prepend(icon);
-    }
-
     // basemap picker
     $('input[type="radio"][name="basemap"]').change(function () {
         var which = $(this).val();
