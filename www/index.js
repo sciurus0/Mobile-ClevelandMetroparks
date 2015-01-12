@@ -11,7 +11,7 @@ var BBOX_SOUTHWEST = L.latLng(41.11816, -82.08504);
 var BBOX_NORTHEAST = L.latLng(41.70009, -81.28029);
 var MAX_BOUNDS     = L.latLngBounds(BBOX_SOUTHWEST,BBOX_NORTHEAST);
 var MIN_ZOOM       = 11;
-var MAX_ZOOM       = 18;
+var MAX_ZOOM       = 17;
 
 // this is the same coordinates as above
 // used for focusing Bing's geocoder, so we don't find so we don't find Cleveland, Oregon
