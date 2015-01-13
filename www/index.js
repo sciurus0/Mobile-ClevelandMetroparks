@@ -311,7 +311,7 @@ function initMap() {
 
     // ready! set! action!
     // start constant geolocation, which triggers the 'locationfound' event handlers defined above
-    MAP.locate({ watch: true, enableHighAccuracy: true });
+    MAP.locate({ watch:true, enableHighAccuracy:true, maximumAge:3600 });
 }
 
 function initWelcomePanel() {
@@ -486,7 +486,7 @@ function initFindTrails() {
     // but wait! there's not just form elements, but weirdness like icons with a data-selected= attribute
     $('#page-find-trails input[type="button"]').click(function () {
         var params = {};
-        params.paved       = $('#page-find-trails select[name="paved"]').val();
+        params.paved       = "";
         params.reservation = $('#page-find-trails select[name="reservation"]').val();
         params.uses        = $('#page-find-trails img[data-field="activity"][data-selected]').attr('data-value'); // should be commma-joined list, but only 1 option desired these days
 
@@ -541,7 +541,7 @@ function initFindLoops() {
     // and converting units: length & duration filters are in miles and minutes but endpoint wants feet and seconds
     $('#page-find-loops input[type="button"]').click(function () {
         var params = {};
-        params.paved       = $('#page-find-loops select[name="paved"]').val();
+        params.paved       = "";
         params.reservation = $('#page-find-loops select[name="reservation"]').val();
         params.filter_type = $('#page-find-loops img[data-field="activity"][data-selected]').attr('data-value');
         params.minfeet     = 5280 * $('#page-find-loops img[data-field="length"][data-selected]').attr('data-min');
