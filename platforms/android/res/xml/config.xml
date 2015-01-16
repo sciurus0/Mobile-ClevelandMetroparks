@@ -35,4 +35,6 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
+    <preference name="splashscreen" value="screen" />
+    <preference name="splashscreendelay" value="4000" />
 </widget>
