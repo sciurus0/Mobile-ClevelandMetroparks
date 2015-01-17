@@ -611,6 +611,12 @@ function initResultsPanel() {
         $(this).addClass('active').siblings().removeClass('active');
         calculateDistancesAndSortSearchResultsList();
     });
+
+    // on the results listing, the individual LI items can be clicked to switch over to the details panel
+    $('#page-find-results').on('click', 'li', function () {
+        var info = $(this).data('raw');
+        loadAndShowDetailsPanel(info);
+    });
 }
 
 function initDetailsAndDirectionsPanels() {
@@ -629,7 +635,6 @@ function initDetailsAndDirectionsPanels() {
         var info = $('#page-details').data('raw');
         if (! info) { alert("No result loaded into the Map button. That should be impossible."); return false; }
 
-//gda
         switchToMap(function () {
             // zoom the the feature's bounding box
             var bbox = L.latLngBounds([[info.s,info.w],[info.n,info.e]]).pad(0.15);
@@ -1212,11 +1217,8 @@ function searchProcessResults(resultlist,title,from,options) {
         // the result entry has a copy of the raw data in it, so it can do intelligent things when the need arises
         // it also has the distance in meters (well, a 0 for now), which is used for sorting the results list by distance
         // and has the title/name of the place as a datum, which is used for sorting the results list by name
+        // it also has a click handler defined up in initResultsPanel()
         var li = $('<li></li>').appendTo(target).data('raw',result).data('title',result.name).data('meters',0);
-        li.click(function () {
-            var info = $(this).data('raw');
-            loadAndShowDetailsPanel(info);
-        });
 
         // the title and perhaps a footnote; that's really up to the very intelligent query endpoint
         var div = $('<div></div>').addClass('ui-btn-text').appendTo(li);
