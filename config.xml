@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="org.greeninfo.clevelandmetroparks" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Cleveland Metroparks</name>
+    <name>Come Out And Play</name>
     <description>
-        Find parks, trails, and amenities in Cleveland with Cleveland Metropark's mobile app.
+        Find parks, trails, and amenities in Cleveland, Ohio with Cleveland Metropark's mobile app.
     </description>
-    <author email="gregor@greeninfo.org" href="http://www.greeninfo.org/">
+    <author email="gin@greeninfo.org" href="http://www.greeninfo.org/">
         GreenInfo Network
     </author>
     <content src="index.html" />

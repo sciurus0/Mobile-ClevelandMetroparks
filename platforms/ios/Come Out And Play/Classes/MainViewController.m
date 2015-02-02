@@ -19,7 +19,7 @@
 
 //
 //  MainViewController.h
-//  Cleveland Metroparks
+//  Come Out And Play
 //
 //  Created by ___FULLUSERNAME___ on ___DATE___.
 //  Copyright ___ORGANIZATIONNAME___ ___YEAR___. All rights reserved.

@@ -69,7 +69,7 @@ var AUTO_CENTER_ZOOMLEVEL   = 16;
 
 // for tile caching, the name of a subdirectory where this app will store its content
 // this is particularly important on Android where filesystem is not a sandbox but your SD card
-var STORAGE_SUBDIR = "ClevelandMetroparks";
+var STORAGE_SUBDIR = "Come Out And Play";
 
 // the list of Reservations (parks)
 // used to build select elements and potentially listviews, e.g. filtering for Loops or Trails by reservation
