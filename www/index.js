@@ -282,12 +282,19 @@ function initMap() {
     $('.location_outside').hide();
     $('.location_poor').hide();
 
+    // when the user pans the map with their finger, turn off the auto-center GPS behavior
+    MAP.on('dragstart', function (event) {
+        toggleGPSOff();
+    });
+
     // these buttons appear over the map, and are more complex than the simpler hyperlinks at the bottom of the map page
     //  $('#mapbutton_settings')
-    $('#mapbutton_gps').click(function () {
+    $('#mapbutton_gps').click(function (event) {
         toggleGPS();
+        event.stopPropagation();
     });
     $('#mapbutton_settings').click(function (event) {
+        // no special action here; it is a hyperlink and will go to its indicated page
         event.stopPropagation();
     });
 
@@ -802,6 +809,13 @@ function toggleGPS() {
 function toggleGPSOn() {
     AUTO_CENTER_ON_LOCATION = true;
     $('#mapbutton_gps img').prop('src','images/mapbutton_gps_ios_on.png');
+
+    // make an immediate request for our location
+    // the "watch" is already in place as of initMap()
+    // but we get a better response time if we explicitly hit it right now
+    navigator.geolocation.getCurrentPosition(function (position) {
+        handleLocationFound({ accuracy:position.coords.accuracy, latlng:L.latLng(position.coords.latitude,position.coords.longitude) });
+    }, null, { enableHighAccuracy:true, maximumAge:3600 });
 }
 function toggleGPSOff() {
     AUTO_CENTER_ON_LOCATION = false;
