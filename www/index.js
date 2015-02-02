@@ -11,7 +11,7 @@ var BBOX_SOUTHWEST = L.latLng(41.11816, -82.08504);
 var BBOX_NORTHEAST = L.latLng(41.70009, -81.28029);
 var MAX_BOUNDS     = L.latLngBounds(BBOX_SOUTHWEST,BBOX_NORTHEAST);
 var MIN_ZOOM       = 11;
-var MAX_ZOOM       = 17;
+var MAX_ZOOM       = 18;
 
 // this is the same coordinates as above
 // used for focusing Bing's geocoder, so we don't find so we don't find Cleveland, Oregon
@@ -70,6 +70,7 @@ var AUTO_CENTER_ZOOMLEVEL   = 16;
 // for tile caching, the name of a subdirectory where this app will store its content
 // this is particularly important on Android where filesystem is not a sandbox but your SD card
 var STORAGE_SUBDIR = "Come Out And Play";
+var MAX_CACHING_ZOOMLEVEL = 16;
 
 // the list of Reservations (parks)
 // used to build select elements and potentially listviews, e.g. filtering for Loops or Trails by reservation
@@ -240,9 +241,10 @@ function initTestConnectivity() {
 
 function initCacheThenMap() {
     // initialize the filesystem where we store cached tiles. when this is ready, proceed with the map
+    // tip: we only cache the Terrain basemap; Satellite will not be cached, and extra UI work will blank out that option when offline is selected
     CACHE = new OfflineTileCacher(STORAGE_SUBDIR);
     CACHE.init(function () {
-        for (var which in BASEMAPS) CACHE.registerLayer( BASEMAPS[which] );
+        CACHE.registerLayer( BASEMAPS['terrain'] );
         initMap();
         toggleGPSOn();
     }, function () {
@@ -362,13 +364,38 @@ function initSettingsPanel() {
     });
 
     // enable the "Offline" checkbox to toggle all registered layers between offline & online mode
+    // for this specific client app, there's some UI work as well; see below
+    // why do we switch over to the map? cuz we need to commit a zoom change as well (for switching to offline) and doing that
+    //      when the map is not visible is a big no-no. This is not necessary when switching to online mode (we don't change zooms)
+    //      but it's a more consistent experience if we do in both cases
     $('#basemap_offline_checkbox').change(function () {
         var offline = $(this).is(':checked');
         var layers  = CACHE.registeredLayers();
         if (offline) {
-            for (var layername in layers) CACHE.useLayerOffline(layername);
+            switchToMap(function () {
+                // zoom out to the max offline zoom level if we're zoomed in too far
+                MAP.options.maxZoom = MAX_CACHING_ZOOMLEVEL;
+                if (MAP.getZoom() > MAX_CACHING_ZOOMLEVEL) MAP.setZoom(MAX_CACHING_ZOOMLEVEL);
+
+                // switch away from Sat basemap since we don't cache that for offline
+                // then disable the non-Terrain options
+                $('input[type="radio"][name="basemap"][value="terrain"]').prop('checked','checked').trigger('change');
+                $('input[type="radio"][name="basemap"][value!="terrain"]').prop('disabled','disabled').checkboxradio('refresh');
+
+                // now switch the map layers to offline mode
+                for (var layername in layers) CACHE.useLayerOffline(layername);
+            });
         } else {
-            for (var layername in layers) CACHE.useLayerOnline(layername);
+            switchToMap(function () {
+                // reinstate the max zoom of the map as being the MAX zoom
+                MAP.options.maxZoom = MAX_ZOOM;
+
+                // re-enable the Satellite basemap option (anything not Terrain)
+                $('input[type="radio"][name="basemap"][value!="terrain"]').removeAttr('disabled').checkboxradio('refresh');
+
+                // switch the map layers ovder to online mode
+                for (var layername in layers) CACHE.useLayerOnline(layername);
+            });
         }
     });
 
@@ -961,7 +988,7 @@ function beginSeedingCache() {
     var lon   = MAP.getCenter().lng;
     var lat   = MAP.getCenter().lat;
     var zmin  = MAP.getZoom();
-    var zmax  = MAX_ZOOM;
+    var zmax  = MAX_CACHING_ZOOMLEVEL;
 
     // fetch the assocarray of layername->layerobj from the Cache provider,
     // then figure out a list of the layernames too so we can seed them sequentially
