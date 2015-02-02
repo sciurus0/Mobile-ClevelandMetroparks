@@ -272,11 +272,15 @@ function initMap() {
 
     // whenever we get a location event, we have a lot of work to do: GPS readout, Nearby and perhaps playing an alert sound, updating the marker-and-circle on the map, ...
     // if we get a location error, it affirms that we do not have a location; we need to show certain "Uhm, FYI!" notes around the app, hide the marker-and-circle, ...
+    // then start by hiding the messages, since they will reappear as needed by the location event handlers
     MAP.on('locationfound', function(event) {
         handleLocationFound(event);
     }).on('locationerror', function(event) {
         handleLocationError(event);
     });
+    $('.location_fail').hide();
+    $('.location_outside').hide();
+    $('.location_poor').hide();
 
     // these buttons appear over the map, and are more complex than the simpler hyperlinks at the bottom of the map page
     //  $('#mapbutton_settings')
@@ -884,8 +888,10 @@ function handleLocationFound(event) {
     // detect whether we're within the expected area and/or have poor accuracy
     // showing/hiding messages indicating that they may not like what they see
     var within = MAX_BOUNDS.contains(event.latlng);
+    var poor   = event.accuracy > 100;
+    $('.location_fail').hide();
     within ? $('.location_outside').hide() : $('.location_outside').show();
-    event.accuracy > 50 ? $('.location_fail').show() : $('.location_fail').hide();
+    poor   ? $('.location_poor').show()    : $('.location_poor').hide();
 
     // update the GPS marker, the user's current location
     // if we're wanting to auto-center, do so
@@ -912,6 +918,8 @@ function handleLocationFound(event) {
 function handleLocationError(event) {
     // show the various "Location failed!" messages
     $('.location_fail').show();
+    $('.location_outside').hide();
+    $('.location_poor').hide();
 }
 
 
