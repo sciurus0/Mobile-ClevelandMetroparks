@@ -24,8 +24,8 @@ var BING_API_KEY = "AjBuYw8goYn_CWiqk65Rbf_Cm-j1QFPH-gGfOxjBipxuEB2N3n9yACKu5s8D
 // basemap choices
 // the terrain map is the Cleveland awesomeness: ParkInfo styling, parks and trail rendering baked in, ...
 var BASEMAPS = {};
-BASEMAPS['terrain'] = new L.TileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/basemap_mobilestack/{z}/{x}/{y}.jpg", { name:'terrain', subdomains:'123', updateWhenIdle:true });
-BASEMAPS['photo']   = new L.TileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/satphoto_mobilestack/{z}/{x}/{y}.jpg", { name:'photo', subdomains:'123', updateWhenIdle:true });
+BASEMAPS['terrain'] = new L.TileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/basemap_mobilestack/{z}/{x}/{y}.jpg", { name:'terrain', subdomains:'123', updateWhenIdle:true, errorTileUrl:'images/nodata_tile.png' });
+BASEMAPS['photo']   = new L.TileLayer("http://maps{s}.clemetparks.com/tilestache/tilestache.cgi/satphoto_mobilestack/{z}/{x}/{y}.jpg", { name:'photo', subdomains:'123', updateWhenIdle:true, errorTileUrl:'images/nodata_tile.png' });
 
 // a whole bunch of markers for various purposes
 // in initMap() they are created and are added to the MAP
