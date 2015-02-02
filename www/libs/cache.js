@@ -312,7 +312,10 @@ var OfflineTileCacher = function(directoryname) {
                     if (is_ios()) {
                         file.setMetadata(null, null, { "com.apple.MobileBackup":1});
                     }
-                    if (progress) progress(index+1,urls.length);
+                    var proceed = true;
+                    if (progress) proceed = progress(index+1,urls.length);
+                    // did we get a request to stop, or are we clear to do the next one?
+                    if (proceed === false) return;
                     myself.downloadFile(urls,index+1,progress,error_handler);
                 },
                 function(error) {

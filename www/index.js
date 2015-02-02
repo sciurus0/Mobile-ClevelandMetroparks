@@ -359,8 +359,10 @@ function initSettingsPanel() {
     });
     $('#page-seedcache a[name="seedcache"]').click(function () {
         beginSeedingCache();
-        // cancel the button taking us back to the same page; that will happen in the progress() and error() handlers
-        return false;
+        return false; // don't need to let it navigate us to this here page
+    });
+    $('#page-seedcache-cancel').click(function () {
+        $(this).data('terminate_requested',true); // set a "terminate requested" flag; see beginSeedingCache() for the usage and reset of this flag
     });
 
     // enable the "Offline" checkbox to toggle all registered layers between offline & online mode
@@ -997,6 +999,9 @@ function beginSeedingCache() {
     for (var l in layers_to_seed) layernames[layernames.length] = layers_to_seed[l].options.name;
     var last_layer_name = layernames[layernames.length-1];
 
+    var cancelbutton = $('#page-seedcache-cancel');
+    cancelbutton.data('terminate_requested',false);
+
     function seedLayerByIndex(index) {
         if (index >= layernames.length) {
             // past the end, we're done
@@ -1016,8 +1021,20 @@ function beginSeedingCache() {
             var percent = Math.round( 100 * parseFloat(done) / parseFloat(total) );
             var text    = layername + ': ' + done + '/' + total + ' ' + percent + '%';
             $.mobile.showPageLoadingMsg("a", text, true);
+
+            // if someone pressed the big Stop! button then just terminate as if we had finished
+            if ( cancelbutton.data('terminate_requested') ) {
+                layer_complete();
+                return false;
+            }
+
             // if we're now done, call the completion function to close the spinner
-            if (done>=total) layer_complete();
+            if (done >= total) {
+                layer_complete();
+                return false;
+            }
+
+            // great, we had no cause to bail so return true so the looper in seedCache() knows it's clear to proceed
         };
         var error = function() {
             $.mobile.hidePageLoadingMsg();
