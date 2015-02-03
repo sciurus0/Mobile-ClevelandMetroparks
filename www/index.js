@@ -512,11 +512,11 @@ function initFindTrails() {
         // tag this one AND ONLY THIS ONE as being the data-selected element
         //      this also means some URL swapping to switch out icons
         // data endpoint was specifically meant to accept multiple use types, but later they decided that they prefer to use only one
-        var src = $(this).prop('src').replace('_off.png', '_on.png');
+        var src = $(this).prop('src').replace('_off.svg', '_on.svg');
         $(this).attr('data-selected','true').prop('src', src);
 
         $(this).siblings('img[data-field="activity"]').each(function () {
-            var src = $(this).prop('src').replace('_on.png', '_off.png');
+            var src = $(this).prop('src').replace('_on.svg', '_off.svg');
             $(this).removeAttr('data-selected').prop('src',src);
         })
     }).first().click();
@@ -551,11 +551,11 @@ function initFindLoops() {
         // tag this one AND ONLY THIS ONE as being the data-selected element
         //      this also means some URL swapping to switch out icons
         // data endpoint was specifically meant to accept multiple use types, but later they decided that they prefer to use only one
-        var src = $(this).prop('src').replace('_off.png', '_on.png');
+        var src = $(this).prop('src').replace('_off.svg', '_on.svg');
         $(this).attr('data-selected','true').prop('src', src);
 
         $(this).siblings('img[data-field="activity"]').each(function () {
-            var src = $(this).prop('src').replace('_on.png', '_off.png');
+            var src = $(this).prop('src').replace('_on.svg', '_off.svg');
             $(this).removeAttr('data-selected').prop('src',src);
         })
     }).first().click();
@@ -569,7 +569,7 @@ function initFindLoops() {
         var src = $(this).prop('src').replace('_off.png', '_on.png');
         $(this).attr('data-selected','true').prop('src', src);
 
-        $(this).siblings('img[data-field="length"]').each(function () {
+       $(this).siblings('img[data-field="length"]').each(function () {
             var src = $(this).prop('src').replace('_on.png', '_off.png');
             $(this).removeAttr('data-selected').prop('src',src);
         })

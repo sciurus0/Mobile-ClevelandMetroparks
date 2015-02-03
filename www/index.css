@@ -251,6 +251,11 @@ input[type="text"] {
     line-height:2em;
 }
 
+#page-find-trails img[data-field="activity"],#page-find-loops img[data-field="activity"] {
+    width:50px;
+    height:50px;
+}
+
 
 /*
  * Nearby
