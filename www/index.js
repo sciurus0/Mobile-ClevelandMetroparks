@@ -356,7 +356,16 @@ function initMap() {
 
     // ready! set! action!
     // start constant geolocation, which triggers the 'locationfound' event handlers defined above
-    MAP.locate({ watch:true, enableHighAccuracy:true, maximumAge:3600 });
+    // tip: locate:watch doesn't give a promise as to how often it will update nor even ability to request a certain frequency
+    //      if your location doesn't change dramatically you may just... never see it...
+    //      this has implications for auto-centering and nearby, that you may turn on those features but since there's no change
+    //      that the phone feels worth communicating, ... nothing happens...
+    // workaround: use an interval and ping our location every 3 seconds, period
+    setInterval(function () {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            handleLocationFound({ accuracy:position.coords.accuracy, latlng:L.latLng(position.coords.latitude,position.coords.longitude) });
+        }, null, { enableHighAccuracy:true, maximumAge:3600 });
+    }, 3000);
 }
 
 function initWelcomePanel() {
@@ -879,13 +888,6 @@ function toggleGPS() {
 function toggleGPSOn() {
     AUTO_CENTER_ON_LOCATION = true;
     $('#mapbutton_gps img').prop('src','images/mapbutton_gps_ios_on.png');
-
-    // make an immediate request for our location
-    // the "watch" is already in place as of initMap()
-    // but we get a better response time if we explicitly hit it right now
-    navigator.geolocation.getCurrentPosition(function (position) {
-        handleLocationFound({ accuracy:position.coords.accuracy, latlng:L.latLng(position.coords.latitude,position.coords.longitude) });
-    }, null, { enableHighAccuracy:true, maximumAge:3600 });
 }
 function toggleGPSOff() {
     AUTO_CENTER_ON_LOCATION = false;
