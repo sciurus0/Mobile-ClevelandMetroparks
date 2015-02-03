@@ -404,7 +404,7 @@ var OfflineTileCacher = function(directoryname) {
     this.insertOrReplaceTileByUrl = function(url, layername, x, y, z) {
         // the target filename for this PNG on disk
         // it's up to the caller to specify layers that in fact exist; if they create a tile with a name that doesn't match up
-        // to a real cache-registered layer, then they're making worthless PNGs that wno't be used; don't do that
+        // to a real cache-registered layer, then they're making worthless PNGs that won't be used; don't do that
         // use case here needs to be high-performance since it could be called 40 times simutaneously as the user pans the map,
         // so checks like that are skipped
         var myself   = this;

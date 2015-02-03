@@ -289,7 +289,7 @@ function initMap() {
     BASEMAPS['terrain'].on('tileload', function (event) {
         if (event.url.substr(0,4) != 'http') return;
         var xyz = event.url.match(/\/(\d+)\/(\d+)\/(\d+)\.(png|jpg)$/);
-        CACHE.insertOrReplaceTileByUrl(event.url, 'terrain', xyz[1], xyz[2], xyz[3] );
+        CACHE.insertOrReplaceTileByUrl(event.url, 'terrain', xyz[2], xyz[3], xyz[1] );
     });
 
     // when the user pans the map with their finger, turn off the auto-center GPS behavior
