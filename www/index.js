@@ -520,7 +520,7 @@ function initFindNearby() {
 
     // when the Enable Alerts checkbox is toggled, toggle the #nearby_config items below it
     // and if we're turning it on, then perform a nearby search right now
-    // tip: the checked status of #nearby_enabled is used by the onLocationFound handler, to determine whether to call searchNearby()
+    // tip: the checked status of #nearby_enabled is used by the onLocationFound handler, to determine whether to call refreshNearbyAndAlertIfAppropriate()
     // see also the nearby*() family of functions to get/set the status of this checkbox in other parts of the code
     $('#nearby_enabled').change(function () {
         var viz = $(this).is(':checked');
@@ -979,6 +979,10 @@ function handleLocationFound(event) {
     within ? $('.location_outside').hide() : $('.location_outside').show();
     poor   ? $('.location_poor').show()    : $('.location_poor').hide();
 
+    // how far have we in fact moved since our last update?
+    // we use this later, so we can skip on some of the more-intensive calculations if our loation has only changed by a few feet
+    var moved_meters = MARKER_GPS.getLatLng().distanceTo(event.latlng);
+
     // update the GPS marker, the user's current location
     // if we're wanting to auto-center, do so
     MARKER_GPS.setLatLng(event.latlng).addTo(MAP);
@@ -990,6 +994,12 @@ function handleLocationFound(event) {
     // update the GPS readout
     var gps = latLngToGPS(event.latlng);
     $('#gps_location').text(gps);
+
+    // now that we're pinging location every 3 seconds whether we need it or not, we have better repsonse times
+    // but the rest of the items below are somewhat CPU-intensive and maybe hitting them every 3 seconds can be skipped,
+    // if our location hasn't changed. Particularly annoying is Nearby which will do an AJAX hit (show the spinner, eat your data plan)
+    // so should really only happen if things have changed
+    if (moved_meters < 50) return;
 
     // sort any visible distance-sorted lists on the Results page
     calculateDistancesAndSortSearchResultsList();
