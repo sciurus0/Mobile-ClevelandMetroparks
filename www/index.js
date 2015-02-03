@@ -411,13 +411,17 @@ function initSettingsPanel() {
     // enable the ability to cache for a specific XYZ pyramid, notably being reservations listed in RESERVATION_CACHE_SETTINGS
     // this means loading up the listview with these options, each one tagged with XYZ data
     // clicking one triggers a beginSeedingCache() given the XYZ of that reservation
+    $('#page-seedreservation-cancel').click(function () {
+        $(this).data('terminate_requested',true); // set a "terminate requested" flag; see beginSeedingCache() for the usage and reset of this flag
+    });
+
     var target = $('#page-seedreservation ul[data-role="listview"]');
     for (var res in RESERVATION_CACHE_SETTINGS) {
         var x = RESERVATION_CACHE_SETTINGS[res][0];
         var y = RESERVATION_CACHE_SETTINGS[res][1];
         var z = RESERVATION_CACHE_SETTINGS[res][2];
 
-        var link = $('<a></a>').text(res).prop('href','javascript:void(0);');
+        var link = $('<a></a>').text(res).prop('href','#page-seedreservation-progress');
         var li   = $('<li></li>').append(link).attr('data-lon',x).attr('data-lat',y).attr('data-zoom',z).appendTo(target);
 
         li.click(function () {
@@ -425,8 +429,9 @@ function initSettingsPanel() {
             var lon  = $(this).attr('data-lon');
             var lat  = $(this).attr('data-lat');
             var zoom = $(this).attr('data-zoom');
-
-            beginSeedingCacheForReservation(name,lon,lat,zoom);
+            setTimeout(function () {
+                beginSeedingCacheForReservation(name,lon,lat,zoom);
+            }, 500);
         });
     }
     target.listview('refresh');
@@ -1077,7 +1082,7 @@ function beginSeedingCacheForReservation(name,lon,lat,zoom) {
     // indicating that the progress callback should return false, requesting that CACHE.seedCache should just stop
     // back when there was only 1 user interface for fetching all tiles, the button was unequivocal
     var cancelbutton = $('#page-seedreservation-cancel');
-    cancelbutton.data('terminate_requested',false);
+    $('#page-seedreservation-progress h1').text("Loading " + name);
 
     beginSeedingCache(lon,lat,zoom,MAX_CACHING_ZOOMLEVEL,cancelbutton);
 }
@@ -1093,7 +1098,6 @@ function beginSeedingCacheAtCurrentMapLocation() {
     // indicating that the progress callback should return false, requesting that CACHE.seedCache should just stop
     // back when there was only 1 user interface for fetching all tiles, the button was unequivocal
     var cancelbutton = $('#page-seedcache-cancel');
-    cancelbutton.data('terminate_requested',false);
 
     beginSeedingCache(lon,lat,zmin,zmax,cancelbutton);
 }
@@ -1106,10 +1110,15 @@ function beginSeedingCache(lon,lat,zmin,zmax,cancelbutton) {
     for (var l in layers_to_seed) layernames[layernames.length] = layers_to_seed[l].options.name;
     var last_layer_name = layernames[layernames.length-1];
 
+    // start by assuming that we AREN'T cancelling right away
+    cancelbutton.data('terminate_requested',false);
+
     function seedLayerByIndex(index) {
         if (index >= layernames.length) {
             // past the end, we're done
-            $.mobile.changePage("#page-settings");
+            // click the cancel button for us (or rather, navigate to its target) so we wind up wherever the cancel buttno would have put us
+            // this account for different cancel buttons having different targets
+            $.mobile.changePage( cancelbutton.prop('href') );
             return;
         }
         var layername = layernames[index];
