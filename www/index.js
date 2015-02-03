@@ -579,6 +579,7 @@ function initFindLoops() {
     // collect the form elements and pass them to the searchificator-inator
     // but wait! there's not just form elements, but weirdness like icons with a data-selected= attribute
     // and converting units: length & duration filters are in miles and minutes but endpoint wants feet and seconds
+    // some of these are fields we no longer want to display to the user, but need them for the endpoint (duration filter) so hardcode some extreme numbers
     $('#page-find-loops input[type="button"]').click(function () {
         var params = {};
         params.paved       = "";
@@ -586,8 +587,8 @@ function initFindLoops() {
         params.filter_type = $('#page-find-loops img[data-field="activity"][data-selected]').attr('data-value');
         params.minfeet     = 5280 * $('#page-find-loops img[data-field="length"][data-selected]').attr('data-min');
         params.maxfeet     = 5280 * $('#page-find-loops img[data-field="length"][data-selected]').attr('data-max');
-        params.minseconds  = 3600 * $('#page-find-loops input[name="duration_min"]').val();
-        params.maxseconds  = 3600 * $('#page-find-loops input[name="duration_max"]').val();
+        params.minseconds  = 0;
+        params.maxseconds  = 3600 * 60 * 5;
 
         searchLoops(params);
     });
