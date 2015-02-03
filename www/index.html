@@ -349,17 +349,12 @@
     </div>
     <div data-role="content">
 
+        <div class="directions_floater">
+            <a href="#page-directions"><img src="images/directions.png" /></a>
+        </div>
+
         <!-- description HTML -->
         <div class="description"></div>
-
-        <!-- directions buttons -->
-        <div class="directions_buttons">
-            <h2>Directions:</h2>
-            <a href="#page-directions" data-mode="hike"><img src="images/directions_hike.svg" /></a>
-            <a href="#page-directions" data-mode="bike"><img src="images/directions_bike.svg" /></a>
-            <a href="#page-directions" data-mode="car"><img src="images/directions_car.svg" /></a>
-            <a href="#page-directions" data-mode="bus"><img src="images/directions_bus.svg" /></a>
-        </div>
 
     </div>
 </div>
@@ -381,21 +376,33 @@
         <input type="hidden" name="origlat" /> <input type="hidden" name="origlng" /> <!-- origin latitude and longitude -->
         <input type="hidden" name="destlat" /> <input type="hidden" name="destlng" /> <!-- destination latitude & longitude-->
         <input type="hidden" name="feature_type" /> <input type="hidden" name="feature_gid" />  <!-- if routing to a Feature, the Type and GID -->
-        <fieldset data-role="controlgroup">
+
+        <fieldset>
+            <!-- is our origin our current location, a named address, or a named park feature (has search results) -->
             <select name="origin">
                 <option value="gps">From your location</option>
                 <option value="geocode">From an address</option>
                 <option value="features">From a park feature</option>
             </select>
             <span class="togglewrapper">
-                <lAbel><input type="text" name="address" placeholder="place name or address" /></label>
+                <label><input type="text" name="address" placeholder="place name or address" /></label>
             </span>
-            <select name="mode">
-                <option value="bike_advanced">On bike</option>
-                <option value="car">By car</option>
-                <option value="hike">On foot</option>
-                <option value="bus">By bus</option>
-            </select>
+
+            <br/>
+
+            <!-- like Trail Finder we don't use a SELECT element but a set of images; one will be tagged with data-selected="true" -->
+            <!-- see initDetailsAndDirectionsPanels() where this click handler is set up, and where the FIRST ONE will be clicked and thus used as the default -->
+            <!-- see directionsParseAddressAndValidate() and directionsFetch() where these are examined to determine which one is selected -->
+            <div class="directions_buttons">
+                <img src="images/directions_hike_off.svg" data-mode="hike" />
+                <img src="images/directions_bike_off.svg" data-mode="bike_advanced" />
+                <img src="images/directions_car_off.svg" data-mode="car" />
+                <img src="images/directions_bus_off.svg" data-mode="bus" />
+            </div>
+
+            <br/>
+
+            <!-- Go! -->
             <input type="button" value="Get directions" data-icon="search" data-iconpos="right" data-theme="b" />
         </fieldset>
 

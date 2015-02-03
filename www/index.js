@@ -709,15 +709,9 @@ function initDetailsAndDirectionsPanels() {
     });
 
     // intercept clicks on the Directions buttons on the Details panel
-    // to make some UI changes to the Directions panel on our way there (we do allow it to click through and arrive on the panel)
-    $('#page-details div.directions_buttons a').click(function () {
-        // set the Foot, Car, Bus, ... picker to whichever they picked
-        // this is the only role of these buttons
-        var mode = $(this).attr('data-mode');
-        $('#page-directions select[name="mode"]').val(mode).selectmenu('refresh').trigger('change');
-
-        // fill in some details from the feature we're coming from
-        // again #page-details.data('raw') is THE go-to place to find out what we're focusing
+    // to load the place name into that target page
+    // again #page-details.data('raw') is THE go-to place to find out what we're focusing
+    $('#page-details div.directions_floater').click(function () {
         var info = $('#page-details').data('raw');
         $('#page-directions h2.name').text(info.name);
     });
@@ -731,6 +725,21 @@ function initDetailsAndDirectionsPanels() {
         show ? target.show() : target.hide();
         fieldset.trigger('create');
     }).trigger('change');
+
+    // Directions panel
+    // similarly to the Trail Finder and Features Loops finder, we do not use a SELECT element but rather
+    // a set of images and one of them has a data-selected tag; this is examined by directionsParseAddressAndValidate() and directionsFetch()
+    // to compose the AJAX request for directions
+    $('#page-directions div.directions_buttons img').click(function () {
+        // highlight this icon and only this icon
+        var src = $(this).prop('src').replace('_off.svg', '_on.svg');
+        $(this).attr('data-selected','true').prop('src', src);
+
+        $(this).siblings('img').each(function () {
+            var src = $(this).prop('src').replace('_on.svg', '_off.svg');
+            $(this).removeAttr('data-selected').prop('src',src);
+        })
+    }).first().click();
 
     // Directions panel
     // submit handler (sorta) to compile params and fetch directions
@@ -1571,9 +1580,11 @@ function directionsParseAddressAndValidate() {
 
     // part 1 - simple params we can extract now
     // we use these to fine-tune some of the routing params, e.g. re-geocoding opints to their nearest parking lot; see part 3
+    // prior versions of this app and website, had selectors for some of these options; but we decided to simplify and hardcode the defaults
+    // historical note: that's why Bike is called bike_advanced; prior versions had us select bicycle difficulty
 
+    var via     = form.find('div.directions_buttons img[data-selected="true"]').attr('data-mode');
     var tofrom  = "to";
-    var via     = form.find('select[name="mode"]').val();
     var prefer  = "recommended";
 
     // part 2 - figure out the origin

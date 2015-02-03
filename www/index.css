@@ -277,6 +277,10 @@ input[type="text"] {
  * Details and Directions panels
  */
 
+#page-details div.directions_floater {
+    float:right;
+    margin:0 0 1em 1em;
+}
 
 #page-details div.wkt {
     display:none;
@@ -290,7 +294,7 @@ input[type="text"] {
 #page-details div.description {
     margin-bottom:2em;
 }
-#page-details div.directions_buttons {
+#page-directions div.directions_buttons {
     text-align:center;
 }
 
