@@ -293,7 +293,8 @@
 
         <h3 class="center">Offline Map</h3>
         <div data-role="controlgroup">
-            <a href="#page-seedcache" data-role="button" data-rel="dialog">Download map tiles</a>
+            <a href="#page-seedcache" data-role="button" data-rel="dialog">Download your location</a>
+            <a href="#page-seedreservation" data-role="button">Download a reservation</a>
             <a href="#page-cachestatus" data-role="button" data-rel="dialog">Offline tile usage</a>
         </div>
 
@@ -312,6 +313,24 @@
         <p>This will download map tiles within the current map view, so you can use the map without Internet access. This will take a while, and could use a few megabytes of network data. You may prefer to do this over a wifi connection.</p>
         <a href="javascript:void(0);" name="seedcache" data-role="button" data-rel="back" data-theme="b">Download</a>
         <a href="#page-settings" data-role="button" data-rel="back" id="page-seedcache-cancel">Cancel</a>
+    </div>
+</div>
+
+
+
+
+<div data-role="page" id="page-seedreservation">
+    <div data-role="header">
+        <a href="#page-settings" data-icon="back">Back</a>
+        <h1>Offline Maps</h1>
+    </div>
+
+    <div data-role="content">
+
+        <!-- the reservation list is populated by initSettingsPanel() where we set up other caching buttons and behaviors -->
+        <ul data-role="listview" data-inset="true">
+        </ul>
+
     </div>
 </div>
 

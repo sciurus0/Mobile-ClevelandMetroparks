@@ -99,6 +99,28 @@ var LIST_RESERVATIONS = [
     "West Creek Reservation"
 ];
 
+// for loading offline maps of these specific areas and reservations
+// this is not the same as LIST_RESERVATIONS above, as this one has arbitrary name=>XYZ values
+// and may not specifically be the reservations, and may use nicknames/alternate spellings of the reservations
+var RESERVATION_CACHE_SETTINGS = {
+    "Bedford Reservation" :             [ -81.5488, 41.3753, 13 ],
+    "Big Creek Reservation" :           [ -81.8042, 41.3802, 13 ],
+    "Bradley Woods Reservation" :       [ -81.9571, 41.4135, 14 ],
+    "Brecksville Reservation" :         [ -81.6171, 41.3069, 13 ],
+    "Brookside Reservation and Zoo" :   [ -81.7177, 41.4473, 14 ],
+    "Euclid Creek Reservation" :        [ -81.5296, 41.5540, 13 ],
+    "Garfield Park Reservation" :       [ -81.6077, 41.4312, 13 ],
+    "Hinckley Reservation" :            [ -81.7073, 41.2182, 13 ],
+    "Huntington Reservation" :          [ -81.9342, 41.4880, 15 ],
+    "Mill Stream Run Reservation" :     [ -81.8093, 41.3193, 13 ],
+    "North Chagrin Reservation" :       [ -81.4252, 41.5683, 13 ],
+    "Ohio & Erie Canal Reservation" :   [ -81.6608, 41.4307, 14 ],
+    "Rocky River Reservation" :         [ -81.8535, 41.4300, 13 ],
+    "South Chagrin Reservation" :       [ -81.4315, 41.4182, 13 ],
+    "Washington Reservation" :          [ -81.6641, 41.4572, 15 ],
+    "West Creek Reservation" :          [ -81.6940, 41.3831, 15 ]
+};
+
 // the set of Use Area categories, aka Activities
 // used to build select elements and potentially listviews, e.g. find POIs which have *this* activity
 // this has two parts: the sequential list so we can keep it sorted and efficient, and a mapping of Category->Icon PNG to provide an icon for one of the listviews
@@ -379,12 +401,35 @@ function initSettingsPanel() {
         return false;
     });
     $('#page-seedcache a[name="seedcache"]').click(function () {
-        beginSeedingCache();
+        beginSeedingCacheAtCurrentMapLocation();
         return false; // don't need to let it navigate us to this here page
     });
     $('#page-seedcache-cancel').click(function () {
         $(this).data('terminate_requested',true); // set a "terminate requested" flag; see beginSeedingCache() for the usage and reset of this flag
     });
+
+    // enable the ability to cache for a specific XYZ pyramid, notably being reservations listed in RESERVATION_CACHE_SETTINGS
+    // this means loading up the listview with these options, each one tagged with XYZ data
+    // clicking one triggers a beginSeedingCache() given the XYZ of that reservation
+    var target = $('#page-seedreservation ul[data-role="listview"]');
+    for (var res in RESERVATION_CACHE_SETTINGS) {
+        var x = RESERVATION_CACHE_SETTINGS[res][0];
+        var y = RESERVATION_CACHE_SETTINGS[res][1];
+        var z = RESERVATION_CACHE_SETTINGS[res][2];
+
+        var link = $('<a></a>').text(res).prop('href','javascript:void(0);');
+        var li   = $('<li></li>').append(link).attr('data-lon',x).attr('data-lat',y).attr('data-zoom',z).appendTo(target);
+
+        li.click(function () {
+            var name = $(this).text();
+            var lon  = $(this).attr('data-lon');
+            var lat  = $(this).attr('data-lat');
+            var zoom = $(this).attr('data-zoom');
+
+            beginSeedingCacheForReservation(name,lon,lat,zoom);
+        });
+    }
+    target.listview('refresh');
 
     // enable the "Offline" checkbox to toggle all registered layers between offline & online mode
     // for this specific client app, there's some UI work as well; see below
@@ -1027,22 +1072,39 @@ function nearbyStatus() {
  * and keep a callback to show a progress dialog
  */
 
-function beginSeedingCache() {
+function beginSeedingCacheForReservation(name,lon,lat,zoom) {
+    // a specific button provides a "terminate requested" flag when it is clicked,
+    // indicating that the progress callback should return false, requesting that CACHE.seedCache should just stop
+    // back when there was only 1 user interface for fetching all tiles, the button was unequivocal
+    var cancelbutton = $('#page-seedreservation-cancel');
+    cancelbutton.data('terminate_requested',false);
+
+    beginSeedingCache(lon,lat,zoom,MAX_CACHING_ZOOMLEVEL,cancelbutton);
+}
+
+function beginSeedingCacheAtCurrentMapLocation() {
     // the lon, lat, and zooms for seeding
     var lon   = MAP.getCenter().lng;
     var lat   = MAP.getCenter().lat;
     var zmin  = MAP.getZoom();
     var zmax  = MAX_CACHING_ZOOMLEVEL;
 
+    // a specific button provides a "terminate requested" flag when it is clicked,
+    // indicating that the progress callback should return false, requesting that CACHE.seedCache should just stop
+    // back when there was only 1 user interface for fetching all tiles, the button was unequivocal
+    var cancelbutton = $('#page-seedcache-cancel');
+    cancelbutton.data('terminate_requested',false);
+
+    beginSeedingCache(lon,lat,zmin,zmax,cancelbutton);
+}
+
+function beginSeedingCache(lon,lat,zmin,zmax,cancelbutton) {
     // fetch the assocarray of layername->layerobj from the Cache provider,
     // then figure out a list of the layernames too so we can seed them sequentially
     var layers_to_seed = CACHE.registeredLayers();
     var layernames = [];
     for (var l in layers_to_seed) layernames[layernames.length] = layers_to_seed[l].options.name;
     var last_layer_name = layernames[layernames.length-1];
-
-    var cancelbutton = $('#page-seedcache-cancel');
-    cancelbutton.data('terminate_requested',false);
 
     function seedLayerByIndex(index) {
         if (index >= layernames.length) {
