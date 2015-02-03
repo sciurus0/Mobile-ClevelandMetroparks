@@ -282,6 +282,16 @@ function initMap() {
     $('.location_outside').hide();
     $('.location_poor').hide();
 
+    // for the Terrain basemap only
+    // every time we get a successful tile load, push this tile into the cache system
+    // this is a specific hack for this client, but may prove an interesting development for cache.js generally if it proves flexible
+    // most importantly, if this was already from the cache and not the network then don't event try (caching a tile from the selfsame cache, no)
+    BASEMAPS['terrain'].on('tileload', function (event) {
+        if (event.url.substr(0,4) != 'http') return;
+        var xyz = event.url.match(/\/(\d+)\/(\d+)\/(\d+)\.(png|jpg)$/);
+        CACHE.insertOrReplaceTileByUrl(event.url, 'terrain', xyz[1], xyz[2], xyz[3] );
+    });
+
     // when the user pans the map with their finger, turn off the auto-center GPS behavior
     MAP.on('dragstart', function (event) {
         toggleGPSOff();
