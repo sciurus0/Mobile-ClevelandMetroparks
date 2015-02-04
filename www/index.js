@@ -1260,7 +1260,7 @@ function wmsGetFeatureInfoByLatLngBBOX(bbox,anchor) {
 
                     newlink.click(function () {
                         loadAndShowDetailsPanel( $(this).data('feature') , function () {
-                            $('#page-details div.directions_buttons a').first().click();
+                            $('#page-details div.directions_floater a').click();
                         });
                     });
                 }
