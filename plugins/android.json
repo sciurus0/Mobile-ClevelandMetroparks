@@ -39,6 +39,10 @@
                         {
                             "xml": "<feature name=\"PhoneNavigator\"><param name=\"android-package\" value=\"org.apache.cordova.plugin.PhoneNavigator\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Notification\"><param name=\"android-package\" value=\"org.apache.cordova.dialogs.Notification\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -115,6 +119,9 @@
             "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
         },
         "org.apache.cordova.plugin": {
+            "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
+        },
+        "org.apache.cordova.dialogs": {
             "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
         }
     },

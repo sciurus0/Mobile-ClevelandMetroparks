@@ -103,7 +103,7 @@ var OfflineTileCacher = function(directoryname) {
             );
         } else {
             // something else, and not something we support: make a message then call the failure callback
-            mobilealert('Your device does not support the HTML5 File API.','Error');
+            navigator.notification.alert('Your device does not support the HTML5 File API.', null, 'Error');
             if (failure) failure();
             return;
         }
@@ -290,7 +290,7 @@ var OfflineTileCacher = function(directoryname) {
         // if we don't have Internet, this download can't possibly work
         // make an alert and then call the error handler
         if (! has_internet() ) {
-            mobilealert('Cannot download map data. No internet connection.','No connection');
+            navigator.notification.alert('Cannot download map data. No internet connection.', null, 'No connection');
             if (error_handler) error_handler();
         }
 
@@ -392,7 +392,7 @@ var OfflineTileCacher = function(directoryname) {
 
         // make sure we're not asking for too much
         if (downloads.length > myself.MAX_TILES) {
-            mobilealert("The selected area is too large. Please zoom in to a smaller area.", "Area too large");
+            navigator.notification.alert('The selected area is too large. Please zoom in to a smaller area.', null, 'Area too large');
             return;
         }
 
@@ -417,7 +417,7 @@ var OfflineTileCacher = function(directoryname) {
         function fetchit() {
             myself.FileTransfer.download(url, filename, function (file) {
                 // tile downloaded OK
-                // set the Apple "don't back up" flag for iTUnes Connect / Apple Store compliance
+                // set the Apple "don't back up" flag for iTunes Connect / Apple Store compliance
                 if (ios) file.setMetadata(null, null, { "com.apple.MobileBackup":1});
             }, function (error) {
                 // error handling: nothing; not like we want the user to get a popup whenever a tile they CAN see doesn't save to disk

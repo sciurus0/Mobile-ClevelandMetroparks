@@ -257,7 +257,7 @@ function initTestConnectivity() {
     $.get(BASE_URL, {}, function (html) {
         false;
     }).error(function (error) {
-        mobilealert("This app requires data service to connect to the Cleveland Metroparks server. Please check that you have service.");
+        navigator.notification.alert('This app requires data service to connect to the Cleveland Metroparks server. Please check that you have service.', null, 'No Connection?');
     });
 }
 
@@ -475,7 +475,7 @@ function initSettingsPanel() {
                 // re-enable the Satellite basemap option (anything not Terrain)
                 $('input[type="radio"][name="basemap"][value!="terrain"]').removeAttr('disabled').checkboxradio('refresh');
 
-                // switch the map layers ovder to online mode
+                // switch the map layers over to online mode
                 for (var layername in layers) CACHE.useLayerOnline(layername);
             });
         }
@@ -1019,21 +1019,6 @@ function handleLocationError(event) {
 }
 
 
-/*
- * This provides a dialog panel for showing an error message, which has
- * some benefits over using alert() to report errors or acknowledgements.
- * First, it is more mobile-esque and less canned than alert()
- * Second, it does not block JavaScript processing. Sometimes you do want to block, but often not.
- */
-function mobilealert(message,header) {
-    if (typeof header == 'undefined') header = 'Error';
-
-    $('#dialog-error div[data-role="content"]').text(message);
-    $('#dialog-error div[data-role="header"] h1').text(header);
-    $.mobile.changePage('#dialog-error');
-}
-
-
 
 /*
  * Play an MP3 file bundled into this app, using Cordova Media Plugin
@@ -1303,7 +1288,7 @@ function searchPOIs(category) {
 function searchKeyword(keyword) {
     // if there's no keyword given, bail loudly
     keyword = keyword.trim();
-    if (! keyword) return mobilealert("Enter some search terms for the keyword search, e.g. picnic, hike, fishing. If you're not sure what to type, start typing anything and see what suggestions come up.","Search Terms");
+    if (! keyword) return navigator.notification.alert('Enter some search terms for the keyword search, e.g. picnic, hike, fishing. If you\'re not sure what to type, start typing anything and see what suggestions come up.', null, 'Search Terms');
 
     var params = { keyword:keyword, limit:25 };
 
@@ -1345,7 +1330,7 @@ function searchLoops(options) {
 
 function searchProcessError(error) {
     // hide any loading spinner, set the results title to clearly indicate a problem
-    mobilealert("Check that you have data service, then try again.", "No connection?");
+    navigator.notification.alert('Check that you have data service, then try again.', null, 'No connection?');
 }
 
 function searchProcessResults(resultlist,title,from,options) {
@@ -1357,7 +1342,7 @@ function searchProcessResults(resultlist,title,from,options) {
 
     // hide the spinner, if the caller forgot (or so we can funnel responsibility for it here)
     // then bail if there are 0 results, so the caller doesn't need that responsibility either
-    if (options.showerror && ! resultlist.length) return mobilealert("Try a different keyword, location, or other filters.", "No Results");
+    if (options.showerror && ! resultlist.length) return navigator.notification.alert('Try a different keyword, location, or other filters.', null, 'No Results');
 
     // pre-work cleanup
     // turn off Nearby since it borgs the results panel, causing a confusing result when your search results vanish a moment later on location update
@@ -1590,7 +1575,7 @@ function loadAndShowDetailsPanel(feature,callback) {
         // and lastly: if we got a callback, go ahead and execute it
         if (callback) callback(feature);
     },'html').error(function (error) {
-        mobilealert("Check that you have data service, then try again.", "No connection?");
+        navigator.notification.alert('Check that you have data service, then try again.', null, 'No connection?');
     });
 }
 
@@ -1617,7 +1602,7 @@ function _openDirections_Android(sourcelat,sourcelng,targetlat,targetlng) {
     // Android needs a plugin to call the onboard Navigation app
     // aos, it doesn't handle the source location, only a destination
     cordova.require('cordova/plugin/phonenavigator').doNavigate(targetlat, targetlng, null, function () {
-        mobilealert("Could not find a navigation app installed on your device.", "Error");
+        navigator.notification.alert('Could not find a navigation app installed on your device.', null, 'Error');
     });
 }
 function _openDirections_Chrome(sourcelat,sourcelng,targetlat,targetlng) {
@@ -1700,7 +1685,7 @@ function directionsParseAddressAndValidate() {
             break;
         // GEOCODE origin: but a hack (of course), that it can be either an address or else GPS coordinates in either of 2 formats
         case 'geocode':
-            if (! address) return mobilealert("Please enter an address, city, or landmark.","Address");
+            if (! address) return navigator.notification.alert('Please enter an address, city, or landmark.', null, 'Enter an Address');
             var is_decdeg = /^\s*(\d+\.\d+)\s*\,\s*(\-\d+\.\d+)\s*$/.exec(address); // regional assumption in this regular expression: negative lng, positive lat
             var is_gps    = /^\s*N\s+(\d+)\s+(\d+\.\d+)\s+W\s+(\d+)\s+(\d+\.\d+)\s*$/.exec(address); // again, regional assumption that we're North and West
             if (is_decdeg) {
@@ -1723,13 +1708,13 @@ function directionsParseAddressAndValidate() {
                 $.get(BASE_URL + '/ajax/geocode', params, function (result) {
                     $.ajaxSetup({ async:true });
 
-                    if (! result) return mobilealert("Could not find that address.","Address Not Found");
+                    if (! result) return navigator.notification.alert('Could not find that address.', null, 'Address Not Found');
                     sourcelat = result.lat;
                     sourcelng = result.lng;
                 },'json').error(function (error) {
                     $.ajaxSetup({ async:true });
 
-                    return mobilealert("Could not find that address. Check the address, and that you have data service turned on and a good signal.","No connection?");
+                    return navigator.notification.alert('Could not find that address. Check the address, and that you have data service turned on and a good signal.', null, 'No connection?');
                 });
             }
             break;
@@ -1794,7 +1779,7 @@ function directionsParseAddressAndValidate() {
             },'json').error(function (error) {
                 $.ajaxSetup({ async:true });
 
-                return mobilealert("Could fetch any locations. Check that you have data service turned on and a good signal.","No connection?");
+                return navigator.notification.alert('Could fetch any locations. Check that you have data service turned on and a good signal.', null, 'No connection?');
             });
             break;
     }
@@ -1881,7 +1866,7 @@ function directionsParseAddressAndValidate() {
     // if the starting location is outside our supported area, it wouldn't make sense to draw it onto the map
     // so we punt, and hand off to the native mapping app so they can figure it out themselves
     if (! MAX_BOUNDS.contains([sourcelat,sourcelng]) ) {
-        mobilealert("That is outside the supported area, so we'll open your native routing app so you get better results.","Outside Area");
+        navigator.notification.alert('That is outside the supported area, so we\'ll open your native routing app so you get better results.', null, 'Outside Area');
         openDirections(sourcelat,sourcelng,targetlat,targetlng);
         return false;
     }
@@ -1911,10 +1896,10 @@ function directionsFetch(sourcelat,sourcelng,targetlat,targetlng,tofrom,via,pref
     };
 
     $.get(BASE_URL + '/ajax/directions', params, function (reply) {
-        if (! reply || ! reply.steps) return mobilealert("Could not find directions. Try a different travel mode.","No Route");
+        if (! reply || ! reply.steps) return navigator.notification.alert('Could not find directions. Try a different travel mode.', null, 'No Route');
         directionsRender(reply);
     }, 'json').error(function (error) {
-        mobilealert("Could not ask for directions. Check that you have data service turned on and a good signal.","No connection?");
+        navigator.notification.alert('Could not ask for directions. Check that you have data service turned on and a good signal.', null, 'No connection?');
     });
 }
 

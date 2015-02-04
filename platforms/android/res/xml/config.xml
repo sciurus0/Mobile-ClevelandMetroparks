@@ -26,6 +26,9 @@
     <feature name="PhoneNavigator">
         <param name="android-package" value="org.apache.cordova.plugin.PhoneNavigator" />
     </feature>
+    <feature name="Notification">
+        <param name="android-package" value="org.apache.cordova.dialogs.Notification" />
+    </feature>
     <name>Come Out And Play</name>
     <description>
         Find parks, trails, and amenities in Cleveland, Ohio with Cleveland Metropark's mobile app.

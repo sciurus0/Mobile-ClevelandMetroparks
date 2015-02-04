@@ -39,6 +39,10 @@
                         {
                             "xml": "<feature name=\"InAppBrowser\"><param name=\"ios-package\" value=\"CDVInAppBrowser\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Notification\"><param name=\"ios-package\" value=\"CDVNotification\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -72,7 +76,7 @@
                     "AudioToolbox.framework": [
                         {
                             "xml": "true",
-                            "count": 1
+                            "count": 2
                         }
                     ],
                     "CoreGraphics.framework": [
@@ -121,6 +125,9 @@
             "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
         },
         "org.apache.cordova.plugin": {
+            "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
+        },
+        "org.apache.cordova.dialogs": {
             "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
         }
     },
