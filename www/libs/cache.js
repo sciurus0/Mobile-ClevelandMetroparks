@@ -401,23 +401,42 @@ var OfflineTileCacher = function(directoryname) {
         myself.downloadFile(downloads,0,progress_callback,error_callback);
     };
 
-    this.insertOrReplaceTileByUrl = function(url, layername, x, y, z) {
+    this.insertOrReplaceTileByUrl = function(url, layername, x, y, z, overwrite) {
         // the target filename for this PNG on disk
         // it's up to the caller to specify layers that in fact exist; if they create a tile with a name that doesn't match up
         // to a real cache-registered layer, then they're making worthless PNGs that won't be used; don't do that
-        // use case here needs to be high-performance since it could be called 40 times simutaneously as the user pans the map,
-        // so checks like that are skipped
+        // use case here needs to be high-performance since it could be called 40 times simutaneously as the user pans the map, so checks like that are skipped
         var myself   = this;
         var filename = myself.TILEDIRECTORY.toURL() + '/' + [layername,z,x,y].join('-') + '.png';
-        myself.FileTransfer.download(url, filename, function (file) {
-            // tile downloaded OK
-            // set the Apple "don't back up" flag for iTUnes Connect / Apple Store compliance
-            if (is_ios()) {
-                file.setMetadata(null, null, { "com.apple.MobileBackup":1});
-            }
-        }, function (error) {
-            // error handling: nothing; not like we want the user to get a popup whenever a tile they CAN see doesn't save to disk
-        });
+
+        // now here's the function we would call to downliad this single tile and save to the given filename
+        // hooray for closures, right?
+        // development note: this simple function would form a basis for downloading a single tile, e.g. in seedCache()
+        //     and would be a good starting point when time comes for a rewrite
+        var ios = is_ios();
+        function fetchit() {
+            myself.FileTransfer.download(url, filename, function (file) {
+                // tile downloaded OK
+                // set the Apple "don't back up" flag for iTUnes Connect / Apple Store compliance
+                if (ios) file.setMetadata(null, null, { "com.apple.MobileBackup":1});
+            }, function (error) {
+                // error handling: nothing; not like we want the user to get a popup whenever a tile they CAN see doesn't save to disk
+            });
+        }
+
+        // if we were not given the "always overwrite" flag, then check whether we have the target filename on disk already
+        // if it's on disk then we can skip on doing the FileTransfer download below
+        if (! overwrite) {
+            myself.TILEDIRECTORY.getFile(filename, {create:false}, function () {
+                // file opened properly, so we have nothing to do but let insertOrReplaceTileByUrl return without doing anything
+            }, function () {
+                // file failed to open so we do not have it on disk; proceed with download
+                fetchit();
+            });
+        } else {
+            // overwrite is requested, so proceed with download
+            fetchit();
+        }
     };
 
 } // end of CACHE "class" definition
