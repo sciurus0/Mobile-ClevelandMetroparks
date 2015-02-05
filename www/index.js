@@ -732,7 +732,7 @@ function initResultsPanel() {
 function initDetailsAndDirectionsPanels() {
     // related to Directions... the Directions button on the map should only show if we in fact have directions
     // and we do not at this time
-    $('#toolbar a[href="#page-directions"]').closest('td').hide();
+    $('#page-map div.map_toolbar a[href="#page-directions"]').closest('td').hide();
 
     // likewise, the autocomplete for findig a Feature for your routing, should only show when needed
     // and it is not needed yet   see directionsParseAddressAndValidate()
@@ -1190,7 +1190,7 @@ function wmsGetFeatureInfoByLatLngBBOX(bbox,anchor) {
         // set up the Popup and load its content
         // beware of very-lengthy content and force a max height on the bubble
         var options = {};
-        options.maxHeight = parseInt( $('#map_canvas').height() - $('#toolbar').height() - 20 );
+        options.maxHeight = parseInt( $('#map_canvas').height() - $('#page-map div.map_toolbar').height() - 20 );
         options.maxWidth  = parseInt( $('#map_canvas').width() - 40 );
 
         var popup = new L.Popup(options).setLatLng(anchor).setContent(html);
@@ -1629,7 +1629,7 @@ function directionsClear() {
     var epimage = $('#directions_elevationprofile').prop('src','about:blank').hide();
 
     // on the map panel, hide the Directions button since there are none
-    $('#toolbar a[href="#page-directions"]').closest('td').hide();
+    $('#page-map div.map_toolbar a[href="#page-directions"]').closest('td').hide();
 
     // on the Directions panel, show the Map button since we in fact have a line to show
     $('#page-directions div[data-role="header"] a[href="#page-map"]').hide();
@@ -1910,7 +1910,7 @@ function directionsRender(directions) {
     // on the Directions panel, show the Map button since we in fact have a line to show
     // on the Map panel, show the Directions button since there are directions to revisit
     $('#page-directions div[data-role="header"] a[href="#page-map"]').show();
-    $('#toolbar a[href="#page-directions"]').closest('td').show();
+    $('#page-map div.map_toolbar a[href="#page-directions"]').closest('td').show();
 
     // the listing of steps/instructions
     var listing = $('#directions_list');
