@@ -1758,7 +1758,6 @@ function directionsParseAddressAndValidate() {
                     // each option has a click handler to basically do what the "length == 1" option did above: fill it in, empty listing, ...
                     // note: item 0 is not a result, but the words "Did you mean..." and has no click behavior
                     var listing = $('#directions_autocomplete').empty().show();
-                    $('<li></li>').append( $('<span></span>').addClass('ui-li-heading').text("Did you mean one of these?") ).appendTo(listing);
                     for (var i=0, l=candidates.length; i<l; i++) {
                             var name = candidates[i].name.replace(/^\s*/,'').replace(/\s*$/,'');
                             var item = $('<li></li>').data('raw',candidates[i]).appendTo(listing);
