@@ -39,8 +39,10 @@ td,th {
 }
 
 .alert {
-    background-color:yellow;
-    color:red;
+    background-color:#AB8E5A;
+    color:black;
+    font-weight:bold;
+    text-align:center;
 }
 
 
