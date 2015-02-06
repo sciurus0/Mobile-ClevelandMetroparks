@@ -226,7 +226,8 @@ input[type="text"] {
  */
 
 #page-find ul[data-role="listview"] li img {
-    margin-top: -5px; /* hack to make the icons align to the text */
+    height:1.5em;
+    margin-top:-0.25em;
 }
 
 #page-find ul[data-type="autocomplete"] {

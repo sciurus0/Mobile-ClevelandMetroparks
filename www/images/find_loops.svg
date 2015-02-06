@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="45.103962"
+   height="30.994459"
+   id="svg9780"
+   version="1.1"
+   inkscape:version="0.48.4 r"
+   sodipodi:docname="find_loops.svg">
+  <defs
+     id="defs9782" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="16.865199"
+     inkscape:cy="21.727612"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1113"
+     inkscape:window-height="480"
+     inkscape:window-x="1661"
+     inkscape:window-y="516"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata9785">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-662.64002,-582.47836)">
+    <g
+       id="g3517"
+       transform="matrix(1.0114178,0,0,0.99256316,405.8235,510.824)">
+      <g
+         id="g3465">
+        <g
+           transform="translate(-416.70766,-213.70708)"
+           id="g2217-6">
+          <g
+             id="g2219-6">
+            <g
+               id="g2221-5">
+              <path
+                 style="fill:none;stroke:#231f20;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10"
+                 inkscape:connector-curvature="0"
+                 id="path2223-2"
+                 d="m 674.081,309.437 c 0.162,0.042 0.324,0.077 0.486,0.103"
+                 stroke-miterlimit="10" />
+              <path
+                 style="fill:none;stroke:#231f20;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;stroke-dasharray:0.9298, 5.5787"
+                 inkscape:connector-curvature="0"
+                 id="path2225-0"
+                 d="m 679.871,308.151 c 2.599,-1.386 5.781,-3.615 10.21,-6.01 5.299,-2.866 11.411,-5.434 16.791,-5.913"
+                 stroke-miterlimit="10" />
+              <path
+                 style="fill:none;stroke:#231f20;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10"
+                 inkscape:connector-curvature="0"
+                 id="path2227-0"
+                 d="m 709.66,296.181 c 0.167,0.011 0.332,0.024 0.497,0.04"
+                 stroke-miterlimit="10" />
+            </g>
+          </g>
+          <polyline
+             style="fill:none;stroke:#231f20;stroke-miterlimit:10"
+             id="polyline2229-3"
+             points="704.797,291.534 676.434,291.534 671.233,316.631     714.435,316.631 710.578,298.019   "
+             stroke-miterlimit="10" />
+          <polygon
+             style="stroke:#efe7ce;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"
+             id="polygon2231-5"
+             points="709.789,286.153 707.425,289.529 703.303,289.498 704.84,291.539 705.783,292.789 704.479,296.699 708.376,295.356 710.323,296.793 711.692,297.805 711.618,293.684 714.975,291.288 711.032,290.083 "
+             stroke-miterlimit="10" />
+          <path
+             style="fill:none;stroke:#231f20;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;stroke-dasharray:1, 6"
+             inkscape:connector-curvature="0"
+             id="path2233-9"
+             d="m 691.512,301.394 c 0,0 5.251,12.714 21.86,10.107"
+             stroke-miterlimit="10" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

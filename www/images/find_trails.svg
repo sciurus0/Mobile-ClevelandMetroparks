@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="45"
+   height="31"
+   id="svg9780"
+   version="1.1"
+   inkscape:version="0.48.4 r"
+   sodipodi:docname="find_trails.svg">
+  <defs
+     id="defs9782" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="2.8157099"
+     inkscape:cy="8.8459215"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="995"
+     inkscape:window-height="416"
+     inkscape:window-x="1688"
+     inkscape:window-y="46"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata9785">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-676.68951,-574.72406)">
+    <g
+       id="g3529"
+       transform="matrix(1.0180765,0,0,1.0180765,356.90675,501.45479)">
+      <g
+         id="g3455">
+        <g
+           transform="translate(-416.70766,-213.70708)"
+           id="g2235">
+          <polygon
+             style="fill:none;stroke:#231f20;stroke-miterlimit:10"
+             id="polygon2237"
+             points="731.433,315.631 736.633,290.534 769.434,290.534 774.634,315.631 "
+             stroke-miterlimit="10" />
+          <g
+             id="g2239">
+            <g
+               id="g2241">
+              <path
+                 style="fill:none;stroke:#231f20;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10"
+                 inkscape:connector-curvature="0"
+                 id="path2243"
+                 d="m 734.28,308.437 c 0.162,0.042 0.324,0.077 0.486,0.103"
+                 stroke-miterlimit="10" />
+              <path
+                 style="fill:none;stroke:#231f20;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;stroke-dasharray:1.0886, 6.5319"
+                 inkscape:connector-curvature="0"
+                 id="path2245"
+                 d="m 740.904,306.69 c 2.442,-1.393 5.409,-3.404 9.376,-5.549 5.093,-2.754 9.98,-5.849 14.81,-6.716"
+                 stroke-miterlimit="10" />
+              <path
+                 style="fill:none;stroke:#231f20;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10"
+                 inkscape:connector-curvature="0"
+                 id="path2247"
+                 d="m 768.345,294.208 c 0.165,0.009 0.329,0.021 0.494,0.037"
+                 stroke-miterlimit="10" />
+            </g>
+          </g>
+          <path
+             style="fill:none;stroke:#231f20;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;stroke-dasharray:1, 6"
+             inkscape:connector-curvature="0"
+             id="path2249"
+             d="m 753.621,299.297 c 0,0 3.341,13.811 19.95,11.204"
+             stroke-miterlimit="10" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
