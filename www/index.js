@@ -887,12 +887,12 @@ function toggleGPS() {
 }
 function toggleGPSOn() {
     AUTO_CENTER_ON_LOCATION = true;
-    var src = $('#mapbutton_gps img').prop('src').replace('_off.png','_on.png');
+    var src = $('#mapbutton_gps img').prop('src').replace('_off.svg','_on.svg');
     $('#mapbutton_gps img').prop('src',src);
 }
 function toggleGPSOff() {
     AUTO_CENTER_ON_LOCATION = false;
-    var src = $('#mapbutton_gps img').prop('src').replace('_on.png','_off.png');
+    var src = $('#mapbutton_gps img').prop('src').replace('_on.svg','_off.svg');
     $('#mapbutton_gps img').prop('src',src);
 }
 
