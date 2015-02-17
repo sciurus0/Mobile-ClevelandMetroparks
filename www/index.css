@@ -180,8 +180,8 @@ input[type="text"] {
 }
 #mapbutton_gps {
     position:absolute;
-    bottom:52px;
-    right:5px;
+    bottom:50px;
+    right:10px;
 
     cursor:pointer;
 
