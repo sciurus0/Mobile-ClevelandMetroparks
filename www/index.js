@@ -415,27 +415,22 @@ function initSettingsPanel() {
         return false;
     });
     $('#page-seedcache a[name="seedcache"]').click(function () {
+        // the download link-button has a HREF aiming at the download progress panel, so we'll be taken there automagically
+        // if there's some error in getting started, e.g. out of range, that'll be handled by the seeding code
         beginSeedingCacheAtCurrentMapLocation();
-        return false; // don't need to let it navigate us to this here page
-    });
-    $('#page-seedcache-cancel').click(function () {
-        $(this).data('terminate_requested',true); // set a "terminate requested" flag; see beginSeedingCache() for the usage and reset of this flag
     });
 
-    // enable the ability to cache for a specific XYZ pyramid, notably being reservations listed in RESERVATION_CACHE_SETTINGS
-    // this means loading up the listview with these options, each one tagged with XYZ data
-    // clicking one triggers a beginSeedingCache() given the XYZ of that reservation
-    $('#page-seedreservation-cancel').click(function () {
-        $(this).data('terminate_requested',true); // set a "terminate requested" flag; see beginSeedingCache() for the usage and reset of this flag
-    });
-
+    // a page to cache a specific reservation, which is a XYZ position
+    // start by populating that list, giving each button a click handler to begin seeding at that XYZ
     var target = $('#page-seedreservation ul[data-role="listview"]');
     for (var res in RESERVATION_CACHE_SETTINGS) {
         var x = RESERVATION_CACHE_SETTINGS[res][0];
         var y = RESERVATION_CACHE_SETTINGS[res][1];
         var z = RESERVATION_CACHE_SETTINGS[res][2];
 
-        var link = $('<a></a>').text(res).prop('href','#page-seedreservation-progress');
+        // the download link-button has a HREF aiming at the download progress panel, so we'll be taken there automagically
+        // if there's some error in getting started, e.g. out of range, that'll be handled by the seeding code
+        var link = $('<a></a>').text(res).prop('href','#page-seedcache-progress');
         var li   = $('<li></li>').append(link).attr('data-lon',x).attr('data-lat',y).attr('data-zoom',z).appendTo(target);
 
         li.click(function () {
@@ -443,12 +438,23 @@ function initSettingsPanel() {
             var lon  = $(this).attr('data-lon');
             var lat  = $(this).attr('data-lat');
             var zoom = $(this).attr('data-zoom');
-            setTimeout(function () {
-                beginSeedingCacheForReservation(name,lon,lat,zoom);
-            }, 500);
+            beginSeedingCacheForReservation(name,lon,lat,zoom);
         });
     }
     target.listview('refresh');
+
+    // offline tile download progress panel
+    // a lot of moving parts:
+    // - Cancel button, has a terminate_requested flag which is heeded by the beginSeeding functions
+    // - progress text readout (Done, or "Terrain 12 / 144 8%"
+    // - HTML5 progress element to visualize the percentage
+    // the beginSeeding functions do some fussing with them, e.g. assigning a HREF to the cancel button,
+    // resetting the progress bar and setting it on completion blocks, etc.
+    $('#page-seedcache-progress a[data-role="button"]').click(function () {
+        $(this).data('terminate_requested',true);
+    });
+    $('#page-seedcache-progress div[data-role="progress"] span').empty();
+    $('#page-seedcache-progress div[data-role="progress"] progress').prop('value',0).prop('max',100);
 
     // enable the "Offline" checkbox to toggle all registered layers between offline & online mode
     // for this specific client app, there's some UI work as well; see below
@@ -1085,10 +1091,13 @@ function beginSeedingCacheForReservation(name,lon,lat,zoom) {
     // a specific button provides a "terminate requested" flag when it is clicked,
     // indicating that the progress callback should return false, requesting that CACHE.seedCache should just stop
     // back when there was only 1 user interface for fetching all tiles, the button was unequivocal
-    var cancelbutton = $('#page-seedreservation-cancel');
-    $('#page-seedreservation-progress h1').text("Loading " + name);
-
-    beginSeedingCache(lon,lat,zoom,MAX_CACHING_ZOOMLEVEL,cancelbutton);
+    var cancelbutton = $('#page-seedcache-progress a[data-role="button"]');
+    var progressbar  = $('#page-seedcache-progress div[data-role="progress"]');
+    var titlebar     = $('#page-seedcache-progress h1');
+    var title        = "Loading " + name;
+    var backbutton   = $('#page-seedcache-progress div[data-role="header"] a');
+    var donepage     = '#page-seedreservation';
+    beginSeedingCache(lon,lat,zoom,MAX_CACHING_ZOOMLEVEL,title,donepage,titlebar,backbutton,cancelbutton,progressbar);
 }
 
 function beginSeedingCacheAtCurrentMapLocation() {
@@ -1101,12 +1110,16 @@ function beginSeedingCacheAtCurrentMapLocation() {
     // a specific button provides a "terminate requested" flag when it is clicked,
     // indicating that the progress callback should return false, requesting that CACHE.seedCache should just stop
     // back when there was only 1 user interface for fetching all tiles, the button was unequivocal
-    var cancelbutton = $('#page-seedcache-cancel');
-
-    beginSeedingCache(lon,lat,zmin,zmax,cancelbutton);
+    var cancelbutton = $('#page-seedcache-progress a[data-role="button"]');
+    var progressbar  = $('#page-seedcache-progress div[data-role="progress"]');
+    var titlebar     = $('#page-seedcache-progress h1');
+    var title        = "Loading Your Location";
+    var backbutton   = $('#page-seedcache-progress div[data-role="header"] a');
+    var donepage     = '#page-seedcache';
+    beginSeedingCache(lon,lat,zmin,zmax,title,donepage,titlebar,backbutton,cancelbutton,progressbar);
 }
 
-function beginSeedingCache(lon,lat,zmin,zmax,cancelbutton) {
+function beginSeedingCache(lon,lat,zmin,zmax,title,donepage,titlebar,backbutton,cancelbutton,progressbar) {
     // fetch the assocarray of layername->layerobj from the Cache provider,
     // then figure out a list of the layernames too so we can seed them sequentially
     var layers_to_seed = CACHE.registeredLayers();
@@ -1114,30 +1127,61 @@ function beginSeedingCache(lon,lat,zmin,zmax,cancelbutton) {
     for (var l in layers_to_seed) layernames[layernames.length] = layers_to_seed[l].options.name;
     var last_layer_name = layernames[layernames.length-1];
 
-    // start by assuming that we AREN'T cancelling right away
+    // startup
+    // - reset the Cancel Requested flag since we've not even started yet
+    // - fill in the Title
+    // - fill in the Done button's target to be the Settings panel, until the completion handler sets it to "donepage"
+    // - create references to the progress readout, both text and bar, and initialize them
+    // - show/hide the Settings buttons allowing them to start a new seeding and/or to view progress
     cancelbutton.data('terminate_requested',false);
+    titlebar.text(title);
+    backbutton.prop('href','#page-settings');
+    var readout = progressbar.find('span').empty();
+    var bar     = progressbar.find('progress').prop('value',0).prop('max',100);
+    $('#page-settings div[data-seeding="allowed"]').hide();
+    $('#page-settings div[data-seeding="busy"]').show();
 
     function seedLayerByIndex(index) {
         if (index >= layernames.length) {
             // past the end, we're done
-            // click the cancel button for us (or rather, navigate to its target) so we wind up wherever the cancel buttno would have put us
-            // this account for different cancel buttons having different targets
-            $.mobile.changePage( cancelbutton.prop('href') );
+            // it may be because we finished, or because we were asked to abort
+            if ( cancelbutton.data('terminate_requested') ) {
+                readout.text('Cancelled');
+
+                // on the chance that they watched the download, make the Back button go where they anted t be: the place that started the download
+                backbutton.prop('href',donepage);
+
+                // head Back to whatever page they were on BUT ONLY IF THEY CANCELLED
+                // doing this on a success condition, would pull them away from whatever they were doing and that's annoying
+                backbutton.click();
+            } else {
+                // on the chance that they watched the download, make the Back button go where they wanted to be: the place that started the download
+                backbutton.prop('href',donepage);
+
+                // update the readout and show the popup
+                readout.text('Downloads complete');
+                navigator.notification.alert('Offline tiles are now available for use.', null, 'Downloads Complete');
+            }
+
+            // at any rate, show/hide the seeding buttons on the Settings page so they can start a new one
+            $('#page-settings div[data-seeding="allowed"]').show();
+            $('#page-settings div[data-seeding="busy"]').hide();
+
             return;
         }
         var layername = layernames[index];
 
         var layer_complete = function(done,total) {
-            // hide the spinner
-            $.mobile.hidePageLoadingMsg();
-            // go on to the next layer
+            // done here, next!
+            readout.text('Done');
             seedLayerByIndex(index+1);
         }
         var progress = function(done,total) {
             // show or update the spinner
             var percent = Math.round( 100 * parseFloat(done) / parseFloat(total) );
             var text    = layername + ': ' + done + '/' + total + ' ' + percent + '%';
-            $.mobile.showPageLoadingMsg("a", text, true);
+            readout.text(text);
+            bar.prop('max',total).prop('value',done);
 
             // if someone pressed the big Stop! button then just terminate as if we had finished
             if ( cancelbutton.data('terminate_requested') ) {
@@ -1154,8 +1198,7 @@ function beginSeedingCache(lon,lat,zmin,zmax,cancelbutton) {
             // great, we had no cause to bail so return true so the looper in seedCache() knows it's clear to proceed
         };
         var error = function() {
-            $.mobile.hidePageLoadingMsg();
-            alert('Download error!');
+            navigator.notification.alert('Could not download map tiles. Please try again.', null, 'Error');
         };
 
         CACHE.seedCache(layername,lat,lon,zmin,zmax,progress,error);

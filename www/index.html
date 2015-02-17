@@ -290,10 +290,13 @@
         <div class="fakeinput center" id="gps_location">N 00 00.000 W 000 00.000</div>
 
         <h3 class="center">Offline Map</h3>
-        <div data-role="controlgroup">
-            <a href="#page-seedcache" data-role="button">Download your location</a>
+        <div data-role="controlgroup" data-seeding="allowed">
+            <a href="#page-seedcache" data-role="button">Download current view</a>
             <a href="#page-seedreservation" data-role="button">Download a reservation</a>
             <a href="#page-cachestatus" data-role="button">Offline tile usage</a>
+        </div>
+        <div data-role="controlgroup" data-seeding="busy">
+            <a href="#page-seedcache-progress" data-role="button">Download progress</a>
         </div>
 
     </div>
@@ -310,8 +313,7 @@
 
     <div data-role="content">
         <p>This will download map tiles within the current map view, so you can use the map without Internet access. This will take a while, and could use a few megabytes of network data. You may prefer to do this over a wifi connection.</p>
-        <a href="javascript:void(0);" name="seedcache" data-role="button" data-theme="b">Download</a>
-        <a href="#page-settings" data-role="button" id="page-seedcache-cancel">Cancel</a>
+        <a href="#page-seedcache-progress" name="seedcache" data-role="button" data-theme="b">Download</a>
     </div>
 </div>
 
@@ -330,18 +332,33 @@
         <!-- the reservation list is populated by initSettingsPanel() where we set up other caching buttons and behaviors -->
         <ul data-role="listview" data-inset="true">
         </ul>
-
     </div>
 </div>
-<div data-role="page" id="page-seedreservation-progress">
+
+
+
+<div data-role="page" id="page-seedcache-progress">
     <div data-role="header">
+        <a href="#page-settings" data-icon="back">Back</a>
         <h1>Loading</h1>
     </div>
 
     <div data-role="content">
+        <!-- this will be updated by the beginSeeding functions, setting the % and a text readout -->
+        <div data-role="progress" class="center">
+            <span></span>
+            <progress max="100" value="0" style="width:100%;"></progress>
+        </div>
 
-        <a href="#page-seedreservation" data-role="button" id="page-seedreservation-cancel">Cancel</a>
+        <!-- the Cancel button has a click handler to set a "please terminate" flag acknowledged by the seeding process -->
+        <!-- its HREF will be assigned by the beginSeeding function based on who called it: may go back to any of the Seeding pages -->
+        <div style="margin-top:1em;">
+            <a href="#" data-role="button">Cancel</a>
+        </div>
 
+        <div style="margin-top:1em;">
+            You may leave this panel and continue to use the app. When downloads are complete, you will receive a popup notification.
+        </div>
     </div>
 </div>
 
