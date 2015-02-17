@@ -407,10 +407,20 @@ function initSettingsPanel() {
             var prevent = $(this).is(':checked');
             if (prevent) {
                 window.plugins.insomnia.keepAwake();
+                window.localStorage.setItem('prevent_sleeping', 'prevent');
             } else {
                 window.plugins.insomnia.allowSleepAgain();
+                window.localStorage.setItem('prevent_sleeping', 'allow');
             }
         });
+
+        // load their previous setting, if any
+        var prevent = window.localStorage.getItem('prevent_sleeping');
+        if (prevent == 'allow') {
+            $('#prevent_sleeping').removeAttr('checked').trigger('change').checkboxradio('refresh');
+        } else {
+            $('#prevent_sleeping').prop('checked','checked').trigger('change').checkboxradio('refresh');
+        }
     } else {
         // hiding the button is only part of it: create a utility wrapper to also hide the word Advanced with nothing beneath it
         // will likely change when/if other Advanced settings exist some day
