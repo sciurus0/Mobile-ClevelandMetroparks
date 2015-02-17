@@ -252,6 +252,13 @@ module.exports = [
         "merges": [
             "navigator.notification"
         ]
+    },
+    {
+        "file": "plugins/nl.x-services.plugins.insomnia/www/Insomnia.js",
+        "id": "nl.x-services.plugins.insomnia.Insomnia",
+        "clobbers": [
+            "window.plugins.insomnia"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -266,7 +273,8 @@ module.exports.metadata =
     "org.apache.cordova.media": "0.2.15",
     "org.apache.cordova.inappbrowser": "0.5.4",
     "org.apache.cordova.plugin": "0.1.0",
-    "org.apache.cordova.dialogs": "0.2.11"
+    "org.apache.cordova.dialogs": "0.2.11",
+    "nl.x-services.plugins.insomnia": "4.0.1"
 }
 // BOTTOM OF METADATA
 });

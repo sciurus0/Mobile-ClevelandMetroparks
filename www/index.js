@@ -230,6 +230,7 @@ function init() {
     initTestConnectivity();
 
     // now the rest of event handlers, map setup, etc. in stages
+    initKeepAwake();
     initCacheThenMap();
     initWelcomePanel();
     initSettingsPanel();
@@ -259,6 +260,10 @@ function initTestConnectivity() {
     }).error(function (error) {
         navigator.notification.alert('This app requires data service to connect to the Cleveland Metroparks server. Please check that you have service.', null, 'No Connection?');
     });
+}
+
+function initKeepAwake() {
+    window.plugins.insomnia.keepAwake();
 }
 
 function initCacheThenMap() {

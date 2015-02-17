@@ -43,6 +43,10 @@
                         {
                             "xml": "<feature name=\"Notification\"><param name=\"android-package\" value=\"org.apache.cordova.dialogs.Notification\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Insomnia\"><param name=\"android-package\" value=\"nl.xservices.plugins.Insomnia\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -110,6 +114,9 @@
             "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
         },
         "org.apache.cordova.dialogs": {
+            "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
+        },
+        "nl.x-services.plugins.insomnia": {
             "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
         }
     },
