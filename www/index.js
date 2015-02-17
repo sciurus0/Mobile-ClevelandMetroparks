@@ -791,10 +791,13 @@ function initDetailsAndDirectionsPanels() {
             var bbox = L.latLngBounds([[info.s,info.w],[info.n,info.e]]).pad(0.15);
             MAP.fitBounds(bbox);
 
+            // clear any previous highlights
+            highlightsClear();
+
             // lay down a marker and/or the trail's WKT-encoded geometry
             switch (info.type) {
                 case 'poi':
-                    // POIs have a simple latlng point location
+                    // POIs have a simple latlng point location and no line
                     MARKER_TARGET.setLatLng([info.lat,info.lng]);
                     break;
                 case 'trail':
@@ -806,7 +809,7 @@ function initDetailsAndDirectionsPanels() {
                     MAP.addLayer(HIGHLIGHT_LINE);
                     break;
                 case 'loop':
-                    // Loops have a latlng starting point, and a linestring geometry
+                    // Loops have both a latlng starting point, and a linestring geometry
                     MARKER_TARGET.setLatLng([info.lat,info.lng]);
 
                     var parser = new Wkt.Wkt();
@@ -1661,6 +1664,16 @@ function loadAndShowDetailsPanel(feature,callback) {
 
 
 /*
+ * clear the markers, trail lines, loop lines, etc. from the map
+ * great for clearing results, that sort of thing
+ */
+function highlightsClear() {
+    if (HIGHLIGHT_LINE) MAP.removeLayer(HIGHLIGHT_LINE);
+    MARKER_TARGET.setLatLng([0,0]);
+}
+
+
+/*
  * a set of functions to open up directions to a give latlng
  * thank you Viktor for the phonenavigator plugin
  */
@@ -1697,6 +1710,9 @@ function _openDirections_Chrome(sourcelat,sourcelng,targetlat,targetlng) {
 
 // erase all Directions-related components from the UI: map line, directions words, ...
 function directionsClear() {
+    // remove any highlighted trails, POIs, loops, etc. from the map
+    highlightsClear();
+
     // remove the line from the map
     // and reposition the start and end markers to nowhere
     if (DIRECTIONS_LINE) MAP.removeLayer(DIRECTIONS_LINE);
