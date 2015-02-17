@@ -826,6 +826,10 @@ function initDetailsAndDirectionsPanels() {
     // to load the place name into that target page
     // again #page-details.data('raw') is THE go-to place to find out what we're focusing
     $('#page-details div.directions_floater').click(function () {
+        // clear the existing directions
+        directionsClear();
+
+        // assign these details, then let it continue to take them to the panel
         var info = $('#page-details').data('raw');
         $('#page-directions h2.name').text(info.name);
     });
@@ -1722,7 +1726,7 @@ function directionsClear() {
     // clear the directions text from the Directions panel
     // and clear/hide the elevation profile image
     $('#directions_list').empty().listview('refresh');
-    var epimage = $('#directions_elevationprofile').prop('src','about:blank').hide();
+    $('#directions_elevationprofile').prop('src','about:blank').parent().hide();
 
     // on the map panel, hide the Directions button since there are none
     $('#page-map div.map_toolbar a[href="#page-directions"]').closest('td').hide();
@@ -2049,9 +2053,9 @@ function directionsRender(directions) {
         $.post(BASE_URL + '/ajax/elevationprofilebysegments', params, function (url) {
             if (url.indexOf('http') != 0) {
                 // not an URL, so something went wrong; just quietly bail and let the EP image remain hidden and blanked
-                return
+                return;
             }
-            $('#directions_elevationprofile').prop('src',url).show();
+            $('#directions_elevationprofile').prop('src',url).parent().show();
         });
     }
 }
