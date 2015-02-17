@@ -417,6 +417,10 @@ function initSettingsPanel() {
         $('#page-settings span[data-os="android"]').hide();
     }
 
+    // the seeding options to be shown when seeding is busy...
+    // because right now it is not busy
+    $('#page-settings div[data-seeding="busy"]').hide();
+
     // enable the Clear Cache and Seed Cache buttons in Settings, and set up the progress bar
     $('#page-cachestatus a[name="clearcache"]').click(function () {
         $.mobile.showPageLoadingMsg("a", "Clearing cache", true);
