@@ -230,7 +230,6 @@ function init() {
     initTestConnectivity();
 
     // now the rest of event handlers, map setup, etc. in stages
-    initKeepAwake();
     initCacheThenMap();
     initWelcomePanel();
     initSettingsPanel();
@@ -260,10 +259,6 @@ function initTestConnectivity() {
     }).error(function (error) {
         navigator.notification.alert('This app requires data service to connect to the Cleveland Metroparks server. Please check that you have service.', null, 'No Connection?');
     });
-}
-
-function initKeepAwake() {
-    window.plugins.insomnia.keepAwake();
 }
 
 function initCacheThenMap() {
@@ -399,6 +394,19 @@ function initSettingsPanel() {
     $('input[type="radio"][name="basemap"]').change(function () {
         var which = $(this).val();
         selectBasemap(which);
+    });
+
+    // Prevent Phone From Sleeping button
+    // simply toggles the Insomnia behavior that prevents the phone from sleeping
+    // well, not simple at all -- save this setting to LocalStorage AND set the initial state of this checkbox from a previously-saved setting
+    // so it "remembers" what your previous preference was
+    $('#prevent_sleeping').change(function () {
+        var prevent = $(this).is(':checked');
+        if (prevent) {
+            window.plugins.insomnia.keepAwake();
+        } else {
+            window.plugins.insomnia.allowSleepAgain();
+        }
     });
 
     // enable the Clear Cache and Seed Cache buttons in Settings, and set up the progress bar
