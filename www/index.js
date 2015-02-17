@@ -399,15 +399,23 @@ function initSettingsPanel() {
     // Prevent Phone From Sleeping button
     // simply toggles the Insomnia behavior that prevents the phone from sleeping
     // well, not simple at all -- save this setting to LocalStorage AND set the initial state of this checkbox from a previously-saved setting
-    // so it "remembers" what your previous preference was
-    $('#prevent_sleeping').change(function () {
-        var prevent = $(this).is(':checked');
-        if (prevent) {
-            window.plugins.insomnia.keepAwake();
-        } else {
-            window.plugins.insomnia.allowSleepAgain();
-        }
-    });
+    //                            so it "remembers" what your previous preference was
+    // and less simple: iOS always prevents auto-lock anyway, so this setting is only relevant when running Android
+    //      so a bit of a hack to simply hide this and the whole Advanced section, when not Android
+    if (is_android()) {
+        $('#prevent_sleeping').change(function () {
+            var prevent = $(this).is(':checked');
+            if (prevent) {
+                window.plugins.insomnia.keepAwake();
+            } else {
+                window.plugins.insomnia.allowSleepAgain();
+            }
+        });
+    } else {
+        // hiding the button is only part of it: create a utility wrapper to also hide the word Advanced with nothing beneath it
+        // will likely change when/if other Advanced settings exist some day
+        $('#page-settings span[data-os="android"]').hide();
+    }
 
     // enable the Clear Cache and Seed Cache buttons in Settings, and set up the progress bar
     $('#page-cachestatus a[name="clearcache"]').click(function () {
