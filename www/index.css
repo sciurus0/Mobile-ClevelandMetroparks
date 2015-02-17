@@ -349,41 +349,12 @@ input[type="text"] {
  * including that fake text input that shows your current GPS coordinates
  */
 
-#page-settings div.legend_wrapper {
-    white-space: nowrap;
-    display:inline-block;
-}
-@media (min-width:400px) {
-#page-settings div.legend_wrapper {
-    margin-left:10%;
-}
-}
-@media (min-width:700px) {
-#page-settings div.legend_wrapper {
-    margin-left:25%;
-}
-}
-
-#page-settings div.legend {
-}
-#page-settings div.legend div {
-    margin-left:1em;
-    line-height:25px; /* same as icon height below */
-    margin-bottom:3px;
-}
-#page-settings div.legend img {
-    width:25px;
-    height:25px;
-    vertical-align:top;
-    margin-right:0.5em;
-}
-
 div.fakeinput {
     text-align: center;
     background: none repeat scroll 0 0 #F9F9F9;
     font-size: 16px;
     line-height: 1.4;
-    width: 99%;
+    width: 96%;
     padding: 0.4em;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2) inset;
     border: 1px solid #AAAAAA;
@@ -391,6 +362,15 @@ div.fakeinput {
     text-shadow: 0 1px 0 #FFFFFF;
     border-radius: 0.6em 0.6em 0.6em 0.6em;
     height:1.4em;
+}
+@media (min-width:700px) {
+#page-directions fieldset input[type="text"] {
+    width:97.5%;
+}
+}
+@media (min-width:1000px) {
+#page-directions fieldset input[type="text"] {
+    width:98.0%;
 }
 
 
