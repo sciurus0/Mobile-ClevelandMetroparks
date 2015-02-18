@@ -1596,7 +1596,19 @@ function nearbyAlertFromResults(results) {
     }
     if (results.length > howmany) nearyoutext.push('And ' + (results.length-howmany) + ' more');
     nearyoutext = nearyoutext.join("\n");
-    navigator.notification.alert(nearyoutext, null, 'Near You', 'OK');
+
+    navigator.notification.confirm(nearyoutext, function (buttonindex) {
+        switch (buttonindex) {
+            case 2:
+                // Show Results
+                // the Find Results panel already has the Nearby results
+                $.mobile.changePage('#page-find-results');
+                break;
+            default:
+                // either 0 (none) or 1 (dismiss)
+                break;
+        }
+    }, 'Near You', ['Dismiss','Show Results']);
 }
 
 /*
@@ -1632,7 +1644,7 @@ function loadAndShowDetailsPanel(feature,callback) {
 
         // a hack for Loops specifically
         // inserting the UL into the document, causes the app to crash; not a clean exit, but all DOM changes cease to function
-        // even $mobile.changePage() and switchToMap() do absolutely nothing, and the Map and back buttons fail as well
+        // even $.mobile.changePage() and switchToMap() do absolutely nothing, and the Map and back buttons fail as well
         // the culprit is the UL element; somehow the LIs and DIVs in it cause jQuery Mobile to crash, though it's known JQM-compatible HTML...
         if (feature.type == 'loop') {
             var target = $('#page-details div.description').empty();
