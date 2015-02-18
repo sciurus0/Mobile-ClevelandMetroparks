@@ -266,10 +266,32 @@ input[type="text"] {
 
 /*
  * Nearby
+ * lots of hacks to make this checkbox fieldset truncate text and use ellipses, since line-wrapped text plus icons = ugly!
  */
 
-#nearby_config .ui-checkbox {
+#page-find-nearby .ui-checkbox {
     margin:0;
+}
+
+#page-find-nearby fieldset[data-type="activities"] .ui-checkbox {
+    max-width:85%;
+    text-overflow:ellipsis;
+    overflow:hidden;
+}
+
+#page-find-nearby fieldset[data-type="activities"] .ui-checkbox .ui-btn {
+    text-align:left;
+}
+
+#page-find-nearby fieldset[data-type="activities"] .ui-btn-text {
+    white-space:nowrap;
+}
+
+#page-find-nearby fieldset[data-type="activities"] img.ui-li-icon {
+    width:20px;
+    height:20px;
+    vertical-align:text-bottom;
+    margin-right:0.5em;
 }
 
 
