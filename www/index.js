@@ -530,7 +530,7 @@ function initFindNearby() {
     // Nearby (formerly also called Radar) is a pretty odd critter
     //      the plain search has a caveat: there may be 0 results, which is unusual but which is handled by searchProcessResults()
     //      and there's an Alert capability: #nearby_enabled toggles checkboxes for alerts, and a clause in handleLocationFound() will examine these and make a beep if necessary
-    // like most initFind functions this is setup for the UI, but see also handleLocationFound() and refreshNearbyAndAlertIfAppropriate()
+    // like most initFind functions this is setup for the UI, but see also handleLocationFound() and nearbyRefreshAndAlertIfAppropriate()
     //      for the alerting stuff
 
     // populate the Alert Activities listview, with a list of activities
@@ -548,7 +548,7 @@ function initFindNearby() {
     target.trigger('create');
 
     // the Enable Alerts button toggles the visibility of the checkboxes below
-    // beyond that, its checked status is used as the go-to place to determine whether alerts are wanted at all, e.g. refreshNearbyAndAlertIfAppropriate()
+    // beyond that, its checked status is used as the go-to place to determine whether alerts are wanted at all, e.g. nearbyRefreshAndAlertIfAppropriate()
     $('#nearby_enabled').change(function () {
         var viz = $(this).is(':checked');
         if (viz) {
@@ -567,11 +567,15 @@ function initFindNearby() {
     // when the alert-radius changes and/or the category checkboxes change, trigger a nearby pull immediately
     // we poll location every few seconds, but it's optimized to skip more-intensive steps unless location has changed significantly,
     // and this is one of those steps that is too expensive to run every time, but which we do want to run when filters have changed
+    $('#nearby_enabled').change(function () {
+        if (! $(this).is(':checked') ) return;
+        setTimeout(nearbyRefreshAndAlertIfAppropriate,1);
+    });
     $('#page-find-nearby fieldset[data-role="controlgroup"][data-type="activities"] input[type="checkbox"]').change(function () {
-        setTimeout(refreshNearbyAndAlertIfAppropriate,1);
+        setTimeout(nearbyRefreshAndAlertIfAppropriate,1);
     });
     $('#nearby_radius').change(function () {
-        setTimeout(refreshNearbyAndAlertIfAppropriate,1);
+        setTimeout(nearbyRefreshAndAlertIfAppropriate,1);
     });
 }
 
@@ -1045,7 +1049,7 @@ function handleLocationFound(event) {
     // adjust the Nearby listing by performing a new search
     // this actually does more than the name implies: fetches results, sees if you have alerting enabled, sounds an alarm, ...
     if ( nearbyStatus() ) {
-        refreshNearbyAndAlertIfAppropriate();
+        nearbyRefreshAndAlertIfAppropriate();
     }
 }
 
@@ -1404,8 +1408,8 @@ function searchLoops(options) {
 }
 
 function searchNearby() {
-    // see also refreshNearbyAndAlertIfAppropriate() for the non-interactive alert-beeping version of this
-    // also note that refreshNearbyAndAlertIfAppropriate() filters by categories, and only ALERTS on matching items
+    // see also nearbyRefreshAndAlertIfAppropriate() for the non-interactive alert-beeping version of this
+    // also note that nearbyRefreshAndAlertIfAppropriate() filters by categories, and only ALERTS on matching items
     // this interactive search is a more-thorough search and does not filter, and uses a fixed radius
     var latlng = MARKER_GPS.getLatLng();
     var meters = 1609 * 5;
@@ -1542,7 +1546,7 @@ function _sortResultsByName(p,q) {
  * but do it silently: don't complain if there's nothing, don't redirect to the results panel, ...
  * see also searchNearby() for the interactive version of this search which does not trigger alerting, and which does not use this filtering
  */
-function refreshNearbyAndAlertIfAppropriate() {
+function nearbyRefreshAndAlertIfAppropriate() {
     // this is actually a search, so we can use the common renderer, Previous Results button, etc.
     // compose the params and query the service: lat, lng, meters, list of category IDs
     // tip: use POST so we don't overflow the max URL length: 20 checkboxes can get lengthy
@@ -1559,34 +1563,40 @@ function refreshNearbyAndAlertIfAppropriate() {
 
         // special handling for Nearby: if their list has changed at all, but is not empty, then we should make an alert
         // cuz they're now within range of something which wasn't there last time we alerted them
-        if (! results.length) return;
-
-        // sort the list of numeric ID#s since that's a nice quick comparison
-        var ids = [];
-        $.each(results, function () { ids.push(this.gid); });
-        ids.sort();
-        if (ids.toString() === NEARBY_LAST_ALERT_IDS.toString()) return; // exact same list as before, so they've seen it
-
-        // if we got here then it's a change and we make an alert
-        NEARBY_LAST_ALERT_IDS = ids;    // save the list as being the latest alert list
-        playSound('sounds/alert.mp3');  // play the beep (why not navigator beep? platform variation, e.g. uses default ringtone on Android)
-        navigator.vibrate(1000);        // vibrate
-
-        // and a popup with the names of the first X results
-        // ideally that dialog popup would be a push notification, but current state of those is in a bit of a ruckus: plugins not updated to iOS 8.1, docs outdated, plugins sending notifications hours later if at all, ...
-        // and of course limited time left on these UI changes -- revisit this when things settle down a but
-        var howmany = 5;
-        var nearyoutext = [];
-        for (var i=0; i<howmany; i++) {
-            var name = results[i].name;
-            nearyoutext.push(name);
+        // use a timeout so that an error in the alerting system doesn't block this AJAX callback, and result in a spinner that never goes away
+        if (results.length) {
+            setTimeout(function () {
+                nearbyAlertFromResults(results);
+            },1);
         }
-        if (resultslength > howmany) nearyoutext.push('And ' + (results.length-howmany) + ' more');
-        nearyoutext = nearyoutext.join("\n");
-        navigator.notification.alert(nearyoutext, null, 'Near You', 'OK');
     },'json').error(function (error) {
         searchProcessError(error);
     });
+}
+function nearbyAlertFromResults(results) {
+    // sort the list of numeric ID#s since that's a nice quick comparison
+    var ids = [];
+    $.each(results, function () { ids.push(this.gid); });
+    ids.sort();
+    if (ids.toString() === NEARBY_LAST_ALERT_IDS.toString()) return; // exact same list as before, so they've seen it
+
+    // if we got here then it's a change and we make an alert
+    NEARBY_LAST_ALERT_IDS = ids;    // save the list as being the latest alert list
+    playSound('sounds/alert.mp3');  // play the beep (why not navigator beep? platform variation, e.g. uses default ringtone on Android)
+    navigator.vibrate(1000);        // vibrate
+
+    // and a popup with the names of the first X results
+    // ideally that dialog popup would be a push notification, but current state of those is in a bit of a ruckus: plugins not updated to iOS 8.1, docs outdated, plugins sending notifications hours later if at all, ...
+    // and of course limited time left on these UI changes -- revisit this when things settle down a but
+    var howmany = 5;
+    var nearyoutext = [];
+    for (var i=0; i<howmany && i<results.length; i++) {
+        var name = results[i].name;
+        nearyoutext.push(name);
+    }
+    if (results.length > howmany) nearyoutext.push('And ' + (results.length-howmany) + ' more');
+    nearyoutext = nearyoutext.join("\n");
+    navigator.notification.alert(nearyoutext, null, 'Near You', 'OK');
 }
 
 /*
