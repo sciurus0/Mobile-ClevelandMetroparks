@@ -1600,6 +1600,12 @@ function loadAndShowDetailsPanel(feature,callback) {
         // the HTML is already ready to display, including title, hyperlinks, etc. managed by Cleveland
         $.mobile.changePage('#page-details');
 
+        // the HTML contains More Info links, Photo links, and perhaps other links e.g. to book reservations, visit home page, ...
+        // strip out any hyperlinks from the HTML to kee things simple
+        // hint: the link may ir may not be inside a LI element (a single-item list)
+        html = html.replace(/<li><a .+?<\/a><\/li>/, '');
+        html = html.replace(/<a .+?<\/a>/, '');
+
         // a hack for Loops specifically
         // inserting the UL into the document, causes the app to crash; not a clean exit, but all DOM changes cease to function
         // even $mobile.changePage() and switchToMap() do absolutely nothing, and the Map and back buttons fail as well
