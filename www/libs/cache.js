@@ -380,8 +380,9 @@ var OfflineTileCacher = function(directoryname) {
                     //console.log(url);
 
                     // make up the filename, a flat list of files under the tiles/ directory
+                    // e.g. terrain-12-3456-7890.png
+                    // the file extension isn't really relevant: it's just easier to fix on one rather than adapt to the .jpg or .png suffix used in the L.TileLayer constructor
                     var filename = [layername,z,x,y].join('-') + '.png';
-                    //console.log(filename);
 
                     // add it to the list
                     downloads[downloads.length] = { layername:layername, x:x, y:y, z:z, filename:filename, url:url };
