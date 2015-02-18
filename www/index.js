@@ -857,7 +857,7 @@ function initDetailsAndDirectionsPanels() {
             var src = $(this).prop('src').replace('_on.svg', '_off.svg');
             $(this).removeAttr('data-selected').prop('src',src);
         })
-    }).first().click();
+    }).filter('[data-mode="car"]').click();
 
     // Directions panel
     // submit handler (sorta) to compile params and fetch directions
@@ -2011,8 +2011,15 @@ function directionsRender(directions) {
     $('#page-directions div[data-role="header"] a[href="#page-map"]').show();
     $('#page-map div.map_toolbar a[href="#page-directions"]').closest('td').show();
 
+    // first entry in the listing: the total distance, time, etc.
+    var listing = $('#directions_list').empty();
+    var li = $('<li></li>').appendTo(listing);
+    if (directions.retries && directions.retries > 3) {
+        $('<span></span>').addClass('ui-li-desc').html("Route may be approximated.").appendTo(li);
+    }
+    $('<span></span>').addClass('ui-li-heading').html('<b>Total:</b> ' + directions.totals.distance + ', ' + directions.totals.duration).appendTo(li);
+
     // the listing of steps/instructions
-    var listing = $('#directions_list');
     for (var i=0, l=directions.steps.length; i<l; i++) {
         var step     = directions.steps[i];
         var title    = step.stepnumber ? step.stepnumber + '. ' + ( step.turnword ? step.turnword : '') + ' ' + step.text : step.turnword + ' ' + step.text;
@@ -2024,13 +2031,6 @@ function directionsRender(directions) {
             $('<span></span>').addClass('ui-li-desc').text(subtitle).appendTo(li);
         }
     }
-
-    // final entry in the listing: the total distance, time, etc.
-    var li = $('<li></li>').appendTo(listing);
-    if (directions.retries && directions.retries > 3) {
-        $('<span></span>').addClass('ui-li-desc').html("Route may be approximated.").appendTo(li);
-    }
-    $('<span></span>').addClass('ui-li-heading').html('<b>Total:</b> ' + directions.totals.distance + ', ' + directions.totals.duration).appendTo(li);
 
     // and done wth the listing
     listing.listview('refresh');
