@@ -90,7 +90,7 @@
 <div data-role="page" id="page-find">
     <div data-role="header">
         <h1>Find</h1>
-        <a href="#page-map" data-icon="map">Map</a>
+        <a href="#page-map" data-icon="map" class="ui-btn-right">Map</a>
     </div>
     <div data-role="content">
 
@@ -273,8 +273,8 @@
 
 <div data-role="page" id="page-settings">
     <div data-role="header">
-        <a href="#page-map" data-icon="map">Back</a>
-        <h1>Map Settings</h1>
+        <h1>Settings</h1>
+        <a href="#page-map" data-icon="map" class="ui-btn-right">Map</a>
     </div>
     <div data-role="content">
 
@@ -282,7 +282,7 @@
         <fieldset data-role="controlgroup">
         <label><input type="radio" name="basemap" value="terrain" checked="true" /> Map </label>
         <label><input type="radio" name="basemap" value="photo" /> Satellite </label>
-        <label><input type="checkbox" id="basemap_offline_checkbox" value="1" /> Offline, use cached map data</label>
+        <label><input type="checkbox" id="basemap_offline_checkbox" value="1" /> Offline mode</label>
         </fieldset>
 
         <h3 class="center">GPS Location</h3>
