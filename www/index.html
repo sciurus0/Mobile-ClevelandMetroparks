@@ -247,7 +247,7 @@
 
 <div data-role="page" id="page-find-results">
     <div data-role="header">
-        <a href="#page-find" data-icon="search">Find</a>
+        <a href="#page-find" data-icon="back">Back</a>
         <h1>Find</h1>
         <a href="#page-map" data-icon="map">Map</a>
     </div>
@@ -265,7 +265,6 @@
 
     </div>
 </div>
-
 
 
 
@@ -374,7 +373,6 @@
         <h1>Offline Map Storage</h1>
     </div>
 
-
     <div data-role="content">
         <input type="text" id="cachestatus_storage" value="Calculating" readonly="readonly" />
         <input type="text" id="cachestatus_files" value="Calculating" readonly="readonly" />
@@ -388,19 +386,17 @@
 <div data-role="page" id="page-details">
     <!-- see initDetailsPanel() and showDetailsPanel() for important details about the Map button -->
     <div data-role="header">
-        <a href="#page-find" data-icon="search">Find</a>
+        <a href="#page-find" data-icon="back" data-rel="back">Back</a>
         <h1>Location Details</h1>
         <a href="#page-map" data-icon="map">Map</a>
     </div>
     <div data-role="content">
-
         <div class="directions_floater">
             <a href="#page-directions"><img src="images/directions.svg" /></a>
         </div>
 
         <!-- description HTML -->
         <div class="description"></div>
-
     </div>
 </div>
 
