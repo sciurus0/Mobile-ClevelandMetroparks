@@ -410,7 +410,7 @@ var OfflineTileCacher = function(directoryname) {
         var myself   = this;
         var filename = myself.TILEDIRECTORY.toURL() + '/' + [layername,z,x,y].join('-') + '.png';
 
-        // now here's the function we would call to downliad this single tile and save to the given filename
+        // now here's the function we would call to download this single tile and save to the given filename
         // hooray for closures, right?
         // development note: this simple function would form a basis for downloading a single tile, e.g. in seedCache()
         //     and would be a good starting point when time comes for a rewrite

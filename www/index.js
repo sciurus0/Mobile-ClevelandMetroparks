@@ -455,9 +455,9 @@ function initSettingsPanel() {
 
         li.click(function () {
             var name = $(this).text();
-            var lon  = $(this).attr('data-lon');
-            var lat  = $(this).attr('data-lat');
-            var zoom = $(this).attr('data-zoom');
+            var lon  = parseFloat( $(this).attr('data-lon') );
+            var lat  = parseFloat( $(this).attr('data-lat') );
+            var zoom = parseInt( $(this).attr('data-zoom') );
             beginSeedingCacheForReservation(name,lon,lat,zoom);
         });
     }
@@ -466,7 +466,7 @@ function initSettingsPanel() {
     // offline tile download progress panel
     // a lot of moving parts:
     // - Cancel button, has a terminate_requested flag which is heeded by the beginSeeding functions
-    // - progress text readout (Done, or "Terrain 12 / 144 8%"
+    // - progress text readout: "Done" or "Terrain 12 / 144 8%" or the like
     // - HTML5 progress element to visualize the percentage
     // the beginSeeding functions do some fussing with them, e.g. assigning a HREF to the cancel button,
     // resetting the progress bar and setting it on completion blocks, etc.
