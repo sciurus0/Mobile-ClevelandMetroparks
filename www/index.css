@@ -375,7 +375,7 @@ input[type="text"] {
  * including that fake text input that shows your current GPS coordinates
  */
 
-div.fakeinput {
+#page-settings div.fakeinput {
     text-align: center;
     background: none repeat scroll 0 0 #F9F9F9;
     font-size: 16px;
@@ -390,12 +390,12 @@ div.fakeinput {
     height:1.4em;
 }
 @media (min-width:700px) {
-#page-directions fieldset input[type="text"] {
+#page-settings div.fakeinput {
     width:97.5%;
 }
 }
 @media (min-width:1000px) {
-#page-directions fieldset input[type="text"] {
+#page-settings div.fakeinput {
     width:98.0%;
 }
 
