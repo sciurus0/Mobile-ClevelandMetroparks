@@ -1639,6 +1639,15 @@ function loadAndShowDetailsPanel(feature,callback) {
                         break;
                 }
             }
+
+            // second hack for loops
+            // look for the directions along the loop
+            // if there are <4 steps then delete the directions readout completely
+            // this works around really goofy super-short directions such as "Start on trail. End."
+            var directions = $('#page-details div.description ul');
+            if (directions.children().length < 4) {
+                directions.remove();
+            }
         } else {
             // for all other content types, the HTML works as-is
             var target = $('#page-details div.description').html(html);
