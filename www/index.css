@@ -274,7 +274,6 @@ input[type="text"] {
 }
 
 #page-find-nearby fieldset[data-type="activities"] .ui-checkbox {
-    max-width:85%;
     text-overflow:ellipsis;
     overflow:hidden;
 }
