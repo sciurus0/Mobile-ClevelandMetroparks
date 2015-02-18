@@ -50,6 +50,10 @@ td,th {
  * JQM overrides not specific to any one page
  */
 
+.ui-li-heading {
+    white-space:normal; /* allow line-wrapping of ttles in listings */
+}
+
 .ui-header {
     font-family: Montserrat;
 }
