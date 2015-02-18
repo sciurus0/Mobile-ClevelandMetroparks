@@ -220,10 +220,6 @@ function init() {
     // pre-render the pages so we don't have that damnable lazy rendering thing messing with it
     $('div[data-role="page"]').page();
 
-    // test connectivity, make sure we can communicate with the server
-    // or else we should just die right now
-    initTestConnectivity();
-
     // now the rest of event handlers, map setup, etc. in stages
     initCacheThenMap();
     initWelcomePanel();
@@ -239,6 +235,9 @@ function init() {
     initResultsPanel();
     initDetailsAndDirectionsPanels();
 
+    // start watching whether we have usable Internet; if it goes down, take action
+    initTestConnectivity();
+
     // ready!
     // look at the Skip Welcome setting and see whether we should go there, or to the map
     var welcome = window.localStorage.getItem('skip_welcome');
@@ -246,14 +245,17 @@ function init() {
 }
 
 function initTestConnectivity() {
-    // ping the server and get back anything at all; then either ignore it, or complain if we didn't get anything successfully
-    // the goal here is that on startup we can detect that the app cannot successfully load
-    // and leave them with something informative rather than a map with no tiles
-    $.get(BASE_URL, {}, function (html) {
-        false;
-    }).error(function (error) {
-        navigator.notification.alert('This app requires data service to connect to the Cleveland Metroparks server. Please check that you have service.', null, 'No Connection?');
-    });
+    // when we lose connection, having previously had it, make a popup and set the map to offline mode
+    document.addEventListener("offline", function () {
+        $('#basemap_offline_checkbox').prop('checked','checked').checkboxradio('refresh').trigger('change');
+        navigator.notification.alert('Switching the map to offline mode.', null, 'Connection Lost');
+    }, false);
+
+    // when the connection comes back online
+    // warning: known iOS quirk is that the device "comes online" about 1 second after startup, if it's going to
+    // so it may not be wise to presume that the only reason we would be in offline mode is because we lost signal
+    //document.addEventListener("online", function () {
+    //}, false);
 }
 
 function initCacheThenMap() {
@@ -417,6 +419,42 @@ function initSettingsPanel() {
         $('#page-settings span[data-os="android"]').hide();
     }
 
+    // enable the "Offline Mode" checkbox to toggle all registered layers between offline & online mode
+    // for this specific client app, there's some UI work as well; see below
+    // why do we switch over to the map? cuz we need to commit a zoom change as well (for switching to offline) and doing that
+    //      when the map is not visible is a big no-no. This is not necessary when switching to online mode (we don't change zooms)
+    //      but it's a more consistent experience if we do in both cases
+    $('#basemap_offline_checkbox').change(function () {
+        var offline = $(this).is(':checked');
+        var layers  = CACHE.registeredLayers();
+        if (offline) {
+            switchToMap(function () {
+                // zoom out to the max offline zoom level if we're zoomed in too far
+                MAP.options.maxZoom = MAX_CACHING_ZOOMLEVEL;
+                if (MAP.getZoom() > MAX_CACHING_ZOOMLEVEL) MAP.setZoom(MAX_CACHING_ZOOMLEVEL);
+
+                // switch away from Sat basemap since we don't cache that for offline
+                // then disable the non-Terrain options
+                $('input[type="radio"][name="basemap"][value="terrain"]').prop('checked','checked').trigger('change');
+                $('input[type="radio"][name="basemap"][value!="terrain"]').prop('disabled','disabled').checkboxradio('refresh');
+
+                // now switch the map layers to offline mode
+                for (var layername in layers) CACHE.useLayerOffline(layername);
+            });
+        } else {
+            switchToMap(function () {
+                // reinstate the max zoom of the map as being the MAX zoom
+                MAP.options.maxZoom = MAX_ZOOM;
+
+                // re-enable the Satellite basemap option (anything not Terrain)
+                $('input[type="radio"][name="basemap"][value!="terrain"]').removeAttr('disabled').checkboxradio('refresh');
+
+                // switch the map layers over to online mode
+                for (var layername in layers) CACHE.useLayerOnline(layername);
+            });
+        }
+    });
+
     // the seeding options to be shown when seeding is busy...
     // because right now it is not busy
     $('#page-settings div[data-seeding="busy"]').hide();
@@ -475,42 +513,6 @@ function initSettingsPanel() {
     });
     $('#page-seedcache-progress div[data-role="progress"] span').empty();
     $('#page-seedcache-progress div[data-role="progress"] progress').prop('value',0).prop('max',100);
-
-    // enable the "Offline" checkbox to toggle all registered layers between offline & online mode
-    // for this specific client app, there's some UI work as well; see below
-    // why do we switch over to the map? cuz we need to commit a zoom change as well (for switching to offline) and doing that
-    //      when the map is not visible is a big no-no. This is not necessary when switching to online mode (we don't change zooms)
-    //      but it's a more consistent experience if we do in both cases
-    $('#basemap_offline_checkbox').change(function () {
-        var offline = $(this).is(':checked');
-        var layers  = CACHE.registeredLayers();
-        if (offline) {
-            switchToMap(function () {
-                // zoom out to the max offline zoom level if we're zoomed in too far
-                MAP.options.maxZoom = MAX_CACHING_ZOOMLEVEL;
-                if (MAP.getZoom() > MAX_CACHING_ZOOMLEVEL) MAP.setZoom(MAX_CACHING_ZOOMLEVEL);
-
-                // switch away from Sat basemap since we don't cache that for offline
-                // then disable the non-Terrain options
-                $('input[type="radio"][name="basemap"][value="terrain"]').prop('checked','checked').trigger('change');
-                $('input[type="radio"][name="basemap"][value!="terrain"]').prop('disabled','disabled').checkboxradio('refresh');
-
-                // now switch the map layers to offline mode
-                for (var layername in layers) CACHE.useLayerOffline(layername);
-            });
-        } else {
-            switchToMap(function () {
-                // reinstate the max zoom of the map as being the MAX zoom
-                MAP.options.maxZoom = MAX_ZOOM;
-
-                // re-enable the Satellite basemap option (anything not Terrain)
-                $('input[type="radio"][name="basemap"][value!="terrain"]').removeAttr('disabled').checkboxradio('refresh');
-
-                // switch the map layers over to online mode
-                for (var layername in layers) CACHE.useLayerOnline(layername);
-            });
-        }
-    });
 
     // enable the "Cache Status" checkbox to calculate the disk usage and write to to the dialog
     // allow the change to the dialog, and start the asynchronous disk usage calculation
