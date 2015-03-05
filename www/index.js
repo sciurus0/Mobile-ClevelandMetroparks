@@ -392,31 +392,23 @@ function initSettingsPanel() {
     // simply toggles the Insomnia behavior that prevents the phone from sleeping
     // well, not simple at all -- save this setting to LocalStorage AND set the initial state of this checkbox from a previously-saved setting
     //                            so it "remembers" what your previous preference was
-    // and less simple: iOS always prevents auto-lock anyway, so this setting is only relevant when running Android
-    //      so a bit of a hack to simply hide this and the whole Advanced section, when not Android
-    if (is_android()) {
-        $('#prevent_sleeping').change(function () {
-            var prevent = $(this).is(':checked');
-            if (prevent) {
-                window.plugins.insomnia.keepAwake();
-                window.localStorage.setItem('prevent_sleeping', 'prevent');
-            } else {
-                window.plugins.insomnia.allowSleepAgain();
-                window.localStorage.setItem('prevent_sleeping', 'allow');
-            }
-        });
-
-        // load their previous setting, if any
-        var prevent = window.localStorage.getItem('prevent_sleeping');
-        if (prevent == 'allow') {
-            $('#prevent_sleeping').removeAttr('checked').trigger('change').checkboxradio('refresh');
+    $('#prevent_sleeping').change(function () {
+        var prevent = $(this).is(':checked');
+        if (prevent) {
+            window.plugins.insomnia.keepAwake();
+            window.localStorage.setItem('prevent_sleeping', 'prevent');
         } else {
-            $('#prevent_sleeping').prop('checked','checked').trigger('change').checkboxradio('refresh');
+            window.plugins.insomnia.allowSleepAgain();
+            window.localStorage.setItem('prevent_sleeping', 'allow');
         }
+    });
+
+    // load their previous setting, if any
+    var prevent = window.localStorage.getItem('prevent_sleeping');
+    if (prevent == 'allow') {
+        $('#prevent_sleeping').removeAttr('checked').trigger('change').checkboxradio('refresh');
     } else {
-        // hiding the button is only part of it: create a utility wrapper to also hide the word Advanced with nothing beneath it
-        // will likely change when/if other Advanced settings exist some day
-        $('#page-settings span[data-os="android"]').hide();
+        $('#prevent_sleeping').prop('checked','checked').trigger('change').checkboxradio('refresh');
     }
 
     // enable the "Offline Mode" checkbox to toggle all registered layers between offline & online mode
