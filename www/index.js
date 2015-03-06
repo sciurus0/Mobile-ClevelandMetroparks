@@ -453,18 +453,18 @@ function initSettingsPanel() {
 
     // a page to cache a specific reservation, which is a XYZ position
     // start by populating that list, giving each button a click handler to look up the tile-hints file embedded into the app
-    // NOTE: this is loading via AJAX, but is loading a local file form within the app
+    // NOTE: this is loading via AJAX, but is loading a local file form within the app and not a remote server
     var target = $('#page-seedreservation ul[data-role="listview"]').empty();
-    $.each(LIST_RESERVATIONS, function () {
-//GDA load from LIST_RESERVATIONS add local-fetch handler to get tile listing via AJAX-like technique
+    $.each( , function () {
         var link = $('<a></a>').text(this).prop('href','#page-seedcache-progress');
         var li   = $('<li></li>').append(link).appendTo(target);
         li.click(function () {
-            var name = $(this).text();
+            var name = $(this).text().trim();
             var url  = './tile_cache_hints/' + name + '.json';
             $.getJSON(url, function(tilelist) {
-                alert(tilelist.length);
-                //gda//beginSeedingCacheFromTileList(tilelist);
+                beginSeedingCacheFromTileList(name,tilelist);
+            }).error(function (error) {
+                alert("Error: Missing reservation tile hint file: " + name + '.json');
             });
         });
     });
@@ -1086,7 +1086,9 @@ function nearbyStatus() {
  */
 
 //GDA
-function beginSeedingCacheFromTileList(tilelisting) {
+function beginSeedingCacheFromTileList(name,urilisting) {
+    console.log(name);
+    console.log(urilisting);
 }
 
 function beginSeedingCacheAtXYZ(name,lon,lat,zoom) {
