@@ -305,6 +305,7 @@ var OfflineTileCacher = function(directoryname) {
             // file open failed, which means we need to download it
             // design pattern to do sequential asynchronous downloads: on success, call download(index+1)
             //console.log(['not in cache',urls[index].filename,myself.TILEDIRECTORY.toURL() + '/' + urls[index].filename ]);
+            //console.log(['downloading', urls[index].z, urls[index].x, urls[index].y , urls[index].url ]);
             myself.FileTransfer.download(urls[index].url, myself.TILEDIRECTORY.toURL() + '/' + urls[index].filename,
                 function(file) {
                     // tile downloaded OK
