@@ -74,7 +74,7 @@ var MAX_CACHING_ZOOMLEVEL = 16;
 //          tip: Why not have this automatically update when the app starts? Consumes data, not helpful offline, would 100% cripple the UI if it fails
 // WARNING: these must exactly match the spellings of the JSON files under tile_cache_hints
 //          a .json suffix will be added to the literal string to form the filename containing tile hints for that reservation
-//          see also #page-seedreservation event handlers and beginSeedingCacheFromTileList()
+//          see also #page-seedreservation event handlers and beginSeedingCacheByReservation()
 var LIST_RESERVATIONS = [
     "Acacia Reservation",
     "Bedford Reservation",
@@ -454,17 +454,20 @@ function initSettingsPanel() {
     // a page to cache a specific reservation, which is a XYZ position
     // start by populating that list, giving each button a click handler to look up the tile-hints file embedded into the app
     // NOTE: this is loading via AJAX, but is loading a local file form within the app and not a remote server
+    // tip: use a settimeout so a failure of caching doesn't propagate back to become a failure in the AJAX fetch
     var target = $('#page-seedreservation ul[data-role="listview"]').empty();
-    $.each( , function () {
+    $.each(LIST_RESERVATIONS, function () {
         var link = $('<a></a>').text(this).prop('href','#page-seedcache-progress');
         var li   = $('<li></li>').append(link).appendTo(target);
         li.click(function () {
-            var name = $(this).text().trim();
+            var name = $(this).find('a').text().trim();
             var url  = './tile_cache_hints/' + name + '.json';
             $.getJSON(url, function(tilelist) {
-                beginSeedingCacheFromTileList(name,tilelist);
-            }).error(function (error) {
-                alert("Error: Missing reservation tile hint file: " + name + '.json');
+                setTimeout(function () {
+                    beginSeedingCacheByReservation(name,tilelist);
+                }, 1);
+            }).error(function (xhr) {
+                navigator.notification.alert("Error: Missing or damaged reservation tile hint file: " + name + '.json' + "\n" + xhr.statusText);
             });
         });
     });
@@ -1085,10 +1088,102 @@ function nearbyStatus() {
  * The tile-seeding family of functions: start caching at a given XYZ, start at current location, use a provided list of specific tile JPEG URIs, ...
  */
 
-//GDA
-function beginSeedingCacheFromTileList(name,urilisting) {
-    console.log(name);
-    console.log(urilisting);
+function beginSeedingCacheByReservation(name,xyzlist) {
+    // a specific button provides a "terminate requested" flag when it is clicked,
+    // indicating that the progress callback should return false, requesting that CACHE.seedCache should just stop
+    // back when there was only 1 user interface for fetching all tiles, the button was unequivocal
+    var cancelbutton = $('#page-seedcache-progress a[data-role="button"]');
+    var progressbar  = $('#page-seedcache-progress div[data-role="progress"]');
+    var titlebar     = $('#page-seedcache-progress h1');
+    var title        = "Loading " + name;
+    var backbutton   = $('#page-seedcache-progress div[data-role="header"] a');
+    var donepage     = '#page-seedreservation';
+
+    // startup
+    // - figure out the list of layers we will be seeding
+    // - and thus compose the list of all tile URLs to be downloaded
+    // - reset the Cancel Requested flag since we've not even started yet
+    // - fill in the Title
+    // - fill in the Done button's target to be the Settings panel, until the completion handler sets it to "donepage"
+    // - create references to the progress readout, both text and bar, and initialize them
+    // - show/hide the Settings buttons allowing them to start a new seeding and/or to view progress
+    var layers_to_seed   = CACHE.registeredLayers();
+    var layernames = [];
+    for (var l in layers_to_seed) layernames[layernames.length] = layers_to_seed[l].options.name;
+
+    cancelbutton.data('terminate_requested',false);
+    titlebar.text(title);
+    backbutton.prop('href','#page-settings');
+    var readout = progressbar.find('span').empty();
+    var bar     = progressbar.find('progress').prop('value',0).prop('max',100);
+    $('#page-settings div[data-seeding="allowed"]').hide();
+    $('#page-settings div[data-seeding="busy"]').show();
+
+    function seedLayerByIndex(index) {
+        if (index >= layernames.length) {
+            // past the end, we're done
+            // it may be because we finished, or because we were asked to abort
+            if ( cancelbutton.data('terminate_requested') ) {
+                readout.text('Cancelled');
+
+                // on the chance that they watched the download, make the Back button go where they anted t be: the place that started the download
+                backbutton.prop('href',donepage);
+
+                // head Back to whatever page they were on BUT ONLY IF THEY CANCELLED
+                // doing this on a success condition, would pull them away from whatever they were doing and that's annoying
+                backbutton.click();
+            } else {
+                // on the chance that they watched the download, make the Back button go where they wanted to be: the place that started the download
+                backbutton.prop('href',donepage);
+
+                // update the readout and show the popup
+                readout.text('Downloads complete');
+                navigator.notification.alert('Offline tiles are now available for use.', null, 'Downloads Complete');
+            }
+
+            // at any rate, show/hide the seeding buttons on the Settings page so they can start a new one
+            $('#page-settings div[data-seeding="allowed"]').show();
+            $('#page-settings div[data-seeding="busy"]').hide();
+
+            return;
+        }
+        var layername = layernames[index];
+
+        var layer_complete = function(done,total) {
+            // done here, next!
+            readout.text('Done');
+            seedLayerByIndex(index+1);
+        }
+        var progress = function(done,total) {
+            // show or update the spinner
+            var percent = Math.round( 100 * parseFloat(done) / parseFloat(total) );
+            var text    = layername + ': ' + done + '/' + total + ' ' + percent + '%';
+            readout.text(text);
+            bar.prop('max',total).prop('value',done);
+
+            // if someone pressed the big Stop! button then just terminate as if we had finished
+            if ( cancelbutton.data('terminate_requested') ) {
+                layer_complete();
+                return false;
+            }
+
+            // if we're now done, call the completion function to close the spinner
+            if (done >= total) {
+                layer_complete();
+                return false;
+            }
+
+            // great, we had no cause to bail so return true so the looper in seedCache() knows it's clear to proceed
+        };
+        var error = function() {
+            navigator.notification.alert('Could not download map tiles. Please try again.', null, 'Error');
+        };
+
+        CACHE.seedCacheByXYZListing(layername,xyzlist,progress,error);
+    }
+
+    // start it off!
+    seedLayerByIndex(0);
 }
 
 function beginSeedingCacheAtXYZ(name,lon,lat,zoom) {
@@ -1129,7 +1224,6 @@ function beginSeedingCache(lon,lat,zmin,zmax,title,donepage,titlebar,backbutton,
     var layers_to_seed = CACHE.registeredLayers();
     var layernames = [];
     for (var l in layers_to_seed) layernames[layernames.length] = layers_to_seed[l].options.name;
-    var last_layer_name = layernames[layernames.length-1];
 
     // startup
     // - reset the Cancel Requested flag since we've not even started yet
