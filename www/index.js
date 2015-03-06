@@ -445,7 +445,24 @@ function initSettingsPanel() {
         });
         return false;
     });
+    $('#page-settings a[href="#page-seedcache"]').click(function () {
+        // do not allow them to seed nothing, e.g. by already being zoomed in beyond MAX_CACHING_ZOOMLEVEL
+        // this duplicates a zoom-check on #page-seedcache a[name="seedcache"] so we can't get some goofy shenanigans
+        // such as them switching to the seeding page, THEN altering the map too be too far in, and then trying
+        if (MAP.getZoom() > MAX_CACHING_ZOOMLEVEL) {
+            navigator.notification.alert("Offline tiles will not go down to this level of detail. Zoom the map out further.");
+            return false;
+        }
+    });
     $('#page-seedcache a[name="seedcache"]').click(function () {
+        // do not allow them to seed nothing, e.g. by already being zoomed in beyond MAX_CACHING_ZOOMLEVEL
+        // this duplicates a zoom-check on #page-settings a[href="#page-seedcache"] so we can't get some goofy shenanigans
+        // such as them switching to the seeding page, THEN altering the map too be too far in, and then trying
+        if (MAP.getZoom() > MAX_CACHING_ZOOMLEVEL) {
+            navigator.notification.alert("Offline tiles will not go down to this level of detail. Zoom the map out further.");
+            return false;
+        }
+
         // the download link-button has a HREF aiming at the download progress panel, so we'll be taken there automagically
         // if there's some error in getting started, e.g. out of range, that'll be handled by the seeding code
         beginSeedingCacheAtCurrentMapLocation();
@@ -1187,6 +1204,11 @@ function beginSeedingCacheByReservation(name,xyzlist) {
 }
 
 function beginSeedingCacheAtXYZ(name,lon,lat,zoom) {
+    if (zoom > MAX_CACHING_ZOOMLEVEL) {
+        navigator.notification.alert("Offline tiles will not go down to this level of detail. Zoom the map out further.");
+        return;
+    }
+
     // a specific button provides a "terminate requested" flag when it is clicked,
     // indicating that the progress callback should return false, requesting that CACHE.seedCache should just stop
     // back when there was only 1 user interface for fetching all tiles, the button was unequivocal
