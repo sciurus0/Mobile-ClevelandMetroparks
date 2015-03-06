@@ -72,6 +72,9 @@ var MAX_CACHING_ZOOMLEVEL = 16;
 // WARNING: these must exactly match the spellings as they appear in the Use Areas (POIs) DB table, as they are used for matching
 //          if CMP changes the name of a reservation, they must update their Use Areas dataset as they expect, but also publish a new version of the mobile app!
 //          tip: Why not have this automatically update when the app starts? Consumes data, not helpful offline, would 100% cripple the UI if it fails
+// WARNING: these must exactly match the spellings of the JSON files under tile_cache_hints
+//          a .json suffix will be added to the literal string to form the filename containing tile hints for that reservation
+//          see also #page-seedreservation event handlers and beginSeedingCacheFromTileList()
 var LIST_RESERVATIONS = [
     "Acacia Reservation",
     "Bedford Reservation",
@@ -93,28 +96,6 @@ var LIST_RESERVATIONS = [
     "Washington Reservation (including Rivergate)",
     "West Creek Reservation"
 ];
-
-// for loading offline maps of these specific areas and reservations
-// this is not the same as LIST_RESERVATIONS above, as this one has arbitrary name=>XYZ values
-// and may not specifically be the reservations, and may use nicknames/alternate spellings of the reservations
-var RESERVATION_CACHE_SETTINGS = {
-    "Bedford Reservation" :             [ -81.5488, 41.3753, 13 ],
-    "Big Creek Reservation" :           [ -81.8042, 41.3802, 13 ],
-    "Bradley Woods Reservation" :       [ -81.9571, 41.4135, 14 ],
-    "Brecksville Reservation" :         [ -81.6171, 41.3069, 13 ],
-    "Brookside Reservation and Zoo" :   [ -81.7177, 41.4473, 14 ],
-    "Euclid Creek Reservation" :        [ -81.5296, 41.5540, 13 ],
-    "Garfield Park Reservation" :       [ -81.6077, 41.4312, 13 ],
-    "Hinckley Reservation" :            [ -81.7073, 41.2182, 13 ],
-    "Huntington Reservation" :          [ -81.9342, 41.4880, 15 ],
-    "Mill Stream Run Reservation" :     [ -81.8093, 41.3193, 13 ],
-    "North Chagrin Reservation" :       [ -81.4252, 41.5683, 13 ],
-    "Ohio & Erie Canal Reservation" :   [ -81.6608, 41.4307, 14 ],
-    "Rocky River Reservation" :         [ -81.8535, 41.4300, 13 ],
-    "South Chagrin Reservation" :       [ -81.4315, 41.4182, 13 ],
-    "Washington Reservation" :          [ -81.6641, 41.4572, 15 ],
-    "West Creek Reservation" :          [ -81.6940, 41.3831, 15 ]
-};
 
 // the set of Use Area categories, aka Activities
 // used to build select elements and potentially listviews, e.g. find POIs which have *this* activity
@@ -479,26 +460,22 @@ function initSettingsPanel() {
     });
 
     // a page to cache a specific reservation, which is a XYZ position
-    // start by populating that list, giving each button a click handler to begin seeding at that XYZ
-    var target = $('#page-seedreservation ul[data-role="listview"]');
-    for (var res in RESERVATION_CACHE_SETTINGS) {
-        var x = RESERVATION_CACHE_SETTINGS[res][0];
-        var y = RESERVATION_CACHE_SETTINGS[res][1];
-        var z = RESERVATION_CACHE_SETTINGS[res][2];
-
-        // the download link-button has a HREF aiming at the download progress panel, so we'll be taken there automagically
-        // if there's some error in getting started, e.g. out of range, that'll be handled by the seeding code
-        var link = $('<a></a>').text(res).prop('href','#page-seedcache-progress');
-        var li   = $('<li></li>').append(link).attr('data-lon',x).attr('data-lat',y).attr('data-zoom',z).appendTo(target);
-
+    // start by populating that list, giving each button a click handler to look up the tile-hints file embedded into the app
+    // NOTE: this is loading via AJAX, but is loading a local file form within the app
+    var target = $('#page-seedreservation ul[data-role="listview"]').empty();
+    $.each(LIST_RESERVATIONS, function () {
+//GDA load from LIST_RESERVATIONS add local-fetch handler to get tile listing via AJAX-like technique
+        var link = $('<a></a>').text(this).prop('href','#page-seedcache-progress');
+        var li   = $('<li></li>').append(link).appendTo(target);
         li.click(function () {
             var name = $(this).text();
-            var lon  = parseFloat( $(this).attr('data-lon') );
-            var lat  = parseFloat( $(this).attr('data-lat') );
-            var zoom = parseInt( $(this).attr('data-zoom') );
-            beginSeedingCacheForReservation(name,lon,lat,zoom);
+            var url  = './tile_cache_hints/' + name + '.json';
+            $.getJSON(url, function(tilelist) {
+                alert(tilelist.length);
+                //gda//beginSeedingCacheFromTileList(tilelist);
+            });
         });
-    }
+    });
     target.listview('refresh');
 
     // offline tile download progress panel
@@ -1113,12 +1090,14 @@ function nearbyStatus() {
 
 
 /*
- * Mostly for point debugging, the "start seeding" function in a separate, named function
- * figure out the zoom and center and list of layers, hand off to the cache seeder,
- * and keep a callback to show a progress dialog
+ * The tile-seeding family of functions: start caching at a given XYZ, start at current location, use a provided list of specific tile JPEG URIs, ...
  */
 
-function beginSeedingCacheForReservation(name,lon,lat,zoom) {
+//GDA
+function beginSeedingCacheFromTileList(tilelisting) {
+}
+
+function beginSeedingCacheAtXYZ(name,lon,lat,zoom) {
     // a specific button provides a "terminate requested" flag when it is clicked,
     // indicating that the progress callback should return false, requesting that CACHE.seedCache should just stop
     // back when there was only 1 user interface for fetching all tiles, the button was unequivocal
