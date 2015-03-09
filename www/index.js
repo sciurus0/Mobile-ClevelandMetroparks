@@ -329,6 +329,14 @@ function initMap() {
 
     // ready! set! action!
     // start constant geolocation, which triggers the 'locationfound' event handlers defined above
+    // tip: getCurrentPosition() in a setInterval() gives us known-frequency response times,
+    // but also has a memory leak and consumes a few hundred MB in 15 minutes even if your location does not change
+    // The app would likely be terminated by the OS after an hour, especially if put into the background
+    // workaround: sacrifice respnosiveness for stability, since watchPosition() leaks a lot more slowly
+    navigator.geolocation.watchPosition(function (position) {
+        handleLocationFound({ accuracy:position.coords.accuracy, latlng:L.latLng(position.coords.latitude,position.coords.longitude) });
+    }, null, { enableHighAccuracy:true, maximumAge:30 });
+    /*
     // tip: locate:watch doesn't give a promise as to how often it will update nor even ability to request a certain frequency
     //      if your location doesn't change dramatically you may just... never see it...
     //      this has implications for auto-centering and nearby, that you may turn on those features but since there's no location change
@@ -338,7 +346,8 @@ function initMap() {
         navigator.geolocation.getCurrentPosition(function (position) {
             handleLocationFound({ accuracy:position.coords.accuracy, latlng:L.latLng(position.coords.latitude,position.coords.longitude) });
         }, null, { enableHighAccuracy:true, maximumAge:3600 });
-    }, 3000);
+    }, 30 * 1000);
+    */
 }
 
 function initWelcomePanel() {
