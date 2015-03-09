@@ -329,13 +329,13 @@ function initMap() {
 
     // ready! set! action!
     // start constant geolocation, which triggers the 'locationfound' event handlers defined above
-    // tip: getCurrentPosition() in a setInterval() gives us known-frequency response times,
-    // but also has a memory leak and consumes a few hundred MB in 15 minutes even if your location does not change
-    // The app would likely be terminated by the OS after an hour, especially if put into the background
-    // workaround: sacrifice respnosiveness for stability, since watchPosition() leaks a lot more slowly
+    //      tip: getCurrentPosition() in a setInterval() gives us known-frequency response times,
+    //      but also has a memory leak and consumes a few hundred MB in 15 minutes even if your location does not change
+    //      So we don't use watchPosition() instead
+    //      If you need instant responsiveness see getLocationRightNow()
     navigator.geolocation.watchPosition(function (position) {
         handleLocationFound({ accuracy:position.coords.accuracy, latlng:L.latLng(position.coords.latitude,position.coords.longitude) });
-    }, null, { enableHighAccuracy:true, maximumAge:30 });
+    }, null, { enableHighAccuracy:true });
     /*
     // tip: locate:watch doesn't give a promise as to how often it will update nor even ability to request a certain frequency
     //      if your location doesn't change dramatically you may just... never see it...
@@ -929,6 +929,10 @@ function toggleGPSOn() {
     AUTO_CENTER_ON_LOCATION = true;
     var src = $('#mapbutton_gps img').prop('src').replace('_off.svg','_on.svg');
     $('#mapbutton_gps img').prop('src',src);
+
+    // note: if you are using watchPosition() then turning on auto-centering isn't quite enough since your loation hasn't changed
+    // some day this may become obsolete as they fix the memory leak in geolocation.getCurrentPosition()
+    getLocationRightNow();
 }
 function toggleGPSOff() {
     AUTO_CENTER_ON_LOCATION = false;
@@ -937,6 +941,18 @@ function toggleGPSOff() {
 }
 
 
+
+// a wrapper to specifically query location right now and trigger "the usual" event handler for location updates
+// this is appropriate when watchPosition() isn't responding quickly enough, e.g. when you turn on auto-center and the map won't
+// re-center until your location changes enough to trigger a location-update event
+// some day this may become obsolete as they fix the memory leak in geolocation.getCurrentPosition()
+// see also initMap() where we use watchPositon() instead of getCurrentPosition()
+// https://issues.apache.org/jira/browse/CB-8631
+function getLocationRightNow() {
+    navigator.geolocation.getCurrentPosition(function (position) {
+        handleLocationFound({ accuracy:position.coords.accuracy, latlng:L.latLng(position.coords.latitude,position.coords.longitude) });
+    }, null, { enableHighAccuracy:true });
+}
 
 
 /*
