@@ -778,6 +778,9 @@ function initDetailsAndDirectionsPanels() {
         var info = $('#page-details').data('raw');
         if (! info) { alert("No result loaded into the Map button. That should be impossible."); return false; }
 
+        // turn off GPS auto-center if it's on, so we don't zoom to the specified area... then to our GPS a second later
+        toggleGPSOff();
+
         switchToMap(function () {
             // zoom the the feature's bounding box
             var bbox = L.latLngBounds([[info.s,info.w],[info.n,info.e]]).pad(0.15);
