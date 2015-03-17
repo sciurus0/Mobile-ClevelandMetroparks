@@ -305,6 +305,7 @@ var OfflineTileCacher = function(directoryname) {
             // file open failed, which means we need to download it
             // design pattern to do sequential asynchronous downloads: on success, call download(index+1)
             //console.log(['not in cache',urls[index].filename,myself.TILEDIRECTORY.toURL() + '/' + urls[index].filename ]);
+            //console.log(['downloading', urls[index].z, urls[index].x, urls[index].y , urls[index].url ]);
             myself.FileTransfer.download(urls[index].url, myself.TILEDIRECTORY.toURL() + '/' + urls[index].filename,
                 function(file) {
                     // tile downloaded OK
@@ -390,6 +391,42 @@ var OfflineTileCacher = function(directoryname) {
             } // end of the X column
         } // end of z zoom level
         //console.log(downloads.length);
+
+        // make sure we're not asking for too much
+        if (downloads.length > myself.MAX_TILES) {
+            navigator.notification.alert('The selected area is too large. Please zoom in to a smaller area.', null, 'Area too large');
+            return;
+        }
+
+        // Phase 2: begin downloading! Set up a function which makes a download, and on callback it calls downloadFile() with index+1
+        // thus, we get serial downloading despite the async nature
+        myself.downloadFile(downloads,0,progress_callback,error_callback);
+    };
+
+    this.seedCacheByXYZListing = function(layername,xyzlist,progress_callback,error_callback) {
+        var myself = this;
+
+        // Phase 1
+        // compose the list of downloadable URLs and target filenames, following the format defined in seedCache()
+        var layerobj  = myself.LAYERS[layername];
+        var downloads = [];
+        for (var i=0, l=xyzlist.length; i<l; i++) {
+            // source URL
+            var xyz = xyzlist[i];
+            var url = layerobj._url_online.replace('{z}',xyz.z).replace('{x}',xyz.x).replace('{y}',xyz.y);
+            if (layerobj.options.subdomains) {
+                var idx = Math.floor(Math.random() * layerobj.options.subdomains.length);
+                var subdomain = layerobj.options.subdomains[idx];
+                url = url.replace('{s}',subdomain);
+            }
+
+            // target download filename, e.g. terrain-12-3456-7890.png
+            // the file extension isn't really relevant: it's just easier to fix on one rather than adapt to the .jpg or .png suffix used in the L.TileLayer constructor
+            var filename = [layername,xyz.z,xyz.x,xyz.y].join('-') + '.png';
+
+            // add it to the list
+            downloads.push({ layername:layername, x:xyz.x, y:xyz.y, z:xyz.z, filename:filename, url:url });
+        }
 
         // make sure we're not asking for too much
         if (downloads.length > myself.MAX_TILES) {

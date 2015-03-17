@@ -72,6 +72,9 @@ var MAX_CACHING_ZOOMLEVEL = 16;
 // WARNING: these must exactly match the spellings as they appear in the Use Areas (POIs) DB table, as they are used for matching
 //          if CMP changes the name of a reservation, they must update their Use Areas dataset as they expect, but also publish a new version of the mobile app!
 //          tip: Why not have this automatically update when the app starts? Consumes data, not helpful offline, would 100% cripple the UI if it fails
+// WARNING: these must exactly match the spellings of the JSON files under tile_cache_hints
+//          a .json suffix will be added to the literal string to form the filename containing tile hints for that reservation
+//          see also #page-seedreservation event handlers and beginSeedingCacheByReservation()
 var LIST_RESERVATIONS = [
     "Acacia Reservation",
     "Bedford Reservation",
@@ -93,28 +96,6 @@ var LIST_RESERVATIONS = [
     "Washington Reservation (including Rivergate)",
     "West Creek Reservation"
 ];
-
-// for loading offline maps of these specific areas and reservations
-// this is not the same as LIST_RESERVATIONS above, as this one has arbitrary name=>XYZ values
-// and may not specifically be the reservations, and may use nicknames/alternate spellings of the reservations
-var RESERVATION_CACHE_SETTINGS = {
-    "Bedford Reservation" :             [ -81.5488, 41.3753, 13 ],
-    "Big Creek Reservation" :           [ -81.8042, 41.3802, 13 ],
-    "Bradley Woods Reservation" :       [ -81.9571, 41.4135, 14 ],
-    "Brecksville Reservation" :         [ -81.6171, 41.3069, 13 ],
-    "Brookside Reservation and Zoo" :   [ -81.7177, 41.4473, 14 ],
-    "Euclid Creek Reservation" :        [ -81.5296, 41.5540, 13 ],
-    "Garfield Park Reservation" :       [ -81.6077, 41.4312, 13 ],
-    "Hinckley Reservation" :            [ -81.7073, 41.2182, 13 ],
-    "Huntington Reservation" :          [ -81.9342, 41.4880, 15 ],
-    "Mill Stream Run Reservation" :     [ -81.8093, 41.3193, 13 ],
-    "North Chagrin Reservation" :       [ -81.4252, 41.5683, 13 ],
-    "Ohio & Erie Canal Reservation" :   [ -81.6608, 41.4307, 14 ],
-    "Rocky River Reservation" :         [ -81.8535, 41.4300, 13 ],
-    "South Chagrin Reservation" :       [ -81.4315, 41.4182, 13 ],
-    "Washington Reservation" :          [ -81.6641, 41.4572, 15 ],
-    "West Creek Reservation" :          [ -81.6940, 41.3831, 15 ]
-};
 
 // the set of Use Area categories, aka Activities
 // used to build select elements and potentially listviews, e.g. find POIs which have *this* activity
@@ -348,6 +329,14 @@ function initMap() {
 
     // ready! set! action!
     // start constant geolocation, which triggers the 'locationfound' event handlers defined above
+    //      tip: getCurrentPosition() in a setInterval() gives us known-frequency response times,
+    //      but also has a memory leak and consumes a few hundred MB in 15 minutes even if your location does not change
+    //      So we don't use watchPosition() instead
+    //      If you need instant responsiveness see getLocationRightNow()
+    navigator.geolocation.watchPosition(function (position) {
+        handleLocationFound({ accuracy:position.coords.accuracy, latlng:L.latLng(position.coords.latitude,position.coords.longitude) });
+    }, null, { enableHighAccuracy:true });
+    /*
     // tip: locate:watch doesn't give a promise as to how often it will update nor even ability to request a certain frequency
     //      if your location doesn't change dramatically you may just... never see it...
     //      this has implications for auto-centering and nearby, that you may turn on those features but since there's no location change
@@ -357,7 +346,8 @@ function initMap() {
         navigator.geolocation.getCurrentPosition(function (position) {
             handleLocationFound({ accuracy:position.coords.accuracy, latlng:L.latLng(position.coords.latitude,position.coords.longitude) });
         }, null, { enableHighAccuracy:true, maximumAge:3600 });
-    }, 3000);
+    }, 30 * 1000);
+    */
 }
 
 function initWelcomePanel() {
@@ -392,31 +382,23 @@ function initSettingsPanel() {
     // simply toggles the Insomnia behavior that prevents the phone from sleeping
     // well, not simple at all -- save this setting to LocalStorage AND set the initial state of this checkbox from a previously-saved setting
     //                            so it "remembers" what your previous preference was
-    // and less simple: iOS always prevents auto-lock anyway, so this setting is only relevant when running Android
-    //      so a bit of a hack to simply hide this and the whole Advanced section, when not Android
-    if (is_android()) {
-        $('#prevent_sleeping').change(function () {
-            var prevent = $(this).is(':checked');
-            if (prevent) {
-                window.plugins.insomnia.keepAwake();
-                window.localStorage.setItem('prevent_sleeping', 'prevent');
-            } else {
-                window.plugins.insomnia.allowSleepAgain();
-                window.localStorage.setItem('prevent_sleeping', 'allow');
-            }
-        });
-
-        // load their previous setting, if any
-        var prevent = window.localStorage.getItem('prevent_sleeping');
-        if (prevent == 'allow') {
-            $('#prevent_sleeping').removeAttr('checked').trigger('change').checkboxradio('refresh');
+    $('#prevent_sleeping').change(function () {
+        var prevent = $(this).is(':checked');
+        if (prevent) {
+            window.plugins.insomnia.keepAwake();
+            window.localStorage.setItem('prevent_sleeping', 'prevent');
         } else {
-            $('#prevent_sleeping').prop('checked','checked').trigger('change').checkboxradio('refresh');
+            window.plugins.insomnia.allowSleepAgain();
+            window.localStorage.setItem('prevent_sleeping', 'allow');
         }
+    });
+
+    // load their previous setting, if any
+    var prevent = window.localStorage.getItem('prevent_sleeping');
+    if (prevent == 'allow') {
+        $('#prevent_sleeping').removeAttr('checked').trigger('change').checkboxradio('refresh');
     } else {
-        // hiding the button is only part of it: create a utility wrapper to also hide the word Advanced with nothing beneath it
-        // will likely change when/if other Advanced settings exist some day
-        $('#page-settings span[data-os="android"]').hide();
+        $('#prevent_sleeping').prop('checked','checked').trigger('change').checkboxradio('refresh');
     }
 
     // enable the "Offline Mode" checkbox to toggle all registered layers between offline & online mode
@@ -472,33 +454,49 @@ function initSettingsPanel() {
         });
         return false;
     });
+    $('#page-settings a[href="#page-seedcache"]').click(function () {
+        // do not allow them to seed nothing, e.g. by already being zoomed in beyond MAX_CACHING_ZOOMLEVEL
+        // this duplicates a zoom-check on #page-seedcache a[name="seedcache"] so we can't get some goofy shenanigans
+        // such as them switching to the seeding page, THEN altering the map too be too far in, and then trying
+        if (MAP.getZoom() > MAX_CACHING_ZOOMLEVEL) {
+            navigator.notification.alert("Offline tiles will not go down to this level of detail. Zoom the map out further.");
+            return false;
+        }
+    });
     $('#page-seedcache a[name="seedcache"]').click(function () {
+        // do not allow them to seed nothing, e.g. by already being zoomed in beyond MAX_CACHING_ZOOMLEVEL
+        // this duplicates a zoom-check on #page-settings a[href="#page-seedcache"] so we can't get some goofy shenanigans
+        // such as them switching to the seeding page, THEN altering the map too be too far in, and then trying
+        if (MAP.getZoom() > MAX_CACHING_ZOOMLEVEL) {
+            navigator.notification.alert("Offline tiles will not go down to this level of detail. Zoom the map out further.");
+            return false;
+        }
+
         // the download link-button has a HREF aiming at the download progress panel, so we'll be taken there automagically
         // if there's some error in getting started, e.g. out of range, that'll be handled by the seeding code
         beginSeedingCacheAtCurrentMapLocation();
     });
 
     // a page to cache a specific reservation, which is a XYZ position
-    // start by populating that list, giving each button a click handler to begin seeding at that XYZ
-    var target = $('#page-seedreservation ul[data-role="listview"]');
-    for (var res in RESERVATION_CACHE_SETTINGS) {
-        var x = RESERVATION_CACHE_SETTINGS[res][0];
-        var y = RESERVATION_CACHE_SETTINGS[res][1];
-        var z = RESERVATION_CACHE_SETTINGS[res][2];
-
-        // the download link-button has a HREF aiming at the download progress panel, so we'll be taken there automagically
-        // if there's some error in getting started, e.g. out of range, that'll be handled by the seeding code
-        var link = $('<a></a>').text(res).prop('href','#page-seedcache-progress');
-        var li   = $('<li></li>').append(link).attr('data-lon',x).attr('data-lat',y).attr('data-zoom',z).appendTo(target);
-
+    // start by populating that list, giving each button a click handler to look up the tile-hints file embedded into the app
+    // NOTE: this is loading via AJAX, but is loading a local file form within the app and not a remote server
+    // tip: use a settimeout so a failure of caching doesn't propagate back to become a failure in the AJAX fetch
+    var target = $('#page-seedreservation ul[data-role="listview"]').empty();
+    $.each(LIST_RESERVATIONS, function () {
+        var link = $('<a></a>').text(this).prop('href','#page-seedcache-progress');
+        var li   = $('<li></li>').append(link).appendTo(target);
         li.click(function () {
-            var name = $(this).text();
-            var lon  = parseFloat( $(this).attr('data-lon') );
-            var lat  = parseFloat( $(this).attr('data-lat') );
-            var zoom = parseInt( $(this).attr('data-zoom') );
-            beginSeedingCacheForReservation(name,lon,lat,zoom);
+            var name = $(this).find('a').text().trim();
+            var url  = './tile_cache_hints/' + name + '.json';
+            $.getJSON(url, function(tilelist) {
+                setTimeout(function () {
+                    beginSeedingCacheByReservation(name,tilelist);
+                }, 1);
+            }).error(function (xhr) {
+                navigator.notification.alert("Error: Missing or damaged reservation tile hint file: " + name + '.json' + "\n" + xhr.statusText);
+            });
         });
-    }
+    });
     target.listview('refresh');
 
     // offline tile download progress panel
@@ -780,6 +778,9 @@ function initDetailsAndDirectionsPanels() {
         var info = $('#page-details').data('raw');
         if (! info) { alert("No result loaded into the Map button. That should be impossible."); return false; }
 
+        // turn off GPS auto-center if it's on, so we don't zoom to the specified area... then to our GPS a second later
+        toggleGPSOff();
+
         switchToMap(function () {
             // zoom the the feature's bounding box
             var bbox = L.latLngBounds([[info.s,info.w],[info.n,info.e]]).pad(0.15);
@@ -931,6 +932,10 @@ function toggleGPSOn() {
     AUTO_CENTER_ON_LOCATION = true;
     var src = $('#mapbutton_gps img').prop('src').replace('_off.svg','_on.svg');
     $('#mapbutton_gps img').prop('src',src);
+
+    // note: if you are using watchPosition() then turning on auto-centering isn't quite enough since your loation hasn't changed
+    // some day this may become obsolete as they fix the memory leak in geolocation.getCurrentPosition()
+    getLocationRightNow();
 }
 function toggleGPSOff() {
     AUTO_CENTER_ON_LOCATION = false;
@@ -939,6 +944,18 @@ function toggleGPSOff() {
 }
 
 
+
+// a wrapper to specifically query location right now and trigger "the usual" event handler for location updates
+// this is appropriate when watchPosition() isn't responding quickly enough, e.g. when you turn on auto-center and the map won't
+// re-center until your location changes enough to trigger a location-update event
+// some day this may become obsolete as they fix the memory leak in geolocation.getCurrentPosition()
+// see also initMap() where we use watchPositon() instead of getCurrentPosition()
+// https://issues.apache.org/jira/browse/CB-8631
+function getLocationRightNow() {
+    navigator.geolocation.getCurrentPosition(function (position) {
+        handleLocationFound({ accuracy:position.coords.accuracy, latlng:L.latLng(position.coords.latitude,position.coords.longitude) });
+    }, null, { enableHighAccuracy:true });
+}
 
 
 /*
@@ -1113,12 +1130,113 @@ function nearbyStatus() {
 
 
 /*
- * Mostly for point debugging, the "start seeding" function in a separate, named function
- * figure out the zoom and center and list of layers, hand off to the cache seeder,
- * and keep a callback to show a progress dialog
+ * The tile-seeding family of functions: start caching at a given XYZ, start at current location, use a provided list of specific tile JPEG URIs, ...
  */
 
-function beginSeedingCacheForReservation(name,lon,lat,zoom) {
+function beginSeedingCacheByReservation(name,xyzlist) {
+    // a specific button provides a "terminate requested" flag when it is clicked,
+    // indicating that the progress callback should return false, requesting that CACHE.seedCache should just stop
+    // back when there was only 1 user interface for fetching all tiles, the button was unequivocal
+    var cancelbutton = $('#page-seedcache-progress a[data-role="button"]');
+    var progressbar  = $('#page-seedcache-progress div[data-role="progress"]');
+    var titlebar     = $('#page-seedcache-progress h1');
+    var title        = "Loading " + name;
+    var backbutton   = $('#page-seedcache-progress div[data-role="header"] a');
+    var donepage     = '#page-seedreservation';
+
+    // startup
+    // - figure out the list of layers we will be seeding
+    // - and thus compose the list of all tile URLs to be downloaded
+    // - reset the Cancel Requested flag since we've not even started yet
+    // - fill in the Title
+    // - fill in the Done button's target to be the Settings panel, until the completion handler sets it to "donepage"
+    // - create references to the progress readout, both text and bar, and initialize them
+    // - show/hide the Settings buttons allowing them to start a new seeding and/or to view progress
+    var layers_to_seed   = CACHE.registeredLayers();
+    var layernames = [];
+    for (var l in layers_to_seed) layernames[layernames.length] = layers_to_seed[l].options.name;
+
+    cancelbutton.data('terminate_requested',false);
+    titlebar.text(title);
+    backbutton.prop('href','#page-settings');
+    var readout = progressbar.find('span').empty();
+    var bar     = progressbar.find('progress').prop('value',0).prop('max',100);
+    $('#page-settings div[data-seeding="allowed"]').hide();
+    $('#page-settings div[data-seeding="busy"]').show();
+
+    function seedLayerByIndex(index) {
+        if (index >= layernames.length) {
+            // past the end, we're done
+            // it may be because we finished, or because we were asked to abort
+            if ( cancelbutton.data('terminate_requested') ) {
+                readout.text('Cancelled');
+
+                // on the chance that they watched the download, make the Back button go where they anted t be: the place that started the download
+                backbutton.prop('href',donepage);
+
+                // head Back to whatever page they were on BUT ONLY IF THEY CANCELLED
+                // doing this on a success condition, would pull them away from whatever they were doing and that's annoying
+                backbutton.click();
+            } else {
+                // on the chance that they watched the download, make the Back button go where they wanted to be: the place that started the download
+                backbutton.prop('href',donepage);
+
+                // update the readout and show the popup
+                readout.text('Downloads complete');
+                navigator.notification.alert('Offline tiles are now available for use.', null, 'Downloads Complete');
+            }
+
+            // at any rate, show/hide the seeding buttons on the Settings page so they can start a new one
+            $('#page-settings div[data-seeding="allowed"]').show();
+            $('#page-settings div[data-seeding="busy"]').hide();
+
+            return;
+        }
+        var layername = layernames[index];
+
+        var layer_complete = function(done,total) {
+            // done here, next!
+            readout.text('Done');
+            seedLayerByIndex(index+1);
+        }
+        var progress = function(done,total) {
+            // show or update the spinner
+            var percent = Math.round( 100 * parseFloat(done) / parseFloat(total) );
+            var text    = layername + ': ' + done + '/' + total + ' ' + percent + '%';
+            readout.text(text);
+            bar.prop('max',total).prop('value',done);
+
+            // if someone pressed the big Stop! button then just terminate as if we had finished
+            if ( cancelbutton.data('terminate_requested') ) {
+                layer_complete();
+                return false;
+            }
+
+            // if we're now done, call the completion function to close the spinner
+            if (done >= total) {
+                layer_complete();
+                return false;
+            }
+
+            // great, we had no cause to bail so return true so the looper in seedCache() knows it's clear to proceed
+        };
+        var error = function() {
+            navigator.notification.alert('Could not download map tiles. Please try again.', null, 'Error');
+        };
+
+        CACHE.seedCacheByXYZListing(layername,xyzlist,progress,error);
+    }
+
+    // start it off!
+    seedLayerByIndex(0);
+}
+
+function beginSeedingCacheAtXYZ(name,lon,lat,zoom) {
+    if (zoom > MAX_CACHING_ZOOMLEVEL) {
+        navigator.notification.alert("Offline tiles will not go down to this level of detail. Zoom the map out further.");
+        return;
+    }
+
     // a specific button provides a "terminate requested" flag when it is clicked,
     // indicating that the progress callback should return false, requesting that CACHE.seedCache should just stop
     // back when there was only 1 user interface for fetching all tiles, the button was unequivocal
@@ -1156,7 +1274,6 @@ function beginSeedingCache(lon,lat,zmin,zmax,title,donepage,titlebar,backbutton,
     var layers_to_seed = CACHE.registeredLayers();
     var layernames = [];
     for (var l in layers_to_seed) layernames[layernames.length] = layers_to_seed[l].options.name;
-    var last_layer_name = layernames[layernames.length-1];
 
     // startup
     // - reset the Cancel Requested flag since we've not even started yet
