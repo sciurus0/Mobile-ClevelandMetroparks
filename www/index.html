@@ -78,9 +78,9 @@
             Funding provided by <a target="_blank" href="http://www.swgeneral.com/">Southwest General Health Center</a>
         </p>
 
-        <div>
+        <!--div>
             <label><input type="checkbox" name="skip_welcome" /> Skip this page next time</label>
-        </div>
+        </div-->
     </div>
 </div>
 
@@ -95,10 +95,9 @@
     <div data-role="content">
 
         <fieldset data-role="controlgroup" data-type="keyword">
-            <div class="bold center">Keyword search:</div>
-            <label><input type="text" name="keyword" data-inset="true" placeholder="Enter name or keyword" /></label>
+            <label><input type="search" name="keyword" data-inset="true" placeholder="Enter name or keyword" /></label>
             <ul data-role="listview" data-inset="true" data-type="autocomplete"></ul>
-            <input type="button" data-icon="search" data-iconpos="right" value="Search" data-theme="b" />
+            <!--input type="button" data-icon="search" data-iconpos="right" value="Search" data-theme="b" /-->
         </fieldset>
 
         <ul data-role="listview" data-inset="true">
@@ -372,8 +371,8 @@
     </div>
 
     <div data-role="content">
-        <input type="text" id="cachestatus_storage" value="Calculating" readonly="readonly" />
-        <input type="text" id="cachestatus_files" value="Calculating" readonly="readonly" />
+        <input type="text" id="cachestatus_storage" value="Calculating" readonly />
+        <input type="text" id="cachestatus_files" value="Calculating" readonly />
         <a href="#page-clearcache" data-role="button" name="clearcache" data-theme="b">Delete offline tiles</a>
     </div>
 </div>
@@ -491,6 +490,7 @@
     <!-- our own awesomesauce -->
     <script type="text/javascript" src="index.js"></script>
     <link rel="stylesheet" type="text/css" href="index.css" />
+    <link rel="stylesheet" type="text/css" href="themes/CMP.css" />
     <script type="text/javascript">
     document.addEventListener("deviceready", init, false);
     </script>
