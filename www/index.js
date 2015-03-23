@@ -698,19 +698,22 @@ function initFindLoops() {
 
 function initFindKeyword() {
     // not really related to the Keyword Search per se, but on the Find panel same as the keyword search
+    // hide the Prior Results option in the button list, since we know that there are no prior results at this time
     var listview = $('#page-find ul[data-role="listview"]').eq(1);
     listview.find('li').first().hide();
     listview.listview('refresh');
 
-    // set up the form: on submit, Enter, button, etc. submit a keyword search to the server
+    // set up the form: on pressing Enter, submit a keyword search to the server
     // also some hacks to interact with the autocomplete listview defined next: we want the autocomplete listviw to be visible only when it's being used
     var form     = $('#page-find fieldset[data-type="keyword"]');
     var field    = form.find('input[type="text"]');
-    var button   = form.find('input[type="button"]');
     var listview = form.find('ul[data-role="listview"][data-type="autocomplete"]');
     field.keydown(function (key) {
-        if(key.keyCode == 13) {
-            $(this).closest('fieldset').find('input[type="button"]').click();
+        if (key.keyCode == 13) {
+            // clear the autocomplete and submit a keyword search for them
+            listview.hide();
+            var keyword = $(this).closest('fieldset').find('input[type="text"]').val().trim();
+            searchKeyword(keyword);
         } else {
             if ( $(this).val() ) {
                 listview.show();
@@ -718,11 +721,6 @@ function initFindKeyword() {
                 listview.hide();
             }
         }
-    });
-    button.click(function () {
-        listview.hide();
-        var keyword = $(this).closest('fieldset').find('input[type="text"]').val().trim();
-        searchKeyword(keyword);
     });
 
     // set up an autocomplete on the keyword search text field
@@ -734,11 +732,14 @@ function initFindKeyword() {
             source: words,
             callback: function(e) {
                 // click handler on an autocomplete item
-                // find the value of the selected item, stick it into the text box, hide the autocomplete
-                // and click the button to perform the search, using the text that is now filled in
+                // find the value of the selected item, stick it into the text box, then clear the autocomplete
+                // then press Enter for them so as to trigger a search
                 var $a = $(e.currentTarget);
                 field.val( $a.text() ).autocomplete('clear');
-                button.click();
+
+                var event = $.Event("keydown");
+                event.keyCode = 13;
+                field.trigger(event);
             },
             minLength: 3,
             matchFromStart: false
