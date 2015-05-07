@@ -13,7 +13,7 @@
    height="50"
    id="svg9780"
    version="1.1"
-   inkscape:version="0.91pre3 r13670"
+   inkscape:version="0.48.4 r"
    sodipodi:docname="button_find.svg">
   <defs
      id="defs9782" />
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="7.919596"
-     inkscape:cx="25.219872"
-     inkscape:cy="21.844696"
+     inkscape:zoom="11.2"
+     inkscape:cx="36.2518"
+     inkscape:cy="25.611293"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -34,11 +34,11 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="944"
-     inkscape:window-height="1002"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0" />
+     inkscape:window-width="1857"
+     inkscape:window-height="1058"
+     inkscape:window-x="55"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata9785">
     <rdf:RDF>
@@ -56,42 +56,54 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-567.4574,-558.74984)">
-    <rect
-       style="fill:#0d6b51;fill-opacity:1"
-       id="rect7841-6-7-8"
-       height="50"
-       width="50"
-       y="558.74982"
-       x="567.4574" />
     <g
-       id="g3063"
-       transform="matrix(1.3664923,0,0,1.3664923,369.79141,78.452435)">
-      <path
-         style="fill:#ffffff;stroke:#ffffff;stroke-width:0.43915188;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         inkscape:connector-curvature="0"
-         id="path7523-5-3"
-         d="m 154.34281,355.96604 c -3.16666,3.16666 -3.16666,8.30252 0,11.4702 3.16769,3.16667 8.30251,3.16667 11.47123,0 3.16768,-3.16768 3.16768,-8.30354 0,-11.4702 -3.16872,-3.16871 -8.30457,-3.16871 -11.47123,0 z m 10.36688,10.36382 c -2.55871,2.55871 -6.70485,2.55871 -9.26152,0 -2.55871,-2.55668 -2.55871,-6.70281 0,-9.26152 2.55667,-2.55667 6.70281,-2.55667 9.26152,0 2.55667,2.55973 2.55667,6.70484 0,9.26152 z" />
+       id="g3003">
+      <rect
+         x="567.4574"
+         y="558.74982"
+         width="50"
+         height="50"
+         id="rect7841-6-7-8"
+         style="fill:#0D6B51;fill-opacity:1" />
       <g
-         transform="matrix(1.0234854,0,0,1.0234854,-36.442031,-290.25854)"
-         id="g7525-9-8">
+         transform="matrix(1.3664923,0,0,1.3664923,369.79141,78.452435)"
+         id="g3063">
         <path
-           style="fill:#ffffff"
+           d="m 154.34281,355.96604 c -3.16666,3.16666 -3.16666,8.30252 0,11.4702 3.16769,3.16667 8.30251,3.16667 11.47123,0 3.16768,-3.16768 3.16768,-8.30354 0,-11.4702 -3.16872,-3.16871 -8.30457,-3.16871 -11.47123,0 z m 10.36688,10.36382 c -2.55871,2.55871 -6.70485,2.55871 -9.26152,0 -2.55871,-2.55668 -2.55871,-6.70281 0,-9.26152 2.55667,-2.55667 6.70281,-2.55667 9.26152,0 2.55667,2.55973 2.55667,6.70484 0,9.26152 z"
+           id="path7523-5-3"
            inkscape:connector-curvature="0"
-           id="path7527-6-4"
-           d="m 196.862,641.851 -0.896,0.896 8.892,8.891 c 0.495,0.494 1.298,0.494 1.793,0 0.495,-0.495 0.495,-1.299 0,-1.793 l -8.892,-8.891 -0.897,0.897" />
+           style="fill:#ffffff;stroke:#ffffff;stroke-width:0.43915188;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        <g
+           id="g7525-9-8"
+           transform="matrix(1.0234854,0,0,1.0234854,-36.442031,-290.25854)">
+          <path
+             d="m 196.862,641.851 -0.896,0.896 8.892,8.891 c 0.495,0.494 1.298,0.494 1.793,0 0.495,-0.495 0.495,-1.299 0,-1.793 l -8.892,-8.891 -0.897,0.897"
+             id="path7527-6-4"
+             inkscape:connector-curvature="0"
+             style="fill:#ffffff" />
+        </g>
+      </g>
+      <g
+         transform="matrix(1.3664923,0,0,1.3664923,-223.35741,-222.80421)"
+         id="text9013-1"
+         style="font-size:10px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Helvetica LT Std Black;-inkscape-font-specification:Helvetica LT Std Black">
+        <path
+           id="path2998"
+           d="m 588.95708,607.05573 0,-2.52997 2.57996,0 0,-1.67998 -2.57996,0 0,-1.30998 3.23996,0 0,-1.67998 -5.59993,0 0,7.19991 z"
+           inkscape:connector-curvature="0" />
+        <path
+           id="path3000"
+           d="m 595.23677,607.05573 0,-5.23994 -2.07997,0 0,5.23994 z m -2.07997,-5.90993 2.07997,0 0,-1.47998 -2.07997,0 z"
+           inkscape:connector-curvature="0" />
+        <path
+           id="path3002"
+           d="m 596.33711,607.05573 2.07997,0 0,-2.66997 c -0.006,-0.33812 0.0487,-0.60186 0.165,-0.79124 0.11625,-0.18937 0.33124,-0.28562 0.64499,-0.28875 0.28854,0.008 0.48395,0.10667 0.58625,0.295 0.10228,0.18833 0.1502,0.41666 0.14374,0.68499 l 0,2.76997 2.07998,0 0,-3.13996 c 0.002,-0.72374 -0.16417,-1.27873 -0.4975,-1.66498 -0.33333,-0.38624 -0.84416,-0.58124 -1.53248,-0.585 -0.39,10e-4 -0.72499,0.084 -1.00498,0.24875 -0.28,0.1648 -0.535,0.40521 -0.76499,0.72124 l 0,-0.81999 -1.89998,0 z"
+           inkscape:connector-curvature="0" />
+        <path
+           id="path3004"
+           d="m 608.72672,607.05573 0,-7.19991 -2.07997,0 0,2.48997 c -0.21625,-0.25583 -0.44875,-0.43416 -0.69749,-0.535 -0.24875,-0.10082 -0.53625,-0.14916 -0.86249,-0.145 -0.63937,0.0108 -1.16561,0.27167 -1.57873,0.78249 -0.41312,0.51084 -0.62687,1.20666 -0.64124,2.08748 4.2e-4,0.75874 0.19958,1.38873 0.59749,1.88997 0.39791,0.50125 0.99207,0.76124 1.78248,0.77999 0.32958,0.005 0.6204,-0.0571 0.87249,-0.18499 0.25207,-0.12792 0.4979,-0.34958 0.73749,-0.665 l 0,0.7 z m -2.95996,-1.34999 c -0.33166,-0.0152 -0.55333,-0.14479 -0.66499,-0.38874 -0.11167,-0.24396 -0.16333,-0.51104 -0.155,-0.80124 -0.006,-0.30541 0.054,-0.58458 0.18125,-0.83749 0.12729,-0.25291 0.3602,-0.38708 0.69874,-0.4025 0.33895,0.0142 0.57353,0.14334 0.70374,0.3875 0.13021,0.24417 0.19229,0.51833 0.18625,0.82249 0.005,0.3177 -0.0629,0.59728 -0.205,0.83874 -0.14208,0.24145 -0.39041,0.36854 -0.74499,0.38124 z"
+           inkscape:connector-curvature="0" />
       </g>
     </g>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:16.25691795px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="578.81787"
-       y="606.1377"
-       id="text3344"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan3346"
-         x="578.81787"
-         y="606.1377"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:ultra-condensed;font-family:Antonio;-inkscape-font-specification:'Antonio Bold Ultra-Condensed';fill:#ffffff">Find</tspan></text>
   </g>
 </svg>
