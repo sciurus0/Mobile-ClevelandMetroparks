@@ -9,11 +9,11 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="45.201092"
-   height="45.553547"
+   width="45.103962"
+   height="30.994459"
    id="svg9780"
    version="1.1"
-   inkscape:version="0.91pre3 r13670"
+   inkscape:version="0.48.4 r"
    sodipodi:docname="find_loops.svg">
   <defs
      id="defs9782" />
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="7.9195959"
-     inkscape:cx="20.94196"
-     inkscape:cy="30.779626"
+     inkscape:zoom="2.8"
+     inkscape:cx="16.865199"
+     inkscape:cy="21.727612"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -34,11 +34,11 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="1018"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-width="1113"
+     inkscape:window-height="480"
+     inkscape:window-x="1661"
+     inkscape:window-y="516"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata9785">
     <rdf:RDF>
@@ -47,7 +47,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -55,7 +55,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-662.6337,-582.05823)">
+     transform="translate(-662.64002,-582.47836)">
     <g
        id="g3517"
        transform="matrix(1.0114178,0,0,0.99256316,405.8235,510.824)">
@@ -96,7 +96,7 @@
           <polygon
              style="stroke:#efe7ce;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10"
              id="polygon2231-5"
-             points="704.84,291.539 705.783,292.789 704.479,296.699 708.376,295.356 710.323,296.793 711.692,297.805 711.618,293.684 714.975,291.288 711.032,290.083 709.789,286.153 707.425,289.529 703.303,289.498 "
+             points="709.789,286.153 707.425,289.529 703.303,289.498 704.84,291.539 705.783,292.789 704.479,296.699 708.376,295.356 710.323,296.793 711.692,297.805 711.618,293.684 714.975,291.288 711.032,290.083 "
              stroke-miterlimit="10" />
           <path
              style="fill:none;stroke:#231f20;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;stroke-dasharray:1, 6"
@@ -107,12 +107,5 @@
         </g>
       </g>
     </g>
-    <rect
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.097782;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3338"
-       width="45.0392"
-       height="45.455765"
-       x="662.7467"
-       y="582.10712" />
   </g>
 </svg>
