@@ -131,15 +131,14 @@ line-height: 2em;
 		margin: auto;
 		height: 1em;
 		}
-.ui-listview .ui-li-icon {
+.ui-li-icon {
 	margin-top: -20px;
 	height: 20px !important;
 	}
 	
-	#page-browse ul[data-role="listview"] li img {
-    margin-top: -20px; /* hack to make the icons align to the text */
+	#page-find ul[data-role="listview"] li img {
+    margin-top: -20px !important; /* hack to make the icons align to the text */
 }
-
 
 #searchButton {
 	height: 40px;
