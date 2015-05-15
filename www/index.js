@@ -1593,7 +1593,9 @@ function searchProcessResults(resultlist,title,from,options) {
         // it also has the distance in meters (well, a 0 for now), which is used for sorting the results list by distance
         // and has the title/name of the place as a datum, which is used for sorting the results list by name
         // it also has a click handler defined up in initResultsPanel()
-        var li = $('<li></li>').appendTo(target).data('raw',result).data('title',result.name).data('meters',0);
+        // tip: the results entry is tagged wth a CSS class searchresult-TYPE so one can add custom styling for POI results, Trail results, etc.
+        var cssclass = 'searchresult-' + result.type;
+        var li       = $('<li></li>').addClass(cssclass).appendTo(target).data('raw',result).data('title',result.name).data('meters',0);
 
         // the title and perhaps a footnote; that's really up to the very intelligent query endpoint
         var div = $('<div></div>').addClass('ui-btn-text').appendTo(li);

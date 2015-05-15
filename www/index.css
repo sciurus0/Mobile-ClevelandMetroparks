@@ -377,6 +377,24 @@ input[type="text"] {
     color:black !important;
     text-decoration:none;
 }
+#page-find-results li.searchresult-poi div.ui-btn-text {
+    background-color:#FF0000;
+}
+#page-find-results li.searchresult-poi span.ui-li-heading {
+    color:yellow;
+}
+#page-find-results li.searchresult-trail div.ui-btn-text {
+    background-color:#00FF00;
+}
+#page-find-results li.searchresult-trail span.ui-li-heading {
+    color:white;
+}
+#page-find-results li.searchresult-loop div.ui-btn-text {
+    background-color:yellow;
+}
+#page-find-results li.searchresult-loop span.ui-li-heading {
+    color:red;
+}
 
 /*
  * Settings panel
