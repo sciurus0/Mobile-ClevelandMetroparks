@@ -13,7 +13,7 @@
 @import "antonio/stylesheet.css";
 
 #browse_results li {
-padding: 18px 0 !important;
+
 }
 
 .zoom_distance {
@@ -144,7 +144,30 @@ line-height: 2em;
 	height: 40px;
 	width: 40px;
 	}
+#page-find-results li.searchresult-poi{
 
+}
+	
+#page-find-results li.searchresult-poi div.ui-btn-text {
+    background-color:#FFF;
+	
+	padding: 18px 0 !important;
+}
+#page-find-results li.searchresult-poi span.ui-li-heading {
+    color: #000;
+}
+#page-find-results li.searchresult-trail div.ui-btn-text {
+    background-color:#FFF;
+}
+#page-find-results li.searchresult-trail span.ui-li-heading {
+    color:#000;
+}
+#page-find-results li.searchresult-loop div.ui-btn-text {
+    background-color:#fff;
+}
+#page-find-results li.searchresult-loop span.ui-li-heading {
+    color:#000;
+}
 /* A
 -----------------------------------------------------------------------------------------------------------*/
 
