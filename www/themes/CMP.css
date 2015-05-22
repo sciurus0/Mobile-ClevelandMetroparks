@@ -36,6 +36,10 @@ top: -18px;
 padding: 0 20px;
 }
 
+#directions_list {
+padding: 0 10px;
+}
+
 .ui-btn-hidden {
 text-transform: uppercase;
 }
