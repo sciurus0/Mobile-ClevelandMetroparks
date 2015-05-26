@@ -2134,11 +2134,9 @@ function directionsParseAddressAndValidate() {
     }
     // if we got here then we successfully loaded targetlat and targetlng
 
-    // part 99 - bail condition for a SUCCESSFUL set of lookups
-    // if the starting location is outside our supported area, it wouldn't make sense to draw it onto the map
-    // so we punt, and hand off to the native mapping app so they can figure it out themselves
-    if (! MAX_BOUNDS.contains([sourcelat,sourcelng]) ) {
-        navigator.notification.alert('That is outside the supported area, so we\'ll open your native routing app so you get better results.', null, 'Outside Area');
+    // afterthought: they decided that they want to use native navigation for all transit & driving directions,
+    // rather than our own UI. So if they're aksing for those types of directions, bail to do that
+    if (via == 'car' || via == 'bus') {
         openDirections(sourcelat,sourcelng,targetlat,targetlng);
         return false;
     }
