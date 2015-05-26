@@ -950,7 +950,7 @@ function toggleGPSOff() {
 // this is appropriate when watchPosition() isn't responding quickly enough, e.g. when you turn on auto-center and the map won't
 // re-center until your location changes enough to trigger a location-update event
 // some day this may become obsolete as they fix the memory leak in geolocation.getCurrentPosition()
-// see also initMap() where we use watchPositon() instead of getCurrentPosition()
+// see also initMap() where we use watchPosition() instead of getCurrentPosition()
 // https://issues.apache.org/jira/browse/CB-8631
 function getLocationRightNow() {
     navigator.geolocation.getCurrentPosition(function (position) {
