@@ -11,4 +11,5 @@
     <access origin="*" />
     <preference name="splashscreen" value="screen" />
     <preference name="splashscreendelay" value="4000" />
+    <preference name="backupWebStoage" value="local" />
 </widget>

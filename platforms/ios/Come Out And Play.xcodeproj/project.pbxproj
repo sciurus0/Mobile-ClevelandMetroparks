@@ -61,6 +61,7 @@
 		FAB27CEB1A39161B0080A42F /* BradleyWoods.gpx in Resources */ = {isa = PBXBuildFile; fileRef = FAB27CEA1A39161B0080A42F /* BradleyWoods.gpx */; };
 		FAB27CED1A3916210080A42F /* BrooksideZoo.gpx in Resources */ = {isa = PBXBuildFile; fileRef = FAB27CEC1A3916210080A42F /* BrooksideZoo.gpx */; };
 		FAB27CEF1A3916290080A42F /* MillStreamRunSouth.gpx in Resources */ = {isa = PBXBuildFile; fileRef = FAB27CEE1A3916290080A42F /* MillStreamRunSouth.gpx */; };
+		F912CB366D4C4044A6731174 /* Insomnia.m in Sources */ = {isa = PBXBuildFile; fileRef = F42CF5F66A5F4078BFD99F48 /* Insomnia.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -158,6 +159,8 @@
 		FAB27CEC1A3916210080A42F /* BrooksideZoo.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = BrooksideZoo.gpx; sourceTree = "<group>"; };
 		FAB27CEE1A3916290080A42F /* MillStreamRunSouth.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = MillStreamRunSouth.gpx; sourceTree = "<group>"; };
 		FD3B8EEF75984FAAA6F45CAE /* CDVNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDVNotification.h; path = org.apache.cordova.dialogs/CDVNotification.h; sourceTree = "<group>"; };
+		F42CF5F66A5F4078BFD99F48 /* Insomnia.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "Insomnia.m"; path = "nl.x-services.plugins.insomnia/Insomnia.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		22574EB1C36A4C6B97381698 /* Insomnia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Insomnia.h"; path = "nl.x-services.plugins.insomnia/Insomnia.h"; sourceTree = "<group>"; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -293,6 +296,8 @@
 				17579C1A811C434BBF6E41E5 /* CDVInAppBrowser.h */,
 				B401E0180CBF43548A80A7E1 /* CDVNotification.m */,
 				FD3B8EEF75984FAAA6F45CAE /* CDVNotification.h */,
+				F42CF5F66A5F4078BFD99F48 /* Insomnia.m */,
+				22574EB1C36A4C6B97381698 /* Insomnia.h */,
 			);
 			name = Plugins;
 			path = "Come Out And Play/Plugins";
@@ -501,6 +506,7 @@
 				0B34F437891F4C8F831CF5D1 /* CDVSound.m in Sources */,
 				DD83C10F4A3E4F779F81BCA1 /* CDVInAppBrowser.m in Sources */,
 				8B0FDEDBBBE241E28E730BF2 /* CDVNotification.m in Sources */,
+				F912CB366D4C4044A6731174 /* Insomnia.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -544,7 +550,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "Come Out And Play";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "1aa81fd5-4137-4fcc-8b3e-0ee2c81e7848";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -576,7 +582,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "Come Out And Play";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "bfa96970-1fe2-40ad-9b6e-88bec52be301";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

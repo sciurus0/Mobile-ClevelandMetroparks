@@ -117,7 +117,7 @@
             "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
         },
         "nl.x-services.plugins.insomnia": {
-            "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
+            "PACKAGE_NAME": "com.clevelandmetroparks.trailsapp"
         }
     },
     "dependent_plugins": {}
