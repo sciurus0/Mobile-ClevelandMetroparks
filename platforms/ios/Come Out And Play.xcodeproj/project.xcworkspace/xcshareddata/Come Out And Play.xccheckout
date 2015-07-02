@@ -11,7 +11,7 @@
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>0B44F1121D5C5600F7074FB3847A1FFAD1B73FB1</key>
-		<string>https://github.com/greeninfo/Mobile-ClevelandMetroparks.git</string>
+		<string>https://github.com/greeninfo/Mobile-ClevelandMetroparks</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>platforms/ios/Come Out And Play.xcodeproj</string>
@@ -21,7 +21,7 @@
 		<string>../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/greeninfo/Mobile-ClevelandMetroparks.git</string>
+	<string>https://github.com/greeninfo/Mobile-ClevelandMetroparks</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
@@ -34,7 +34,7 @@
 			<key>IDESourceControlWCCIdentifierKey</key>
 			<string>0B44F1121D5C5600F7074FB3847A1FFAD1B73FB1</string>
 			<key>IDESourceControlWCCName</key>
-			<string>Come Out And Play</string>
+			<string>Mobile-ClevelandMetroparks</string>
 		</dict>
 	</array>
 </dict>

@@ -9,14 +9,14 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="31.018"
-   height="31.018"
-   id="svg2"
+   width="40"
+   height="40"
+   id="svg4195"
    version="1.1"
    inkscape:version="0.48.4 r"
-   sodipodi:docname="New document 1">
+   sodipodi:docname="mapbutton_gps_off.svg">
   <defs
-     id="defs4" />
+     id="defs4197" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="28.9982"
-     inkscape:cy="29.449139"
+     inkscape:zoom="5.6"
+     inkscape:cx="6.688365"
+     inkscape:cy="16.594344"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -34,13 +34,13 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="484"
+     inkscape:window-width="962"
      inkscape:window-height="480"
-     inkscape:window-x="269"
-     inkscape:window-y="175"
+     inkscape:window-x="1633"
+     inkscape:window-y="84"
      inkscape:window-maximized="0" />
   <metadata
-     id="metadata7">
+     id="metadata4200">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -55,11 +55,11 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-335.91957,-751.1389)">
+     transform="translate(-50.20529,-416.44261)">
     <polygon
-       transform="translate(-170.15243,682.6289)"
-       id="polygon7384-7"
-       points="520.777,99.528 519.105,86.496 506.072,84.823 537.09,68.51 "
-       style="fill:#3a84df;fill-opacity:1" />
+       transform="matrix(1.2895738,0,0,1.2895738,-602.4119,328.09391)"
+       id="polygon7384"
+        style="fill:#3a84df;fill-opacity:1"
+       points="519.105,86.496 506.072,84.823 537.09,68.51 520.777,99.528 " />
   </g>
 </svg>
