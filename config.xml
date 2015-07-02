@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.clevelandmetroparks.trailsapp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Come Out And Play</name>
+    <name>Cleveland Metroparks</name>
     <description>
         Find parks, trails, and amenities in Cleveland, Ohio with Cleveland Metropark's mobile app.
     </description>

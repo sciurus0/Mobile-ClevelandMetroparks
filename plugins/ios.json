@@ -29,14 +29,6 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Vibration\"><param name=\"ios-package\" value=\"CDVVibration\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Media\"><param name=\"ios-package\" value=\"CDVSound\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"InAppBrowser\"><param name=\"ios-package\" value=\"CDVInAppBrowser\" /></feature>",
                             "count": 1
                         },
@@ -117,12 +109,6 @@
             "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
         },
         "org.apache.cordova.network-information": {
-            "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
-        },
-        "org.apache.cordova.vibration": {
-            "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
-        },
-        "org.apache.cordova.media": {
             "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
         },
         "org.apache.cordova.inappbrowser": {

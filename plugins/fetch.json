@@ -5,5 +5,11 @@
             "url": "https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git",
             "subdir": "."
         }
+    },
+    "org.apache.cordova.media": {
+        "source": {
+            "type": "registry",
+            "id": "org.apache.cordova.media"
+        }
     }
 }
