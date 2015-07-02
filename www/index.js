@@ -1608,6 +1608,10 @@ function loadAndShowDetailsPanel(feature,callback) {
         html = html.replace(/<li><a .+?<\/a><\/li>/, '');
         html = html.replace(/<a .+?<\/a>/, '');
 
+        // some things have a elevation profile (loops) and this needs some goofy hacks to rotate
+        // plain CSS won't work, and the existence of text-align:center makes the other transform fail
+        html = html.replace('<div class="elevationprofileimage" style="text-align:center;">', '<div class="elevationprofileimage" style="-webkit-transform:rotate(90deg); margin-top:5em;">');
+
         // a hack for Loops specifically
         // inserting the UL into the document, causes the app to crash; not a clean exit, but all DOM changes cease to function
         // even $.mobile.changePage() and switchToMap() do absolutely nothing, and the Map and back buttons fail as well
