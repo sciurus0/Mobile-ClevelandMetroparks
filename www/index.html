@@ -216,45 +216,6 @@
 
 
 
-<div data-role="page" id="page-find-nearby">
-    <div data-role="header">
-        <a href="#page-map" data-icon="back">Back</a>
-        <h1>Near You</h1>
-    </div>
-    <div data-role="content">
-
-        <p>See what's near you, and optionally get alerts when you are near points of interest.</p>
-
-        <div class="center" style="margin-bottom:2em;">
-            <input type="button" data-icon="search" data-iconpos="right" value="Search Nearby" data-theme="b" />
-        </div>
-
-        <!-- Enable Alerts and the (hidden) list of activity categories which will give an alert when seen within a given radius  -->
-        <label><input type="checkbox" id="nearby_enabled" /> Enable alerts</label>
-        <br/>
-        <div id="nearby_config" style="display:none;">
-            <strong>Alert me when I am within:</strong>
-            <select id="nearby_radius">
-                <option value="152">500 feet</option>
-                <option value="402">&frac14; mile</option>
-                <option value="804>&frac12; mile</option>
-                <option value="1207">&frac34; mile</option>
-                <option value="1609" selected>1 mile</option>
-                <option value="3218">2 miles</option>
-                <option value="8045">5 miles</option>
-            </select>
-            <br/>
-            <strong>Watch for these types of features:</strong>
-            <fieldset data-role="controlgroup" data-type="activities">
-                <!-- populated by initNearbyPanel() -->
-            </fieldset>
-        </div>
-    </div>
-</div>
-
-
-
-
 
 <div data-role="page" id="page-find-results">
     <div data-role="header">
