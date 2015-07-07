@@ -237,6 +237,13 @@ module.exports = [
         "clobbers": [
             "window.plugins.insomnia"
         ]
+    },
+    {
+        "file": "plugins/uk.co.workingedge.phonegap.plugin.LaunchNavigator/www/ios/launchnavigator.js",
+        "id": "uk.co.workingedge.phonegap.plugin.LaunchNavigator.LaunchNavigator",
+        "clobbers": [
+            "launchnavigator"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -250,7 +257,8 @@ module.exports.metadata =
     "org.apache.cordova.inappbrowser": "0.5.4",
     "org.apache.cordova.plugin": "0.1.0",
     "org.apache.cordova.dialogs": "0.2.11",
-    "nl.x-services.plugins.insomnia": "4.0.1"
+    "nl.x-services.plugins.insomnia": "4.0.1",
+    "uk.co.workingedge.phonegap.plugin.LaunchNavigator": "2.8.0"
 }
 // BOTTOM OF METADATA
 });
