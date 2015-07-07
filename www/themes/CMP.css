@@ -13,7 +13,10 @@
 @import "antonio/stylesheet.css";
 
 #browse_results li {
+}
 
+#directions_elevationprofile, .elevationprofileimage{
+	display: none !important;
 }
 
 .zoom_distance {
