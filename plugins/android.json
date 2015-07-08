@@ -25,14 +25,6 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Vibration\"><param name=\"android-package\" value=\"org.apache.cordova.vibration.Vibration\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Media\"><param name=\"android-package\" value=\"org.apache.cordova.media.AudioHandler\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"InAppBrowser\"><param name=\"android-package\" value=\"org.apache.cordova.inappbrowser.InAppBrowser\" /></feature>",
                             "count": 1
                         },
@@ -46,6 +38,10 @@
                         },
                         {
                             "xml": "<feature name=\"Insomnia\"><param name=\"android-package\" value=\"nl.xservices.plugins.Insomnia\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"LaunchNavigator\"><param name=\"android-package\" value=\"uk.co.workingedge.phonegap.plugin.LaunchNavigator\" /></feature>",
                             "count": 1
                         }
                     ]
@@ -64,7 +60,7 @@
                         },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
-                            "count": 3
+                            "count": 2
                         },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
@@ -75,12 +71,7 @@
                             "count": 1
                         }
                     ],
-                    "/manifest": [
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.VIBRATE\" />",
-                            "count": 1
-                        }
-                    ]
+                    "/manifest": []
                 }
             }
         }
@@ -101,12 +92,6 @@
         "org.apache.cordova.network-information": {
             "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
         },
-        "org.apache.cordova.vibration": {
-            "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
-        },
-        "org.apache.cordova.media": {
-            "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
-        },
         "org.apache.cordova.inappbrowser": {
             "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
         },
@@ -117,7 +102,10 @@
             "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
         },
         "nl.x-services.plugins.insomnia": {
-            "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
+            "PACKAGE_NAME": "com.clevelandmetroparks.trailsapp"
+        },
+        "uk.co.workingedge.phonegap.plugin.LaunchNavigator": {
+            "PACKAGE_NAME": "com.clevelandmetroparks.trailsapp"
         }
     },
     "dependent_plugins": {}

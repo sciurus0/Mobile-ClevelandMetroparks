@@ -1,22 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=yes">
+
     <title>Cleveland Metroparks Mobile App</title>
     <meta charset="utf-8" />
     <!-- scripts and stuff at the bottom, seems to solve some timing issue on iPad -->
 
     <!-- Cordova's stub -->
     <script type="text/javascript" src="cordova.js"></script>
-	<widget 
-	xmlns="http://www.w3.org/ns/widgets" 
-	xmlns:gap="http://phonegap.com/ns/1.0" 
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	id="me.app.id" 
-	version="1.0.0">
-	
-	<gap:config-file platform="android" parent="/manifest">
-     <application android:debuggable="true" />
-</gap:config-file>
 </head>
 <body>
 
@@ -79,6 +71,9 @@
             Some base map data &copy; <a target="_blank" href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
             <br/>
             <br/>
+            Some map labels &copy; <a target="_blank" href="http://stamen.com/">Stamen</a>, <a target="_blank" href="http://creativecommons.org/licenses/by/3.0">under CC BY 3.0</a>
+            <br/>
+            <br/>
             Driving and transit directions courtesy of <a target="_blank" href="http://www.bing.com/maps/">Bing Maps</a>
             <br/>
             <br/>
@@ -113,7 +108,7 @@
             <li><a href="#page-find-results"><img class="ui-li-icon" src="images/find_prior.svg" /> &nbsp; Previous Results</a></li>
             <li><a href="#page-find-pois"><img class="ui-li-icon" src="images/find_pois.svg" /> &nbsp; Points of Interest</a></li>
             <li><a href="#page-find-trails"><img class="ui-li-icon" src="images/find_trails.svg" /> &nbsp; Trail Finder</a></li>
-            <li><a href="#page-find-loops"><img class="ui-li-icon" src="images/find_loops.svg" /> &nbsp; Featured Routes</a></li>
+            <li><a href="#page-find-loops"><img class="ui-li-icon" src="images/find_loops.svg" /> &nbsp; Featured Trails</a></li>
         </ul>
 
         <div class="center" style="margin-top:3em;">
@@ -174,7 +169,7 @@
 <div data-role="page" id="page-find-loops">
     <div data-role="header">
         <a href="#page-find" data-icon="search">Find</a>
-        <h1>Loops &amp; Routes</h1>
+        <h1>Featured Trails</h1>
         <a href="#page-map" data-icon="map">Map</a>
     </div>
     <div data-role="content">
@@ -207,45 +202,6 @@
             <input type="button" data-icon="search" data-iconpos="right" value="Search" data-theme="b" />
         </div>
 
-    </div>
-</div>
-
-
-
-
-<div data-role="page" id="page-find-nearby">
-    <div data-role="header">
-        <a href="#page-map" data-icon="back">Back</a>
-        <h1>Near You</h1>
-    </div>
-    <div data-role="content">
-
-        <p>See what's near you, and optionally get alerts when you are near points of interest.</p>
-
-        <div class="center" style="margin-bottom:2em;">
-            <input type="button" data-icon="search" data-iconpos="right" value="Search Nearby" data-theme="b" />
-        </div>
-
-        <!-- Enable Alerts and the (hidden) list of activity categories which will give an alert when seen within a given radius  -->
-        <label><input type="checkbox" id="nearby_enabled" /> Enable alerts</label>
-        <br/>
-        <div id="nearby_config" style="display:none;">
-            <strong>Alert me when I am within:</strong>
-            <select id="nearby_radius">
-                <option value="152">500 feet</option>
-                <option value="402">&frac14; mile</option>
-                <option value="804>&frac12; mile</option>
-                <option value="1207">&frac34; mile</option>
-                <option value="1609" selected>1 mile</option>
-                <option value="3218">2 miles</option>
-                <option value="8045">5 miles</option>
-            </select>
-            <br/>
-            <strong>Watch for these types of features:</strong>
-            <fieldset data-role="controlgroup" data-type="activities">
-                <!-- populated by initNearbyPanel() -->
-            </fieldset>
-        </div>
     </div>
 </div>
 
@@ -435,7 +391,7 @@
                 <label><input type="text" name="address" placeholder="place name or address" /></label>
             </span>
 
-            <!- Did You Mean results, similar to the autocomplete on the Find panel -->
+            <!-- Did You Mean results, similar to the autocomplete on the Find panel -->
             <ul data-role="listview" data-inset="true" id="directions_autocomplete">
             </ul>
 
@@ -461,10 +417,10 @@
         <ul data-role="listview" id="directions_list">
         </ul>
 
-        <!-- elevation profile image, for trail routing scenarios (hike/bike)-->
-        <div class="center" style="margin-top:2em;">
+        <!-- elevation profile image, for trail routing scenarios (hike/bike) Commented Out in themes/CMP.css Until Rotation gets fixed-->
+        <!--<div class="center" style="margin-top:2em;">
             <img id="directions_elevationprofile" src="about:blank" />
-        </div>
+        </div>-->
 
     </div>
 </div>
@@ -485,6 +441,7 @@
     <script type="text/javascript" src="libs/jqm.autoComplete-1.5.1.js"></script>
 
     <!-- PhoneNavigator plugin so Android can open the native Navigator in case we can't get directions they need -->
+    <!-- wrong; as of June 2015 we don't use it, but if we fail to have the plugin loaded then no XHR $.get requests will work anymore! bizarre! -->
     <script type="text/javascript" src="phonenavigator.js"></script>
 
     <!-- Leaflet map API and Wicket plugin for parsing WKT -->

@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="31.018"
-   height="31.018"
+   width="40"
+   height="40"
    id="svg4195"
    version="1.1"
    inkscape:version="0.48.4 r"
-   sodipodi:docname="New document 7">
+   sodipodi:docname="mapbutton_gps_off.svg">
   <defs
      id="defs4197" />
   <sodipodi:namedview
@@ -34,10 +34,10 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="484"
+     inkscape:window-width="962"
      inkscape:window-height="480"
-     inkscape:window-x="294"
-     inkscape:window-y="200"
+     inkscape:window-x="1633"
+     inkscape:window-y="84"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata4200">
@@ -55,10 +55,11 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-50.20529,-425.42461)">
+     transform="translate(-50.20529,-416.44261)">
     <polygon
-       transform="translate(-455.86671,356.91461)"
+       transform="matrix(1.2895738,0,0,1.2895738,-602.4119,328.09391)"
        id="polygon7384"
-       points="506.072,84.823 537.09,68.51 520.777,99.528 519.105,86.496 " />
+       style="fill:#000000;fill-opacity:1"
+       points="519.105,86.496 506.072,84.823 537.09,68.51 520.777,99.528 " />
   </g>
 </svg>

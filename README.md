@@ -1,5 +1,5 @@
 Mobile-ClevelandMetroparks
 ==========================
 
-Come Out And Play -- Mobile app for Cleveland Metroparks
+Mobile app for Cleveland Metroparks
 This is their mobile-version website, modified to perform in a Cordova container as a hybrid mobile app.

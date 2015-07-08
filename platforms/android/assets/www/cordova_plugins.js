@@ -183,28 +183,6 @@ module.exports = [
         ]
     },
     {
-        "file": "plugins/org.apache.cordova.vibration/www/vibration.js",
-        "id": "org.apache.cordova.vibration.notification",
-        "merges": [
-            "navigator.notification",
-            "navigator"
-        ]
-    },
-    {
-        "file": "plugins/org.apache.cordova.media/www/MediaError.js",
-        "id": "org.apache.cordova.media.MediaError",
-        "clobbers": [
-            "window.MediaError"
-        ]
-    },
-    {
-        "file": "plugins/org.apache.cordova.media/www/Media.js",
-        "id": "org.apache.cordova.media.Media",
-        "clobbers": [
-            "window.Media"
-        ]
-    },
-    {
         "file": "plugins/org.apache.cordova.inappbrowser/www/inappbrowser.js",
         "id": "org.apache.cordova.inappbrowser.inappbrowser",
         "clobbers": [
@@ -238,6 +216,13 @@ module.exports = [
         "clobbers": [
             "window.plugins.insomnia"
         ]
+    },
+    {
+        "file": "plugins/uk.co.workingedge.phonegap.plugin.LaunchNavigator/www/android/launchnavigator.js",
+        "id": "uk.co.workingedge.phonegap.plugin.LaunchNavigator.LaunchNavigator",
+        "clobbers": [
+            "launchnavigator"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -248,12 +233,11 @@ module.exports.metadata =
     "org.apache.cordova.file": "1.3.1",
     "org.apache.cordova.file-transfer": "0.4.7",
     "org.apache.cordova.network-information": "0.2.14",
-    "org.apache.cordova.vibration": "0.3.12",
-    "org.apache.cordova.media": "0.2.15",
     "org.apache.cordova.inappbrowser": "0.5.4",
     "org.apache.cordova.plugin": "0.1.0",
     "org.apache.cordova.dialogs": "0.2.11",
-    "nl.x-services.plugins.insomnia": "4.0.1"
+    "nl.x-services.plugins.insomnia": "4.0.1",
+    "uk.co.workingedge.phonegap.plugin.LaunchNavigator": "2.8.0"
 }
 // BOTTOM OF METADATA
 });
