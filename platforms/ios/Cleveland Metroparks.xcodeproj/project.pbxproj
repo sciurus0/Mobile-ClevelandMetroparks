@@ -60,6 +60,7 @@
 		FAB27CEB1A39161B0080A42F /* BradleyWoods.gpx in Resources */ = {isa = PBXBuildFile; fileRef = FAB27CEA1A39161B0080A42F /* BradleyWoods.gpx */; };
 		FAB27CED1A3916210080A42F /* BrooksideZoo.gpx in Resources */ = {isa = PBXBuildFile; fileRef = FAB27CEC1A3916210080A42F /* BrooksideZoo.gpx */; };
 		FAB27CEF1A3916290080A42F /* MillStreamRunSouth.gpx in Resources */ = {isa = PBXBuildFile; fileRef = FAB27CEE1A3916290080A42F /* MillStreamRunSouth.gpx */; };
+		849AA77D07704F6797EEA084 /* LaunchNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = CCAD7503E7DA49D8B4BB6AF2 /* LaunchNavigator.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -159,6 +160,8 @@
 		FAB27CEC1A3916210080A42F /* BrooksideZoo.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = BrooksideZoo.gpx; sourceTree = "<group>"; };
 		FAB27CEE1A3916290080A42F /* MillStreamRunSouth.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = MillStreamRunSouth.gpx; sourceTree = "<group>"; };
 		FD3B8EEF75984FAAA6F45CAE /* CDVNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDVNotification.h; path = org.apache.cordova.dialogs/CDVNotification.h; sourceTree = "<group>"; };
+		CCAD7503E7DA49D8B4BB6AF2 /* LaunchNavigator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "LaunchNavigator.m"; path = "uk.co.workingedge.phonegap.plugin.LaunchNavigator/LaunchNavigator.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		8C7775734FD640198E029D5F /* LaunchNavigator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "LaunchNavigator.h"; path = "uk.co.workingedge.phonegap.plugin.LaunchNavigator/LaunchNavigator.h"; sourceTree = "<group>"; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -296,6 +299,8 @@
 				FD3B8EEF75984FAAA6F45CAE /* CDVNotification.h */,
 				F42CF5F66A5F4078BFD99F48 /* Insomnia.m */,
 				22574EB1C36A4C6B97381698 /* Insomnia.h */,
+				CCAD7503E7DA49D8B4BB6AF2 /* LaunchNavigator.m */,
+				8C7775734FD640198E029D5F /* LaunchNavigator.h */,
 			);
 			name = Plugins;
 			path = "Cleveland Metroparks/Plugins";
@@ -503,6 +508,7 @@
 				DD83C10F4A3E4F779F81BCA1 /* CDVInAppBrowser.m in Sources */,
 				8B0FDEDBBBE241E28E730BF2 /* CDVNotification.m in Sources */,
 				F912CB366D4C4044A6731174 /* Insomnia.m in Sources */,
+				849AA77D07704F6797EEA084 /* LaunchNavigator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

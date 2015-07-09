@@ -39,6 +39,10 @@
                         {
                             "xml": "<feature name=\"Insomnia\"><param name=\"android-package\" value=\"nl.xservices.plugins.Insomnia\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"LaunchNavigator\"><param name=\"android-package\" value=\"uk.co.workingedge.phonegap.plugin.LaunchNavigator\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -98,6 +102,9 @@
             "PACKAGE_NAME": "org.greeninfo.clevelandmetroparks"
         },
         "nl.x-services.plugins.insomnia": {
+            "PACKAGE_NAME": "com.clevelandmetroparks.trailsapp"
+        },
+        "uk.co.workingedge.phonegap.plugin.LaunchNavigator": {
             "PACKAGE_NAME": "com.clevelandmetroparks.trailsapp"
         }
     },

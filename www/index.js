@@ -1718,10 +1718,7 @@ function _openDirections_iOS(sourcelat,sourcelng,targetlat,targetlng) {
 }
 function _openDirections_Android(sourcelat,sourcelng,targetlat,targetlng) {
     // Android needs a plugin to call the onboard Navigation app
-    // aos, it doesn't handle the source location, only a destination
-    cordova.require('cordova/plugin/phonenavigator').doNavigate(targetlat, targetlng, null, function () {
-        navigator.notification.alert('Could not find a navigation app installed on your device.', null, 'Error');
-    });
+    launchnavigator.navigate([targetlat,targetlng], [sourcelat,sourcelng]);
 }
 function _openDirections_Chrome(sourcelat,sourcelng,targetlat,targetlng) {
     // non-Cordova the best we can do for Directions is compose a pair of loc: for Google Maps

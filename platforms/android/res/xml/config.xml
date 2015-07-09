@@ -26,6 +26,9 @@
     <feature name="Insomnia">
         <param name="android-package" value="nl.xservices.plugins.Insomnia" />
     </feature>
+    <feature name="LaunchNavigator">
+        <param name="android-package" value="uk.co.workingedge.phonegap.plugin.LaunchNavigator" />
+    </feature>
     <name>Cleveland Metroparks</name>
     <description>
         Find parks, trails, and amenities in Cleveland, Ohio with Cleveland Metropark's mobile app.
