@@ -152,9 +152,15 @@ h1 {
 	height: 40px;
 	width: 40px;
 	}
-	
-#page-find-results li.searchresult-poi{
-	}
+
+#page-find-results li.searchresult-reservation div.ui-btn-text {
+    background-color:#FFF;
+	padding: 18px 0 !important;
+}
+
+#page-find-results li.searchresult-reservation span.ui-li-heading {
+    color: #000;
+}
 	
 #page-find-results li.searchresult-poi div.ui-btn-text {
     background-color:#FFF;
